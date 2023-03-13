@@ -7,10 +7,12 @@ import Notice from "@/components/Notice.tsx";
 import { DashboardState } from "./_middleware.ts";
 import Dashboard from "@/components/Dashboard.tsx";
 import { createSupabaseClient } from "../../utils/supabase.ts";
+import type { User } from "@supabase/supabase-js";
 
 interface Data {
   isPaid: boolean;
   todos: Todo[];
+  user: User;
 }
 
 export const handler: Handlers<Data, DashboardState> = {
@@ -23,6 +25,7 @@ export const handler: Handlers<Data, DashboardState> = {
     return await ctx.render({
       isPaid: subscription?.plan?.amount > 0,
       todos: await getTodos(createSupabaseClient(request.headers)),
+      user,
     });
   },
 };
@@ -32,13 +35,19 @@ export default function TodosPage(props: PageProps<Data>) {
     <>
       <Head title="Todos" />
       <Dashboard active="/dashboard/todos">
+        <div class="mb-4">
+          <h1 class="font-bold text-3xl">Welcome back</h1>
+          <p class="text-lg">Your email is {props.data.user.email}</p>
+        </div>
         {!props.data.isPaid && (
           <Notice
             color="yellow"
             message={
               <span>
                 You are on a free subscription. Please{" "}
-                <a href="/account" class="underline">upgrade</a>{" "}
+                <a href="/dashboard/manage-subscription" class="underline">
+                  upgrade
+                </a>{" "}
                 to enable unlimited todos
               </span>
             }

@@ -1,12 +1,12 @@
 import { type ComponentChild, JSX } from "preact";
 import IconListDetails from "tabler-icons/list-details.tsx";
-import IconUser from "tabler-icons/user.tsx";
+import IconSettings from "tabler-icons/settings.tsx";
 import Header from "@/components/Header.tsx";
 import Nav from "./Nav.tsx";
 import Footer from "@/components/Footer.tsx";
 
 interface SidebarNavItem {
-  icon: typeof IconUser;
+  icon: typeof IconSettings;
   href: string;
   inner: ComponentChild;
 }
@@ -58,9 +58,9 @@ export default function DashboardLayout(props: DashboardProps) {
       inner: "Todos",
     },
     {
-      icon: IconUser,
-      href: "/dashboard/account",
-      inner: "Account",
+      icon: IconSettings,
+      href: "/dashboard/manage-subscription",
+      inner: "Manage subscription",
     },
   ];
 

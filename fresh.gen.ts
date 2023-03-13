@@ -9,15 +9,14 @@ import * as $2 from "./routes/api/login.ts";
 import * as $3 from "./routes/api/logout.ts";
 import * as $4 from "./routes/api/signup.ts";
 import * as $5 from "./routes/dashboard/_middleware.ts";
-import * as $6 from "./routes/dashboard/account.tsx";
-import * as $7 from "./routes/dashboard/api/todo.ts";
-import * as $8 from "./routes/dashboard/index.tsx";
-import * as $9 from "./routes/dashboard/manage-subscription.ts";
-import * as $10 from "./routes/dashboard/todos.tsx";
-import * as $11 from "./routes/index.tsx";
-import * as $12 from "./routes/login.tsx";
-import * as $13 from "./routes/logout.ts";
-import * as $14 from "./routes/signup.tsx";
+import * as $6 from "./routes/dashboard/api/todo.ts";
+import * as $7 from "./routes/dashboard/index.tsx";
+import * as $8 from "./routes/dashboard/manage-subscription.ts";
+import * as $9 from "./routes/dashboard/todos.tsx";
+import * as $10 from "./routes/index.tsx";
+import * as $11 from "./routes/login.tsx";
+import * as $12 from "./routes/logout.ts";
+import * as $13 from "./routes/signup.tsx";
 import * as $$0 from "./islands/TodoList.tsx";
 
 const manifest = {
@@ -28,15 +27,14 @@ const manifest = {
     "./routes/api/logout.ts": $3,
     "./routes/api/signup.ts": $4,
     "./routes/dashboard/_middleware.ts": $5,
-    "./routes/dashboard/account.tsx": $6,
-    "./routes/dashboard/api/todo.ts": $7,
-    "./routes/dashboard/index.tsx": $8,
-    "./routes/dashboard/manage-subscription.ts": $9,
-    "./routes/dashboard/todos.tsx": $10,
-    "./routes/index.tsx": $11,
-    "./routes/login.tsx": $12,
-    "./routes/logout.ts": $13,
-    "./routes/signup.tsx": $14,
+    "./routes/dashboard/api/todo.ts": $6,
+    "./routes/dashboard/index.tsx": $7,
+    "./routes/dashboard/manage-subscription.ts": $8,
+    "./routes/dashboard/todos.tsx": $9,
+    "./routes/index.tsx": $10,
+    "./routes/login.tsx": $11,
+    "./routes/logout.ts": $12,
+    "./routes/signup.tsx": $13,
   },
   islands: {
     "./islands/TodoList.tsx": $$0,
