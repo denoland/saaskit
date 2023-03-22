@@ -25,6 +25,10 @@ export default function LoginPage(props: PageProps) {
           <div class="text-center text-gray-500 hover:text-black">
             <a href="/signup">Don't have an account? Sign up</a>
           </div>
+          <form action="/api/oauth" method="POST">
+            <input type="hidden" value="google" name="provider" />
+            <button type="submit">Google</button>
+          </form>
         </div>
       </div>
     </>
