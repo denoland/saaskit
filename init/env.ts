@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 function getEnv(label: string) {
   const message = `Please enter ${label}:`;
   let result = prompt(message);
