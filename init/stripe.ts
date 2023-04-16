@@ -1,5 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Stripe } from "stripe";
+import { SITE_DESCRIPTION } from "@/constants.ts";
+import "std/dotenv/load.ts";
+import { stripe } from "@/utils/stripe.ts";
 
 async function createPremiumTierProduct(stripe: Stripe) {
   return await stripe.products.create({
@@ -17,10 +20,14 @@ async function createPremiumTierProduct(stripe: Stripe) {
 
 async function createDefaultPortalConfiguration(
   stripe: Stripe,
-  premiumTierProductId: string,
+  product:
+    Stripe.BillingPortal.ConfigurationCreateParams.Features.SubscriptionUpdate.Product,
 ) {
   return await stripe.billingPortal.configurations.create({
     features: {
+      payment_method_update: {
+        enabled: true,
+      },
       customer_update: {
         allowed_updates: ["email", "name"],
         enabled: true,
@@ -32,17 +39,32 @@ async function createDefaultPortalConfiguration(
       subscription_update: {
         enabled: true,
         default_allowed_updates: ["price"],
-        products: [{
-          prices: [premiumTierProductId],
-          product: premiumTierProductId,
-        }],
+        products: [product],
       },
       invoice_history: { enabled: true },
     },
-    business_profile: {},
+    business_profile: {
+      headline: SITE_DESCRIPTION,
+    },
   });
 }
 
+async function main() {
+  const product = await createPremiumTierProduct(stripe);
+
+  if (typeof product.default_price !== "string") return;
+
+  await createDefaultPortalConfiguration(stripe, {
+    prices: [product.default_price],
+    product: product.id,
+  });
+
+  console.log(
+    "Please copy and paste this value into the `STRIPE_PREMIUM_PLAN_PRICE_ID` constant in `constants.ts`: " +
+      product.default_price,
+  );
+}
+
 if (import.meta.main) {
-  await createPremiumTierProduct(stripe);
+  await main();
 }
