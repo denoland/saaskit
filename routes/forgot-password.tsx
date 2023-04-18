@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { BASE_BUTTON_STYLES, BASE_INPUT_STYLES } from "@/utils/constants.ts";
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { supabaseAdminClient } from "@/utils/supabase.ts";
