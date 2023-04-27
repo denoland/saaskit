@@ -28,7 +28,7 @@ export const handler: Handlers<State, State> = {
         status: 302,
       });
     }
-
+    
     return ctx.render(ctx.state);
   },
   async POST(req, ctx) {
