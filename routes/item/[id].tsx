@@ -13,6 +13,7 @@ import {
 } from "@/utils/constants.ts";
 import type { Database } from "@/utils/supabase_types.ts";
 import { timeAgo } from "@/components/ItemSummary.tsx";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 interface ItemPageData extends State {
   item: Item;
@@ -70,13 +71,16 @@ export const handler: Handlers<ItemPageData, State> = {
   },
   async POST(req, ctx) {
     if (!ctx.state.session) {
-      return new Response(null, {
+      /** @todo Figure out `redirect_to` query */
+      /*return new Response(null, {
         headers: {
-          /** @todo Figure out `redirect_to` query */
+
           location: "/login",
         },
         status: 302,
-      });
+      });*/
+      // Changed redirect path to signup page
+      return RedirectHelper("/signup", 302);
     }
 
     const form = await req.formData();
@@ -91,10 +95,12 @@ export const handler: Handlers<ItemPageData, State> = {
       item_id: ctx.params.id,
     });
 
-    return new Response(null, {
+    /*return new Response(null, {
       headers: { location: `/item/${ctx.params.id}` },
       status: 302,
-    });
+    });*/
+
+    return RedirectHelper(`/item/${ctx.params.id}`, 302);
   },
 };
 

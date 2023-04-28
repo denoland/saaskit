@@ -8,6 +8,7 @@ import { GitHub } from "@/components/Icons.tsx";
 import { NOTICE_STYLES } from "@/utils/constants.ts";
 import { REDIRECT_PATH_AFTER_LOGIN } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
@@ -20,13 +21,15 @@ export const handler: Handlers<any, State> = {
       .getSession();
 
     if (session) {
-      return new Response(null, {
+      /** @todo Confirm whether this HTTP redirect status code is correct */
+      /*return new Response(null, {
         headers: {
           location: "/",
         },
-        /** @todo Confirm whether this HTTP redirect status code is correct */
         status: 302,
-      });
+      });*/
+
+      return RedirectHelper("/", 302);
     }
 
     return ctx.render();
@@ -45,10 +48,12 @@ export const handler: Handlers<any, State> = {
       redirectUrl = `/login?error=${encodeURIComponent(error.message)}`;
     }
 
-    return new Response(null, {
+    /*return new Response(null, {
       headers: { location: redirectUrl },
       status: 302,
-    });
+    });*/
+
+    return RedirectHelper(redirectUrl, 302);
   },
 };
 
@@ -82,7 +87,10 @@ export default function LoginPage(props: PageProps) {
             Login with GitHub
           </OAuthLoginButton>
           <div class="text-center text-gray-500 hover:text-black mt-8">
-            <a href="/signup">Don't have an account? Sign up</a>
+            <a href="/signup">
+              Don't have an account?{" "}
+              <span style="color:rgba(190,24,93)">Sign up</span>
+            </a>
           </div>
         </div>
       </div>

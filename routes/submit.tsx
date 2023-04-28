@@ -6,6 +6,7 @@ import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import type { SupabaseClient } from "@/utils/supabase.ts";
 import type { Database } from "@/utils/supabase_types.ts";
 import type { State } from "@/routes/_middleware.ts";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 export async function createItem(
   supabaseClient: SupabaseClient,
@@ -20,15 +21,20 @@ export async function createItem(
 export const handler: Handlers<State, State> = {
   GET(req, ctx) {
     if (!ctx.state.session) {
-      return new Response(null, {
+      /*  return new Response(null, {
         headers: {
           location: `/login?redirect_url=${encodeURIComponent(req.url)}`,
         },
-        /** @todo Confirm whether this HTTP redirect status code is correct */
+         @todo Confirm whether this HTTP redirect status code is correct
         status: 302,
-      });
+      });*/
+
+      return RedirectHelper(
+        `/login?redirect_url=${encodeURIComponent(req.url)}`,
+        302,
+      );
     }
-    
+
     return ctx.render(ctx.state);
   },
   async POST(req, ctx) {

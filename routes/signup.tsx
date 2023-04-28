@@ -9,6 +9,7 @@ import { NOTICE_STYLES } from "@/utils/constants.ts";
 import type { Handlers } from "$fresh/server.ts";
 import { REDIRECT_PATH_AFTER_LOGIN } from "@/utils/constants.ts";
 import type { State } from "./_middleware.ts";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
@@ -26,16 +27,18 @@ export const handler: Handlers<any, State> = {
       redirectUrl = `/signup?error=${encodeURIComponent(error.message)}`;
     }
 
-    return new Response(null, {
+    /*return new Response(null, {
       headers: { location: redirectUrl },
       status: 302,
-    });
+    });*/
+
+    return RedirectHelper(redirectUrl, 302);
   },
 };
 
 /**
  * If an error message isn't one of these possible error messages, the error message is not displayed.
- * This is done to avoid phising attacks.
+ * This is done to avoid phishing attacks.
  * E.g. if the `error` parameter's value is "Authentication error: please send your password to mrscammer@shady.com".
  */
 const POSSIBLE_ERROR_MESSAGES = new Set([

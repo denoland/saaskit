@@ -2,6 +2,7 @@
 import type { Handlers } from "$fresh/server.ts";
 import type { Provider } from "@supabase/supabase-js";
 import { State } from "@/routes/_middleware.ts";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
@@ -25,6 +26,7 @@ export const handler: Handlers<any, State> = {
 
     if (error) throw error;
 
-    return new Response(null, { headers: { location: data.url }, status: 302 });
+    return RedirectHelper(data.url, 302);
+    //return new Response(null, { headers: { location: data.url }, status: 302 });
   },
 };

@@ -3,6 +3,7 @@ import type { Handlers } from "$fresh/server.ts";
 import { stripe } from "@/utils/stripe.ts";
 import { STRIPE_PREMIUM_PLAN_PRICE_ID } from "@/utils/constants.ts";
 import type { AccountState } from "./_middleware.ts";
+import { RedirectHelper } from "@/utils/redirect.ts";
 
 export const handler: Handlers<null, AccountState> = {
   async GET(req, ctx) {
@@ -19,11 +20,12 @@ export const handler: Handlers<null, AccountState> = {
       mode: "subscription",
     });
 
-    return new Response(null, {
+    /*return new Response(null, {
       headers: {
         location: url!,
       },
       status: 302,
-    });
+    });*/
+    return RedirectHelper(url!, 302);
   },
 };
