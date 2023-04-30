@@ -13,11 +13,6 @@ export async function handler(
   req: Request,
   ctx: MiddlewareHandlerContext<State>,
 ) {
-  const { pathname } = new URL(req.url);
-  if (["_frsh", ".ico", "logo"].some((part) => pathname.includes(part))) {
-    return await ctx.next();
-  }
-
   const headers = new Headers();
   const supabaseClient = createSupabaseClient(req.headers, headers);
 
