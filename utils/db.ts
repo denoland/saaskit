@@ -93,13 +93,6 @@ export async function getCommentsByItem(
   return comments;
 }
 
-export async function getItemCommentsCount(itemId: string) {
-  const iter = kv.list<Comment>({ prefix: ["comments_by_item", itemId] });
-  let count = 0;
-  for await (const _ of iter) count++;
-  return count;
-}
-
 interface InitUser {
   id: string;
   stripeCustomerId: string;

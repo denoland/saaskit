@@ -91,7 +91,6 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-8 space-y-4`}>
           <ItemSummary
             item={props.data.item}
-            commentsCount={props.data.comments.length}
             user={props.data.user}
           />
           <div class="divide-y">
