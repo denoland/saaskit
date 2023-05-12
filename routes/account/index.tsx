@@ -58,7 +58,7 @@ export default function AccountPage(props: PageProps<AccountPageData>) {
             <strong>Account</strong>
           </h1>
           {hasResetPassword && (
-            <div class={NOTICE_STYLES}>
+            <div class={`${NOTICE_STYLES} mb-4`}>
               Your password has successfully been reset
             </div>
           )}
