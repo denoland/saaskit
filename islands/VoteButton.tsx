@@ -29,7 +29,7 @@ export default function VoteButton(props: VoteButtonProps) {
   useEffect(() => {
     let es = new EventSource(window.location.href);
     es.addEventListener("message", ({ data }) => {
-      const {items} = JSON.parse(data);
+      const { items } = JSON.parse(data);
       score.value = items.find((e: Item) => e.id === props.item.id)?.score;
     });
 
