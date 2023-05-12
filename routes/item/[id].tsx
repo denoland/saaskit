@@ -9,7 +9,7 @@ import {
   INPUT_STYLES,
   SITE_WIDTH_STYLES,
 } from "@/utils/constants.ts";
-import { timeAgo } from "@/components/ItemSummary.tsx";
+import { pluralize, timeAgo } from "@/components/ItemSummary.tsx";
 import {
   type Comment,
   createComment,
@@ -23,7 +23,6 @@ import {
   type User,
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
-import { pluralize } from "@/components/ItemSummary.tsx";
 
 interface ItemPageData extends State {
   user: User;

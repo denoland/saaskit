@@ -33,6 +33,48 @@ export function compareScore(a: Item, b: Item) {
 
 export const handler: Handlers<HomePageData, State> = {
   async GET(_req, ctx) {
+    const accept = _req.headers.get("accept");
+    if (accept === "text/event-stream") {
+      const bc = new BroadcastChannel("/");
+      const body = new ReadableStream({
+        start(controller) {
+          bc.addEventListener("message", async () => {
+            try {
+              const items = (await getAllItems({ limit: 10 })).sort(
+                compareScore,
+              );
+              const data = { items };
+              const chunk = `data: ${JSON.stringify(data)}\n\n`;
+              controller.enqueue(new TextEncoder().encode(chunk));
+            } catch (e) {
+              console.error(`Error refreshing item`, e);
+            }
+          });
+          console.log(
+            `Opened stream for item remote ${
+              JSON.stringify(
+                ctx.remoteAddr,
+              )
+            }`,
+          );
+        },
+        cancel() {
+          bc.close();
+          console.log(
+            `Closed stream for item remote ${
+              JSON.stringify(
+                ctx.remoteAddr,
+              )
+            }`,
+          );
+        },
+      });
+      return new Response(body, {
+        headers: {
+          "content-type": "text/event-stream",
+        },
+      });
+    }
     /** @todo Add pagination functionality */
     const items = (await getAllItems({ limit: 10 })).sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));

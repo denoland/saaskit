@@ -1,6 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Item } from "@/utils/db.ts";
 import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
 export interface VoteButtonProps {
@@ -24,6 +25,21 @@ export default function VoteButton(props: VoteButtonProps) {
     isVoted.value = !isVoted.value;
     method === "POST" ? score.value++ : score.value--;
   }
+
+  useEffect(() => {
+    let es = new EventSource(window.location.href);
+    es.addEventListener("message", ({ data }) => {
+      const {items} = JSON.parse(data);
+      score.value = items.find((e: Item) => e.id === props.item.id)?.score;
+    });
+
+    es.addEventListener("error", async () => {
+      es.close();
+      const backoff = 10000 + Math.random() * 5000;
+      await new Promise((resolve) => setTimeout(resolve, backoff));
+      es = new EventSource(window.location.href);
+    });
+  }, []);
 
   return (
     <button

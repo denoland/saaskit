@@ -33,6 +33,9 @@ async function sharedHandler(
       return new Response(null, { status: 400 });
   }
 
+  const bc = new BroadcastChannel("/");
+  bc.postMessage("" + Date.now());
+
   return new Response(null, { status });
 }
 
