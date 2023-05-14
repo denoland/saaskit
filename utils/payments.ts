@@ -1,6 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import Stripe from "stripe";
+import { load } from "std/dotenv/mod.ts";
 
+await load({ export: true });
 /** This constant allows preview deployments to successfully start up, making everything outside of the dashboard viewable. */
 const DUMMY_SECRET_KEY =
   "sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
