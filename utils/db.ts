@@ -46,6 +46,11 @@ export async function getAllItems(options?: Deno.KvListOptions) {
   return items;
 }
 
+export async function deleteAllItems() {
+  const iter = await kv.list<Item>({ prefix: ["items"] });
+  for await (const res of iter) kv.delete(res.key);
+}
+
 export async function getItemById(id: string) {
   const res = await kv.get<Item>(["items", id]);
   return res.value;
