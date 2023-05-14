@@ -11,7 +11,7 @@ import { stripe } from "@/utils/payments.ts";
 import { createUser } from "@/utils/db.ts";
 import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import { redirect } from "@/utils/http.ts";
-import { Status } from 'std/http/http_status.ts';
+import { Status } from "std/http/http_status.ts";
 
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
@@ -38,7 +38,7 @@ export const handler: Handlers<any, State> = {
     const redirectUrl = new URL(req.url).searchParams.get("redirect_url") ??
       REDIRECT_PATH_AFTER_LOGIN;
 
-    return redirect(redirectUrl, Status.Created);
+    return redirect(redirectUrl);
   },
 };
 
