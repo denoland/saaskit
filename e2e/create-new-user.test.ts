@@ -2,6 +2,7 @@ import { createSupabaseClient } from "../utils/auth.ts";
 import { handler } from "../routes/signup.tsx";
 import { stripe } from "@/utils/payments.ts";
 import { assert } from "https://deno.land/std@0.178.0/_util/asserts.ts";
+import { deleteAllUsers, getAllUsers } from "../utils/db.ts";
 Deno.test("Create new user", async (t) => {
   await t.step("Returns 201 on successful creation", async () => {
     const formData = new FormData();
@@ -23,8 +24,11 @@ Deno.test("Create new user", async (t) => {
       request,
       { state: { supabaseClient } } as any,
     );
+    const users = await getAllUsers();
     assert(res.status === 201, "Did not return 201");
+    assert(users.length === 1, "User not created in DB");
   });
+  await deleteAllUsers();
   await deleteAllStripeCustomers();
 });
 async function deleteAllStripeCustomers() {
