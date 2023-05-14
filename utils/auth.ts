@@ -4,6 +4,7 @@ import type { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-shared";
 import { getCookies, setCookie } from "std/http/cookie.ts";
 import { redirect } from "./http.ts";
+import { CookieSerializeOptions } from "https://esm.sh/v120/@types/cookie@0.5.1/index.js";
 
 export type SupabaseClient = ReturnType<typeof createSupabaseClient>;
 
@@ -14,12 +15,12 @@ export function createSupabaseClient(
   return createServerSupabaseClient({
     supabaseUrl: Deno.env.get("SUPABASE_API_URL")!,
     supabaseKey: Deno.env.get("SUPABASE_ANON_KEY")!,
-    getRequestHeader: (key) => requestHeaders.get(key) ?? undefined,
-    getCookie: (name) => {
+    getRequestHeader: (key: string) => requestHeaders.get(key) ?? undefined,
+    getCookie: (name: string) => {
       const cookie = getCookies(requestHeaders)[name];
       return cookie ? decodeURIComponent(cookie) : undefined;
     },
-    setCookie: (name, value, options) =>
+    setCookie: (name: string, value: string | number | boolean, options: CookieSerializeOptions) =>
       setCookie(responseHeaders, {
         name,
         value: encodeURIComponent(value),
