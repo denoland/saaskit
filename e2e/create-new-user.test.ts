@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { createSupabaseClient } from "../utils/auth.ts";
 import { handler } from "../routes/signup.tsx";
 import { stripe } from "@/utils/payments.ts";
@@ -22,6 +23,7 @@ Deno.test("Create new user", async (t) => {
 
     const res = await handler!.POST!(
       request,
+      // deno-lint-ignore no-explicit-any
       { state: { supabaseClient } } as any,
     );
     const users = await getAllUsers();

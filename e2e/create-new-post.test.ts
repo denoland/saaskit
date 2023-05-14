@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { handler } from "../routes/submit.tsx";
 import { assert } from "https://deno.land/std@0.178.0/_util/asserts.ts";
 import { deleteAllItems, getAllItems } from "../utils/db.ts";
@@ -16,6 +17,7 @@ Deno.test("Create new post", async (t) => {
 
     const res = await handler!.POST!(
       request,
+      // deno-lint-ignore no-explicit-any
       { state: { session: { user: { id: "myUserId" } } } } as any,
     );
     const itemsInDb = await getAllItems();
