@@ -6,7 +6,6 @@ import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 import { createItem } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
-import { Status } from "std/http/http_status.ts";
 export const handler: Handlers<State, State> = {
   GET(req, ctx) {
     if (!ctx.state.session) {
