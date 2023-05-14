@@ -290,3 +290,15 @@ export async function setUserDisplayName(
     .set(userKey, { ...userRes.value, displayName })
     .commit();
 }
+
+export async function getAllUsers(options?: Deno.KvListOptions) {
+  const iter = await kv.list<Item>({ prefix: ["users"] }, options);
+  const items = [];
+  for await (const res of iter) items.push(res.value);
+  return items;
+}
+
+export async function deleteAllUsers() {
+  const iter = await kv.list<Item>({ prefix: ["users"] });
+  for await (const res of iter) kv.delete(res.key);
+}
