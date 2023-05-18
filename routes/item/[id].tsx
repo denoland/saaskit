@@ -100,6 +100,15 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
             isVoted={props.data.isVoted}
             user={props.data.user}
           />
+          <form method="post">
+            <textarea
+              class={INPUT_STYLES}
+              type="text"
+              name="text"
+              required
+            />
+            <button type="submit" class={BUTTON_STYLES}>Comment</button>
+          </form>
           <div>
             <h2>
               <strong>
@@ -121,15 +130,6 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
               </div>
             ))}
           </div>
-          <form method="post">
-            <textarea
-              class={INPUT_STYLES}
-              type="text"
-              name="text"
-              required
-            />
-            <button type="submit" class={BUTTON_STYLES}>Comment</button>
-          </form>
         </div>
       </Layout>
     </>
