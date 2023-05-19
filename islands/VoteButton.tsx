@@ -24,7 +24,7 @@ export default function VoteButton(props: VoteButtonProps) {
       }
       isVoted.value = !isVoted.value;
       method === "POST" ? score.value++ : score.value--;
-      if (score.value < (props.item.score - 1) || 0) {
+      if (score.value < (props.item.score - 1) || score.value < 0) {
         score.value = props.item.score;
       }
     }
