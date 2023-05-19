@@ -115,7 +115,9 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
                 {pluralize(props.data.comments.length, "comment")}
               </strong>
             </h2>
-            {props.data.comments.map((comment, index) => (
+            {props.data.comments.sort((a, b) =>
+              b.createdAt.getTime() - a.createdAt.getTime()
+            ).map((comment, index) => (
               <div class="py-4">
                 <p>
                   {props.data.commentsUsers[index].login}{" "}
