@@ -37,7 +37,7 @@ export const handler: Handlers<HomePageData, State> = {
     /** @todo Add pagination functionality */
     const items = (await getAllItems({ limit: 10 })).sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
-    let votedItemIds: string[] = []
+    let votedItemIds: string[] = [];
     if (ctx.state.sessionId) {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
       votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
