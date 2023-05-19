@@ -22,14 +22,17 @@ export interface ItemSummaryProps {
 
 export default function ItemSummary(props: ItemSummaryProps) {
   return (
-    <div class="py-2 flex gap-2 text-gray-500">
+    <div class="py-2 flex gap-2 light:text-gray-500 dark:text-gray-400">
       <VoteButton
         item={props.item}
         isVoted={props.isVoted}
       />
       <div>
         <span class="mr-2">
-          <a class="text-black hover:underline" href={`/item/${props.item.id}`}>
+          <a
+            class="hover:underline light:text-black dark:text-white"
+            href={`/item/${props.item.id}`}
+          >
             {props.item.title}
           </a>
         </span>

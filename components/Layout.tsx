@@ -54,7 +54,7 @@ function Header(props: JSX.HTMLAttributes<HTMLElement>) {
       {...props}
       class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10 ${
         props.class ?? ""
-      }`}
+      } dark:text-white`}
     >
       <a href="/">
         <Logo height="48" />
@@ -70,7 +70,7 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
       {...props}
       class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
         props.class ?? ""
-      }`}
+      } dark:text-gray-300`}
     >
       <span>
         <strong>{SITE_NAME}</strong>
@@ -129,7 +129,7 @@ export default function Layout(props: LayoutProps) {
   ];
 
   return (
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col min-h-screen dark:bg-gray-900">
       <Notice />
       <Header>
         <Nav items={headerNavItems} />
