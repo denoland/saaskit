@@ -44,7 +44,7 @@ export default function AccountPage(props: PageProps<AccountState>) {
     <>
       <Head title="Account" href={props.url.href} />
       <Layout session={props.data.sessionId}>
-        <div class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center">
+        <div class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center dark:text-white">
           <h1 class="text-3xl mb-4">
             <strong>Account</strong>
           </h1>
