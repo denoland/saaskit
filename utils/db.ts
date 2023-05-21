@@ -1,5 +1,4 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { resolve } from "https://deno.land/std@0.173.0/path/win32.ts";
 import { AssertionError } from "https://deno.land/std@0.186.0/testing/asserts.ts";
 
 export const kv = await Deno.openKv();
