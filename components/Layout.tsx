@@ -34,8 +34,9 @@ function Nav(props: NavProps) {
   return (
     <nav>
       <ul
-        class={`flex gap-x-8 gap-y-2 items-center justify-between h-full ${props.class ?? ""
-          }`}
+        class={`flex gap-x-8 gap-y-2 items-center justify-between h-full ${
+          props.class ?? ""
+        }`}
       >
         {props.items.map((item) => (
           <li>
@@ -51,8 +52,9 @@ function Header(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <header
       {...props}
-      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10 ${props.class ?? ""
-        }`}
+      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10 ${
+        props.class ?? ""
+      }`}
     >
       <a href="/">
         <Logo height="48" />
@@ -66,8 +68,9 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <footer
       {...props}
-      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${props.class ?? ""
-        }`}
+      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
+        props.class ?? ""
+      }`}
     >
       <span>
         <strong>{SITE_NAME}</strong>
