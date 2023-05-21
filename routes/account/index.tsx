@@ -36,23 +36,21 @@ function Row(props: RowProps) {
 
 export default function AccountPage(props: PageProps<AccountState>) {
   const action = props.data.user.isSubscribed ? "Manage" : "Upgrade";
-  const hasResetPassword = new URL(props.url).searchParams.get(
-    "has_reset_password",
-  );
 
   return (
     <>
       <Head title="Account" href={props.url.href} />
       <Layout session={props.data.sessionId}>
         <div class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center">
+          <img
+            src={props.data.user?.avatarUrl}
+            alt="User Avatar"
+            crossOrigin="anonymous"
+            class="max-w-[50%] self-center rounded-full aspect-square mb-4 md:mb-6"
+          />
           <h1 class="text-3xl mb-4">
             <strong>Account</strong>
           </h1>
-          {hasResetPassword && (
-            <div class={`${NOTICE_STYLES} mb-4`}>
-              Your password has successfully been reset
-            </div>
-          )}
           <ul>
             <Row
               title="Username"
