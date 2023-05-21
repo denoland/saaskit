@@ -50,7 +50,7 @@ export default function AccountPage(props: PageProps<AccountState>) {
           />
           <ul>
             <Row
-              title={props.data.user?.name}
+              title={props.data.user?.name || "Username"}
               text={props.data.user.login}
             />
             <Row
