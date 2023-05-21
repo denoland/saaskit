@@ -38,7 +38,7 @@ export const handler: Handlers<HomePageData, State> = {
     /** @todo Add pagination functionality */
     const { searchParams } = new URL(req.url);
     const limit = Math.min(30, ~~(searchParams.get("limit") || 10));
-    const start = decodeURI(searchParams.get("start") || '');
+    const start = decodeURI(searchParams.get("page") || '');
     const { items: itemsRaw, cursor } = await getAllItems({ limit, cursor: start });
     const items = itemsRaw.sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
@@ -47,7 +47,6 @@ export const handler: Handlers<HomePageData, State> = {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
       votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
     }
-    console.log(`cursor: ${cursor}`);
     /** @todo Optimise */
     const areVoted = items.map((item) => votedItemIds.includes(item.id));
     return ctx.render({ ...ctx.state, items, cursor, users, areVoted });
@@ -56,7 +55,7 @@ export const handler: Handlers<HomePageData, State> = {
 
 export default function HomePage(props: PageProps<HomePageData>) {
   const nextUrl = new URL(props.url);
-  nextUrl.searchParams.set('start', props.data?.cursor || '');
+  nextUrl.searchParams.set('page', props.data?.cursor || '');
   return (
     <>
       <Head href={props.url.href} />
