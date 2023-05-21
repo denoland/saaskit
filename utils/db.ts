@@ -1,4 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
+import { resolve } from "https://deno.land/std@0.173.0/path/win32.ts";
 import { AssertionError } from "https://deno.land/std@0.186.0/testing/asserts.ts";
 
 export const kv = await Deno.openKv();
@@ -43,7 +44,10 @@ export async function getAllItems(options?: Deno.KvListOptions) {
   const iter = await kv.list<Item>({ prefix: ["items"] }, options);
   const items = [];
   for await (const res of iter) items.push(res.value);
-  return items;
+  return {
+    items,
+    cursor: iter.cursor,
+  };
 }
 
 export async function getItemById(id: string) {
@@ -409,6 +413,16 @@ export async function deleteUserBySession(sessionId: string) {
 
 export async function getUsersByIds(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
-  const res = await kv.getMany<User[]>(keys);
-  return res.map((entry) => entry.value!);
+  // NOTE: limit of 10 for getMany or `TypeError: too many ranges (max 10)`
+  const users: User[] = [];
+  for (const batch of batchify(keys, 10)) {
+    users.push(...(await kv.getMany<User[]>(batch)).map((entry) => entry.value!))
+  }
+  return users
+}
+
+export function* batchify<T>(arr: T[], n = 5): Generator<T[], void> {
+  for (let i = 0; i < arr.length; i += n) {
+    yield arr.slice(i, i + n);
+  }
 }

@@ -17,6 +17,7 @@ import {
 interface HomePageData extends State {
   users: User[];
   items: Item[];
+  cursor?: string;
   areVoted: boolean[];
 }
 
@@ -33,23 +34,29 @@ export function compareScore(a: Item, b: Item) {
 }
 
 export const handler: Handlers<HomePageData, State> = {
-  async GET(_req, ctx) {
+  async GET(req, ctx) {
     /** @todo Add pagination functionality */
-    const items = (await getAllItems({ limit: 10 })).sort(compareScore);
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(30, ~~(searchParams.get("limit") || 10));
+    const start = decodeURI(searchParams.get("start") || '');
+    const { items: itemsRaw, cursor } = await getAllItems({ limit, cursor: start });
+    const items = itemsRaw.sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
     let votedItemIds: string[] = [];
     if (ctx.state.sessionId) {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
       votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
     }
-
+    console.log(`cursor: ${cursor}`);
     /** @todo Optimise */
     const areVoted = items.map((item) => votedItemIds.includes(item.id));
-    return ctx.render({ ...ctx.state, items, users, areVoted });
+    return ctx.render({ ...ctx.state, items, cursor, users, areVoted });
   },
 };
 
 export default function HomePage(props: PageProps<HomePageData>) {
+  const nextUrl = new URL(props.url);
+  nextUrl.searchParams.set('start', props.data?.cursor || '');
   return (
     <>
       <Head href={props.url.href} />
@@ -62,6 +69,11 @@ export default function HomePage(props: PageProps<HomePageData>) {
               user={props.data.users[index]}
             />
           ))}
+          {props.data?.cursor && (
+            <div class="mt-4 text-gray-500">
+              <a href={nextUrl.toString()}>More</a>
+            </div>
+          )}
         </div>
       </Layout>
     </>

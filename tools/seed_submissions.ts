@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 
-import { createItem } from "@/utils/db.ts";
+import { batchify, createItem } from "@/utils/db.ts";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`
@@ -31,12 +31,6 @@ const fetchStory = async (id: number | string) => {
         return
     }
     return await resp.json();
-}
-
-function* batchify<T>(arr: T[], n = 5): Generator<T[], void> {
-    for (let i = 0; i < arr.length; i += n) {
-        yield arr.slice(i, i + n);
-    }
 }
 
 const fetchTopStories = async (limit = 10) => {
@@ -77,5 +71,5 @@ async function main(limit = 10) {
 }
 
 if (import.meta.main) {
-    await main();
+    await main(50);
 }
