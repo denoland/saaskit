@@ -192,6 +192,7 @@ export async function getVotedItemIdsByUser(
 interface InitUser {
   id: string;
   login: string;
+  name: string;
   avatarUrl: string;
   stripeCustomerId: string;
   sessionId: string;

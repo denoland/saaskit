@@ -15,6 +15,7 @@ import { oauth2Client } from "@/utils/oauth2_client.ts";
 interface GitHubUser {
   id: number;
   login: string;
+  name: string;
   avatar_url: string;
   email: string;
 }
@@ -45,6 +46,7 @@ export const handler: Handlers<any, State> = {
       const userInit: Omit<User, "isSubscribed"> | null = {
         id: githubUser.id.toString(),
         login: githubUser.login,
+        name: githubUser.name,
         avatarUrl: githubUser.avatar_url,
         stripeCustomerId: customer.id,
         sessionId,

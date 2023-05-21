@@ -48,12 +48,9 @@ export default function AccountPage(props: PageProps<AccountState>) {
             crossOrigin="anonymous"
             class="max-w-[50%] self-center rounded-full aspect-square mb-4 md:mb-6"
           />
-          <h1 class="text-3xl mb-4">
-            <strong>Account</strong>
-          </h1>
           <ul>
             <Row
-              title="Username"
+              title={props.data.user?.name}
               text={props.data.user.login}
             />
             <Row
