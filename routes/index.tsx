@@ -43,7 +43,9 @@ export const handler: Handlers<HomePageData, State> = {
     let votedItemIds: string[] = [];
     if (ctx.state.sessionId) {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
-      if (sessionUser) votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
+      if (sessionUser) {
+        votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
+      }
     }
     /** @todo Optimise */
     const areVoted = items.map((item) => votedItemIds.includes(item.id));
@@ -53,7 +55,7 @@ export const handler: Handlers<HomePageData, State> = {
 
 export default function HomePage(props: PageProps<HomePageData>) {
   const nextPageUrl = new URL(props.url);
-  nextPageUrl.searchParams.set('page', props.data.cursor || '');
+  nextPageUrl.searchParams.set("page", props.data.cursor || "");
   return (
     <>
       <Head href={props.url.href} />
@@ -68,7 +70,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
           ))}
           {props.data?.cursor && (
             <div class="mt-4 text-gray-500">
-              <a href={nextUrl.toString()}>More</a>
+              <a href={nextPageUrl.toString()}>More</a>
             </div>
           )}
         </div>
