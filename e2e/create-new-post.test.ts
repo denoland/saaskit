@@ -2,6 +2,7 @@
 import { handler } from "../routes/submit.tsx";
 import { assert } from "https://deno.land/std@0.178.0/_util/asserts.ts";
 import { deleteAllItems, getAllItems } from "../utils/db.ts";
+
 Deno.test("Create new post", async (t) => {
   await t.step("Returns 303 on successful creation", async () => {
     const formData = new FormData();
