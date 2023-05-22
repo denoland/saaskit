@@ -412,16 +412,6 @@ export async function deleteUserBySession(sessionId: string) {
 
 export async function getUsersByIds(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
-  // NOTE: limit of 10 for getMany or `TypeError: too many ranges (max 10)`
-  const users: User[] = [];
-  for (const batch of batchify(keys, 10)) {
-    users.push(...(await kv.getMany<User[]>(batch)).map((entry) => entry.value!))
-  }
-  return users
-}
-
-export function* batchify<T>(arr: T[], n = 5): Generator<T[], void> {
-  for (let i = 0; i < arr.length; i += n) {
-    yield arr.slice(i, i + n);
-  }
+  const res = await kv.getMany<User[]>(keys);
+  return res.map((entry) => entry.value!);
 }

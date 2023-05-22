@@ -36,16 +36,14 @@ export function compareScore(a: Item, b: Item) {
 export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
     /** @todo Add pagination functionality */
-    const { searchParams } = new URL(req.url);
-    const limit = Math.min(30, ~~(searchParams.get("limit") || 10));
-    const start = decodeURI(searchParams.get("page") || '');
-    const { items: itemsRaw, cursor } = await getAllItems({ limit, cursor: start });
-    const items = itemsRaw.sort(compareScore);
+    const start = new URL(req.url).searchParams.get("page") || undefined;
+    const { items, cursor } = await getAllItems({ limit: 10, cursor: start });
+    items.sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
     let votedItemIds: string[] = [];
     if (ctx.state.sessionId) {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
-      votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
+      if (sessionUser) votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
     }
     /** @todo Optimise */
     const areVoted = items.map((item) => votedItemIds.includes(item.id));
@@ -54,8 +52,8 @@ export const handler: Handlers<HomePageData, State> = {
 };
 
 export default function HomePage(props: PageProps<HomePageData>) {
-  const nextUrl = new URL(props.url);
-  nextUrl.searchParams.set('page', props.data?.cursor || '');
+  const nextPageUrl = new URL(props.url);
+  nextPageUrl.searchParams.set('page', props.data.cursor || '');
   return (
     <>
       <Head href={props.url.href} />
