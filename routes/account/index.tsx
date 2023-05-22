@@ -3,7 +3,7 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import Layout from "@/components/Layout.tsx";
 import type { AccountState } from "./_middleware.ts";
-import { BUTTON_STYLES, NOTICE_STYLES } from "@/utils/constants.ts";
+import { BUTTON_STYLES } from "@/utils/constants.ts";
 import { ComponentChild } from "preact";
 
 export const handler: Handlers<AccountState, AccountState> = {
@@ -50,7 +50,7 @@ export default function AccountPage(props: PageProps<AccountState>) {
           />
           <ul>
             <Row
-              title={props.data.user?.name || "Username"}
+              title="Username"
               text={props.data.user.login}
             />
             <Row
