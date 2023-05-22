@@ -20,16 +20,7 @@ export interface ItemSummaryProps {
   isVoted: boolean;
 }
 
-const extractHost = (url: string) => {
-  try {
-    return new URL(url).host
-  } catch {
-    return
-  }
-}
-
 export default function ItemSummary(props: ItemSummaryProps) {
-  const host = extractHost(props.item.url) || ''
   return (
     <div class="py-2 flex gap-2 text-gray-500">
       <VoteButton
@@ -44,11 +35,11 @@ export default function ItemSummary(props: ItemSummaryProps) {
         </span>
         <span>
           <a class="hover:underline" href={props.item.url} target="_blank">
-            {host} ↗
+            {new URL(props.item.url).host} ↗
           </a>
         </span>
         <p>
-          {props.user?.login || props.item?.userId}{" "}
+          {props.user.login}{" "}
           {props.user?.isSubscribed && (
             <span title="Deno Hunt premium user">🦕{" "}</span>
           )}
