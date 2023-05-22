@@ -24,6 +24,7 @@ import {
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import { pluralize } from "@/components/ItemSummary.tsx";
+import UserDetail from "../../components/UserDetail.tsx";
 
 interface ItemPageData extends State {
   user: User;
@@ -119,13 +120,8 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
               b.createdAt.getTime() - a.createdAt.getTime()
             ).map((comment, index) => (
               <div class="py-4">
-                <p>
-                  {props.data.commentsUsers[index].login}{" "}
-                  {props.data.commentsUsers[index].isSubscribed && (
-                    <span title="Deno Hunt premium user">🦕{" "}</span>
-                  )}
-                </p>
                 <p class="text-gray-500">
+                  <UserDetail {...props.data.commentsUsers[index]} />
                   {timeAgo(new Date(comment.createdAt))} ago
                 </p>
                 <p>{comment.text}</p>
