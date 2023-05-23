@@ -10,6 +10,7 @@ import {
   getUserBySessionId,
   getUsersByIds,
   getVotedItemIdsByUser,
+  setVisitPerDay,
   type Item,
   type User,
 } from "@/utils/db.ts";
@@ -42,7 +43,7 @@ export const handler: Handlers<HomePageData, State> = {
       const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
       votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
     }
-
+    await setVisitPerDay();
     /** @todo Optimise */
     const areVoted = items.map((item) => votedItemIds.includes(item.id));
     return ctx.render({ ...ctx.state, items, users, areVoted });
