@@ -413,16 +413,18 @@ export async function getUsersByIds(ids: string[]) {
   return res.map((entry) => entry.value!);
 }
 
-export async function setVisitPerDay(){
+export async function setVisitPerDay() {
   const today = new Date();
   // convert to universal timezone (UTC)
-  const visitKey = ["visit", `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`];
+  const visitKey = [
+    "visit",
+    `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`,
+  ];
   await kv.atomic()
-  .mutate({
-    key: visitKey,
-    value: new Deno.KvU64(1n),
-    type: "sum",
-  })
-  .commit();
+    .mutate({
+      key: visitKey,
+      value: new Deno.KvU64(1n),
+      type: "sum",
+    })
+    .commit();
 }
-
