@@ -52,9 +52,9 @@ function Header(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <header
       {...props}
-      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10 ${
+      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10  dark:text-white ${
         props.class ?? ""
-      } dark:text-white`}
+      }`}
     >
       <a href="/">
         <Logo height="48" />
@@ -68,9 +68,9 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <footer
       {...props}
-      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
+      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 dark:text-gray-300 ${SITE_WIDTH_STYLES} ${
         props.class ?? ""
-      } dark:text-gray-300`}
+      } `}
     >
       <span>
         <strong>{SITE_NAME}</strong>

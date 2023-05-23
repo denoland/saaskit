@@ -52,16 +52,7 @@ export const handler: Handlers<HomePageData, State> = {
 export default function HomePage(props: PageProps<HomePageData>) {
   return (
     <>
-      <Head href={props.url.href}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.isDark = localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
-            document.documentElement.classList[window.isDark ? 'add' : 'remove']("dark");
-            `,
-          }}
-        />
-      </Head>
+      <Head href={props.url.href} />
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
           {props.data.items.map((item, index) => (
