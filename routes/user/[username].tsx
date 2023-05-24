@@ -31,6 +31,7 @@ interface RowProps {
   title: string;
   children?: ComponentChild;
   text: string;
+  img?: string;
 }
 
 function Row(props: RowProps) {
