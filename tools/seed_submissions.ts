@@ -93,7 +93,7 @@ async function main(limit = 20) {
       createUser({
         id, // id must match userId for post
         login: id,
-        avatarUrl: "",
+        avatarUrl: "https://www.gravatar.com/avatar/?d=mp&s=64",
         stripeCustomerId: crypto.randomUUID(), // unique per userId
         sessionId: crypto.randomUUID(), // unique per userId
       }) // ignore errors if dummy user already exists
