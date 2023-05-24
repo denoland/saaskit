@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-
-import { createItem } from "@/utils/db.ts";
+// Description: Seeds the kv db with Hacker News stories
+import { createItem, createUser, type Item, kv } from "@/utils/db.ts";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
@@ -8,7 +8,7 @@ const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
 interface Story {
   id: number;
   score: number;
-  time: number;
+  time: number; // Unix seconds
   by: string;
   title: string;
   url: string;
@@ -20,7 +20,7 @@ function* batchify<T>(arr: T[], n = 5): Generator<T[], void> {
   }
 }
 
-// Fetch the top 500 HN stories to seed the db
+// Fetches the top 500 HN stories to seed the db
 async function fetchTopStoryIds() {
   const resp = await fetch(`${API_BASE_URL}/topstories.json`);
   if (!resp.ok) {
@@ -54,19 +54,29 @@ async function fetchTopStories(limit = 10) {
   return stories;
 }
 
-async function seedSubmissions(stories: Story[]) {
-  const items = stories.map(({ by: userId, title, url }) => {
-    return { userId, title, url };
-  }).filter(({ url }) => {
-    try {
-      return Boolean(new URL(url).host);
-    } catch {
-      return;
-    }
+async function createItemWithScore(item: Item) {
+  const res = await createItem(item);
+  return await kv.set(["items", res!.id], {
+    ...res,
+    score: item.score,
+    createdAt: item.createdAt,
   });
+}
+
+async function seedSubmissions(stories: Story[]) {
+  const items = stories.map(({ by: userId, title, url, score, time }) => {
+    return {
+      userId,
+      title,
+      url,
+      score,
+      createdAt: new Date(time * 1000),
+    } as Item;
+  }).filter(({ url }) => url);
   for (const batch of batchify(items)) {
-    await Promise.all(batch.map((item) => createItem(item)));
+    await Promise.all(batch.map((item) => createItemWithScore(item)));
   }
+  return items;
 }
 
 async function main(limit = 20) {
@@ -75,7 +85,20 @@ async function main(limit = 20) {
     console.error(`No stories to seed!`);
     return;
   }
-  await seedSubmissions(stories);
+  const items = await seedSubmissions(stories);
+
+  // Create dummy users to ensure each post has a corresponding user
+  for (const batch of batchify(items)) {
+    await Promise.allSettled(batch.map(({ userId: id }) =>
+      createUser({
+        id, // id must match userId for post
+        login: id,
+        avatarUrl: "",
+        stripeCustomerId: crypto.randomUUID(), // unique per userId
+        sessionId: crypto.randomUUID(), // unique per userId
+      }) // ignore errors if dummy user already exists
+    ));
+  }
 }
 
 if (import.meta.main) {

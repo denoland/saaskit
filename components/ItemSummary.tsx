@@ -5,7 +5,7 @@ import UserPostedAt from "./UserPostedAt.tsx";
 
 export interface ItemSummaryProps {
   item: Item;
-  user?: User;
+  user: User;
   isVoted: boolean;
 }
 
