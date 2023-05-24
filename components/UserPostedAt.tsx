@@ -10,6 +10,7 @@ export default function UserPostedAt(
       <img
         src={props.user.avatarUrl}
         alt={props.user.login}
+        crossOrigin="anonymous"
         class="h-6 w-auto rounded-full aspect-square inline-block mr-1 align-bottom"
       />
       {props.user.login}{" "}
