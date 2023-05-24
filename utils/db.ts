@@ -43,7 +43,10 @@ export async function getAllItems(options?: Deno.KvListOptions) {
   const iter = await kv.list<Item>({ prefix: ["items"] }, options);
   const items = [];
   for await (const res of iter) items.push(res.value);
-  return items;
+  return {
+    items,
+    cursor: iter.cursor,
+  };
 }
 
 export async function getItemById(id: string) {
@@ -359,43 +362,6 @@ export async function setUserSession(
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
     .set(usersByStripeCustomerKey, user)
-    .commit();
-
-  if (!res.ok) {
-    throw res;
-  }
-}
-
-export async function deleteUser(user: User) {
-  const usersKey = ["users", user.id];
-  const usersByLoginKey = ["users_by_login", user.login];
-  const usersBySessionKey = ["users_by_session", user.sessionId];
-  const usersByStripeCustomerKey = [
-    "users_by_stripe_customer",
-    user.stripeCustomerId,
-  ];
-
-  const [
-    userRes,
-    userByLoginRes,
-    userBySessionRes,
-    userByStripeCustomerRes,
-  ] = await kv.getMany<User[]>([
-    usersKey,
-    usersByLoginKey,
-    usersBySessionKey,
-    usersByStripeCustomerKey,
-  ]);
-
-  const res = await kv.atomic()
-    .check(userRes)
-    .check(userByLoginRes)
-    .check(userBySessionRes)
-    .check(userByStripeCustomerRes)
-    .delete(usersKey)
-    .delete(usersByLoginKey)
-    .delete(usersBySessionKey)
-    .delete(usersByStripeCustomerKey)
     .commit();
 
   if (!res.ok) {
