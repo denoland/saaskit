@@ -1,21 +1,57 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   createUser,
-  deleteUser,
-  deleteVisitsPerDay,
   getUserById,
   getUserByLogin,
   getUserBySessionId,
   getUserByStripeCustomerId,
   getVisitsPerDay,
   incrementVisitsPerDay,
+  kv,
   setUserSession,
   setUserSubscription,
   type User,
 } from "./db.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("[db] user", async () => {
+async function deleteUser(user: User) {
+  const usersKey = ["users", user.id];
+  const usersByLoginKey = ["users_by_login", user.login];
+  const usersBySessionKey = ["users_by_session", user.sessionId];
+  const usersByStripeCustomerKey = [
+    "users_by_stripe_customer",
+    user.stripeCustomerId,
+  ];
+
+  const [
+    userRes,
+    userByLoginRes,
+    userBySessionRes,
+    userByStripeCustomerRes,
+  ] = await kv.getMany<User[]>([
+    usersKey,
+    usersByLoginKey,
+    usersBySessionKey,
+    usersByStripeCustomerKey,
+  ]);
+
+  const res = await kv.atomic()
+    .check(userRes)
+    .check(userByLoginRes)
+    .check(userBySessionRes)
+    .check(userByStripeCustomerRes)
+    .delete(usersKey)
+    .delete(usersByLoginKey)
+    .delete(usersBySessionKey)
+    .delete(usersByStripeCustomerKey)
+    .commit();
+
+  if (!res.ok) {
+    throw res;
+  }
+}
+
+Deno.test("[db] user | visit", async () => {
   const initUser = {
     id: crypto.randomUUID(),
     login: crypto.randomUUID(),
@@ -53,8 +89,12 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), null);
 
   const date = new Date("2023-01-01");
+  const visitsKey = [
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ];
   await incrementVisitsPerDay(date);
   assertEquals((await getVisitsPerDay(date)).valueOf(), 1n);
-  await deleteVisitsPerDay(date);
+  await kv.delete(visitsKey);
   assertEquals(await getVisitsPerDay(date), null);
 });
