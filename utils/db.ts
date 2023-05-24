@@ -413,18 +413,31 @@ export async function getUsersByIds(ids: string[]) {
   return res.map((entry) => entry.value!);
 }
 
-export async function setVisitPerDay() {
-  const today = new Date();
+export async function incrementVisitsPerDay(date: Date) {
   // convert to universal timezone (UTC)
-  const visitKey = [
-    "visit",
-    `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`,
+  const visitsKey = [
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
   ];
   await kv.atomic()
-    .mutate({
-      key: visitKey,
-      value: new Deno.KvU64(1n),
-      type: "sum",
-    })
+    .sum(visitsKey, 1n)
     .commit();
+}
+
+export async function getVisitsPerDay(date: Date): Promise<bigint> {
+  const visitsKey = [
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ];
+
+  return (await kv.get(visitsKey)).value as bigint;
+}
+
+export async function deleteVisitsPerDay(date: Date) {
+  const visitsKey = [
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ];
+
+  await kv.delete(visitsKey);
 }
