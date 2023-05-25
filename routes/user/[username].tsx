@@ -3,12 +3,35 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import Layout from "@/components/Layout.tsx";
 import { ComponentChild } from "preact";
-import { getUserByLogin, type User } from "@/utils/db.ts";
 import type { State } from "@/routes/_middleware.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
+import ItemSummary from "@/components/ItemSummary.tsx";
+
+import {
+  getItemsByUserId,
+  getUserByLogin,
+  getUserBySessionId,
+  getVotedItemIdsByUser,
+  type Item,
+  type User,
+} from "@/utils/db.ts";
 
 export interface UserData extends State {
   user: User;
+  items: Item[];
+  areVoted: boolean[];
+}
+
+export function compareScore(a: Item, b: Item) {
+  const x = Number(a.score);
+  const y = Number(b.score);
+  if (x > y) {
+    return -1;
+  }
+  if (x < y) {
+    return 1;
+  }
+  return 0;
 }
 
 export const handler: Handlers<UserData, State> = {
@@ -20,7 +43,20 @@ export const handler: Handlers<UserData, State> = {
       return ctx.renderNotFound();
     }
 
-    return ctx.render({ ...ctx.state, user });
+    const items = await getItemsByUserId(user.id);
+    items.sort(compareScore);
+    let votedItemIds: string[] = [];
+
+    if (ctx.state.sessionId) {
+      const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
+      if (sessionUser) {
+        votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
+      }
+    }
+    /** @todo Optimise */
+    const areVoted = items.map((item) => votedItemIds.includes(item.id));
+
+    return ctx.render({ ...ctx.state, user, items, areVoted });
   },
 };
 
@@ -33,7 +69,7 @@ interface RowProps {
 
 function Row(props: RowProps) {
   return (
-    <div class="flex flex-wrap">
+    <div class="flex flex-wrap py-8">
       {props.img && (
         <img
           height="48"
@@ -69,6 +105,13 @@ export default function UserPage(props: PageProps<UserData>) {
             text={props.data.user.login}
             img={props.data.user.avatarUrl}
           />
+          {props.data.items.map((item, index) => (
+            <ItemSummary
+              item={item}
+              isVoted={props.data.areVoted[index]}
+              user={props.data.user}
+            />
+          ))}
         </div>
       </Layout>
     </>
