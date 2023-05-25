@@ -6,7 +6,6 @@ import { ComponentChild } from "preact";
 import type { State } from "@/routes/_middleware.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
-
 import {
   getItemsByUserId,
   getUserByLogin,
@@ -15,6 +14,7 @@ import {
   type Item,
   type User,
 } from "@/utils/db.ts";
+import { pluralize } from "../../utils/display.ts";
 
 export interface UserData extends State {
   user: User;
@@ -101,8 +101,8 @@ export default function UserPage(props: PageProps<UserData>) {
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
           <Row
-            title="Username"
-            text={props.data.user.login}
+            title={props.data.user.login}
+            text={pluralize(props.data.items.length, "submission")}
             img={props.data.user.avatarUrl}
           />
           {props.data.items.map((item, index) => (
