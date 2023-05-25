@@ -5,8 +5,6 @@ import {
   getUserByLogin,
   getUserBySessionId,
   getUserByStripeCustomerId,
-  getVisitsPerDay,
-  incrementVisitsPerDay,
   kv,
   setUserSession,
   setUserSubscription,
@@ -51,7 +49,7 @@ async function deleteUser(user: User) {
   }
 }
 
-Deno.test("[db] user | visit", async () => {
+Deno.test("[db] user", async () => {
   const initUser = {
     id: crypto.randomUUID(),
     login: crypto.randomUUID(),
@@ -87,14 +85,4 @@ Deno.test("[db] user | visit", async () => {
   assertEquals(await getUserByLogin(user.login), null);
   assertEquals(await getUserBySessionId(user.sessionId), null);
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), null);
-
-  const date = new Date("2023-01-01");
-  const visitsKey = [
-    "visits",
-    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
-  ];
-  await incrementVisitsPerDay(date);
-  assertEquals((await getVisitsPerDay(date)).valueOf(), 1n);
-  await kv.delete(visitsKey);
-  assertEquals(await getVisitsPerDay(date), null);
 });

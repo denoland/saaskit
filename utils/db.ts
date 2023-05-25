@@ -390,11 +390,11 @@ export async function incrementVisitsPerDay(date: Date) {
     .commit();
 }
 
-export async function getVisitsPerDay(date: Date): Promise<bigint> {
-  const visitsKey = [
+export async function getVisitsPerDay(date: Date) {
+  const res = await kv.get<bigint>([
     "visits",
     `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
-  ];
+  ]);
 
-  return (await kv.get(visitsKey)).value as bigint;
+  return res.value;
 }
