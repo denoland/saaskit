@@ -405,3 +405,16 @@ export async function getVisitsPerDay(date: Date) {
 
   return res.value;
 }
+
+export async function getVotedItemsBySessionUser(sessionId: string, items: Item[]) {
+  let votedItemIds: string[] = [];
+
+  if (sessionId) {
+    const sessionUser = await getUserBySessionId(sessionId!);
+    if (sessionUser) {
+      votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
+    }
+  }
+  /** @todo Optimise */
+  return items.map((item) => votedItemIds.includes(item.id));
+}

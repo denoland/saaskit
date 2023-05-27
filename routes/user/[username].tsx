@@ -9,29 +9,17 @@ import ItemSummary from "@/components/ItemSummary.tsx";
 import {
   getItemsByUserId,
   getUserByLogin,
-  getUserBySessionId,
-  getVotedItemIdsByUser,
   type Item,
   type User,
 } from "@/utils/db.ts";
 import { pluralize } from "../../utils/display.ts";
+import compareScore from "../../utils/compareScore.ts";
+import { getVotedItemsBySessionUser } from "../../utils/db.ts";
 
 export interface UserData extends State {
   user: User;
   items: Item[];
   areVoted: boolean[];
-}
-
-export function compareScore(a: Item, b: Item) {
-  const x = Number(a.score);
-  const y = Number(b.score);
-  if (x > y) {
-    return -1;
-  }
-  if (x < y) {
-    return 1;
-  }
-  return 0;
 }
 
 export const handler: Handlers<UserData, State> = {
@@ -45,16 +33,10 @@ export const handler: Handlers<UserData, State> = {
 
     const items = await getItemsByUserId(user.id);
     items.sort(compareScore);
-    let votedItemIds: string[] = [];
-
-    if (ctx.state.sessionId) {
-      const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
-      if (sessionUser) {
-        votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
-      }
-    }
-    /** @todo Optimise */
-    const areVoted = items.map((item) => votedItemIds.includes(item.id));
+    const areVoted = await getVotedItemsBySessionUser(
+        ctx.state.sessionId,
+        items
+    )
 
     return ctx.render({ ...ctx.state, user, items, areVoted });
   },

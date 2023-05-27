@@ -7,31 +7,19 @@ import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import {
   getAllItems,
-  getUserBySessionId,
   getUsersByIds,
-  getVotedItemIdsByUser,
   incrementVisitsPerDay,
   type Item,
   type User,
 } from "@/utils/db.ts";
+import compareScore from "../utils/compareScore.ts";
+import { getVotedItemsBySessionUser } from "../utils/db.ts";
 
 interface HomePageData extends State {
   users: User[];
   items: Item[];
   cursor?: string;
   areVoted: boolean[];
-}
-
-export function compareScore(a: Item, b: Item) {
-  const x = Number(a.score);
-  const y = Number(b.score);
-  if (x > y) {
-    return -1;
-  }
-  if (x < y) {
-    return 1;
-  }
-  return 0;
 }
 
 export const handler: Handlers<HomePageData, State> = {
@@ -41,16 +29,11 @@ export const handler: Handlers<HomePageData, State> = {
     const { items, cursor } = await getAllItems({ limit: 10, cursor: start });
     items.sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
-    let votedItemIds: string[] = [];
-    if (ctx.state.sessionId) {
-      const sessionUser = await getUserBySessionId(ctx.state.sessionId!);
-      if (sessionUser) {
-        votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
-      }
-    }
     await incrementVisitsPerDay(new Date());
-    /** @todo Optimise */
-    const areVoted = items.map((item) => votedItemIds.includes(item.id));
+    const areVoted = await getVotedItemsBySessionUser(
+        ctx.state.sessionId,
+        items
+    )
     return ctx.render({ ...ctx.state, items, cursor, users, areVoted });
   },
 };
