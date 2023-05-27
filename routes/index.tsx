@@ -7,6 +7,7 @@ import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import {
   getAllItems,
+  getAllItemsByScore,
   getUserBySessionId,
   getUsersByIds,
   getVotedItemIdsByUser,
@@ -38,7 +39,11 @@ export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
     /** @todo Add pagination functionality */
     const start = new URL(req.url).searchParams.get("page") || undefined;
-    const { items, cursor } = await getAllItems({ limit: 10, cursor: start });
+    const { items, cursor } = await getAllItemsByScore({
+      limit: 10,
+      cursor: start,
+      reverse: true,
+    });
     items.sort(compareScore);
     const users = await getUsersByIds(items.map((item) => item.userId));
     let votedItemIds: string[] = [];

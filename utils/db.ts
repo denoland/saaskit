@@ -21,6 +21,7 @@ export async function createItem(initItem: InitItem) {
     const id = crypto.randomUUID();
     const itemKey = ["items", id];
     const itemsByUserKey = ["items_by_user", initItem.userId, id];
+    const itemsByScore = ["items_by_score", 0, id];
     const item: Item = {
       ...initItem,
       id,
@@ -31,8 +32,10 @@ export async function createItem(initItem: InitItem) {
     res = await kv.atomic()
       .check({ key: itemKey, versionstamp: null })
       .check({ key: itemsByUserKey, versionstamp: null })
+      .check({ key: itemsByScore, versionstamp: null })
       .set(itemKey, item)
       .set(itemsByUserKey, item)
+      .set(itemsByScore, item)
       .commit();
 
     return item;
@@ -41,6 +44,16 @@ export async function createItem(initItem: InitItem) {
 
 export async function getAllItems(options?: Deno.KvListOptions) {
   const iter = await kv.list<Item>({ prefix: ["items"] }, options);
+  const items = [];
+  for await (const res of iter) items.push(res.value);
+  return {
+    items,
+    cursor: iter.cursor,
+  };
+}
+
+export async function getAllItemsByScore(options?: Deno.KvListOptions) {
+  const iter = await kv.list<Item>({ prefix: ["items_by_score"] }, options);
   const items = [];
   for await (const res of iter) items.push(res.value);
   return {
@@ -135,13 +148,35 @@ export async function createVote(initVote: InitVote) {
       throw new Error("Item by user does not exist");
     }
 
+    const oldItemByScoreKey = [
+      "items_by_score",
+      itemRes.value.score,
+      itemRes.value.id,
+    ];
+
+    const oldItemByScoreRes = await kv.get<Item>(oldItemByScoreKey);
+
+    if (oldItemByScoreRes.value === null) {
+      throw new Error("Item by score does not exist");
+    }
+
+    const newItemByScoreKey = [
+      "items_by_score",
+      itemRes.value.score + 1,
+      itemRes.value.id,
+    ];
+
     itemByUserRes.value.score++;
     itemRes.value.score++;
 
     res = await kv.atomic()
+      .check({ key: newItemByScoreKey, versionstamp: null })
       .check({ key: voteByUserKey, versionstamp: null })
+      .check(oldItemByScoreRes)
       .check(itemByUserRes)
       .check(itemRes)
+      .delete(oldItemByScoreKey)
+      .set(newItemByScoreKey, itemRes.value)
       .set(itemByUserRes.key, itemByUserRes.value)
       .set(itemRes.key, itemRes.value)
       .set(voteByUserKey, undefined)
@@ -173,16 +208,38 @@ export async function deleteVote(initVote: InitVote) {
     }
     if (voteByUserRes.value === null) return;
 
+    const oldItemByScoreKey = [
+      "items_by_score",
+      itemRes.value.score,
+      itemRes.value.id,
+    ];
+
+    const oldItemByScoreRes = await kv.get<Item>(oldItemByScoreKey);
+
+    if (oldItemByScoreRes.value === null) {
+      throw new Error("Item by score does not exist");
+    }
+
+    const newItemByScoreKey = [
+      "items_by_score",
+      itemRes.value.score - 1,
+      itemRes.value.id,
+    ];
+
     itemByUserRes.value.score--;
     itemRes.value.score--;
 
     res = await kv.atomic()
+      .check({ key: newItemByScoreKey, versionstamp: null })
+      .check(oldItemByScoreRes)
       .check(itemByUserRes)
       .check(itemRes)
       .check(voteByUserRes)
+      .set(newItemByScoreKey, itemRes.value)
       .set(itemByUserRes.key, itemByUserRes.value)
       .set(itemRes.key, itemRes.value)
       .delete(voteByUserKey)
+      .delete(oldItemByScoreKey)
       .commit();
   }
 }
