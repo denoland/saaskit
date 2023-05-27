@@ -39,29 +39,29 @@ Want to know where Deno SaaSKit is headed? Check out
 
 1. Clone the repo:
 
-```bash
-git clone https://github.com/denoland/saaskit.git
-cd saaskit
-```
+   ```bash
+   git clone https://github.com/denoland/saaskit.git
+   cd saaskit
+   ```
 
 2. Create a `.env` file to store environmental variables:
 
-```
-cp .example.env .env
-```
+   ```
+   cp .example.env .env
+   ```
 
 ### Auth (OAuth)
 
 1. [Register a new GitHub OAuth application](https://github.com/settings/applications/new)
    with the following values:
 
-- `Application name` = a name of your own choosing
-- `Homepage URL` = `http://localhost:8000`
-- `Authorization callback URL` = `http://localhost:8000/callback`
+   - `Application name` = a name of your own choosing
+   - `Homepage URL` = `http://localhost:8000`
+   - `Authorization callback URL` = `http://localhost:8000/callback`
 
-1. Once registered, copy the `Client ID` value to the `GITHUB_CLIENT_ID` value
+2. Once registered, copy the `Client ID` value to the `GITHUB_CLIENT_ID` value
    in your `.env` file.
-1. Click `Generate a new client secret` and copy the resulting client secret to
+3. Click `Generate a new client secret` and copy the resulting client secret to
    the `GITHUB_CLIENT_SECRET` environment variable in your `.env` file.
 
 ### Payments and Subscriptions (Stripe)
@@ -72,16 +72,18 @@ cp .example.env .env
    creates your "Premium tier" product and configures the Stripe customer
    portal.
 
-> Note: go to [tools/init_stripe.ts](tools/init_stripe.ts) if you'd like to
-> learn more about how the `init:stripe` task works.
+   > Note: go to [tools/init_stripe.ts](tools/init_stripe.ts) if you'd like to
+   > learn more about how the `init:stripe` task works.
+ 
+3. Install [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
 
-3. Listen locally to Stripe events:
+4. Listen locally to Stripe events:
 
-```
-stripe listen --forward-to localhost:8000/api/stripe-webhooks --events=customer.subscription.created,customer.subscription.deleted
-```
+   ```
+   stripe listen --forward-to localhost:8000/api/stripe-webhooks --events=customer.subscription.created,customer.subscription.deleted
+   ```
 
-4. Copy the webhook signing secret to [.env](.env) as `STRIPE_WEBHOOK_SECRET`.
+5. Copy the webhook signing secret to [.env](.env) as `STRIPE_WEBHOOK_SECRET`.
 
 > Note: You can use
 > [Stripe's test credit cards](https://stripe.com/docs/testing) to make test
@@ -206,59 +208,56 @@ AWS Lightsail and Digital Ocean.
 
 ### Setting up Docker
 
-[Install Docker](https://docker.com) on your machine, which should also install
+1. [Install Docker](https://docker.com) on your machine, which should also install
 [the `docker` CLI](https://docs.docker.com/engine/reference/commandline/cli/).
 
-Create an account on [Docker Hub](https://hub.docker.com), a registry for Docker
+2. Create an account on [Docker Hub](https://hub.docker.com), a registry for Docker
 container images.
 
-Create a `Dockerfile` in the root of your repo:
+3. Create a `Dockerfile` in the root of your repo:
 
-```docker
-FROM denoland/deno:1.32.4
+   ```docker
+   FROM denoland/deno:1.32.4
+   EXPOSE 8000
+   WORKDIR /app
+   ADD . /app
+   
+   # Add dependencies to the container's Deno cache
+   RUN deno cache main.ts --import-map=import_map.json
+   CMD ["run", "--allow-run", "--allow-write", "--allow-read", "--allow-env", "--allow-net", "main.ts"]
+   ```
 
-EXPOSE 8000
-
-WORKDIR /app
-
-ADD . /app
-
-# Add dependencies to the container's Deno cache
-RUN deno cache main.ts --import-map=import_map.json
-CMD ["run", "--allow-run", "--allow-write", "--allow-read", "--allow-env", "--allow-net", "main.ts"]
-```
-
-Create a `.dockerignore` file in the root folder of your repo to make sure
+4. Create a `.dockerignore` file in the root folder of your repo to make sure
 certain files are not deployed to the docker container:
 
-```
-README.md
-.example.env
-.vscode/
-.github/
-```
+   ```dockerignore
+   README.md
+   .example.env
+   .vscode/
+   .github/
+   ```
 
-A `docker-compose.yml` file will be needed to run the docker file on a VPS.
+5. A `docker-compose.yml` file will be needed to run the docker file on a VPS.
 Here’s what that file in your repo's root folder will look like:
 
-```yml
-version: '3'
-
-services:
-  web:
-    build: .
-    container_name: deno-sasskit
-    image: deno-image
-   environment:
-     - DENO_DEPLOYMENT_ID=${DENO_DEPLOYMENT_ID}
-     - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-     - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-     - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-     - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
-     - STRIPE_PREMIUM_PLAN_PRICE_ID=${STRIPE_PREMIUM_PLAN_PRICE_ID}
-    ports:
-      - "8000:8000"
-```
+   ```yml
+   version: '3'
+   
+   services:
+     web:
+       build: .
+       container_name: deno-sasskit
+       image: deno-image
+     environment:
+        - DENO_DEPLOYMENT_ID=${DENO_DEPLOYMENT_ID}
+        - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+        - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+        - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+        - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+        - STRIPE_PREMIUM_PLAN_PRICE_ID=${STRIPE_PREMIUM_PLAN_PRICE_ID}
+     ports:
+         - "8000:8000"
+   ```
 
 The values of the environmental variables are pulled from the `.env` file.
 
@@ -308,47 +307,47 @@ which offers more flexibility. For instance, with the GitHub Action, you could:
 
 2. Add the GitHub Action.
 
-[GitHub Actions](https://docs.github.com/en/actions) are configured using a
-`.yml` file placed in the `.github/workflows` folder of your repo. Here's an
-example `.yml` file to deploy to Deno Deploy. Be sure to update the
-`YOUR_DENO_DEPLOY_PROJECT_NAME` with one that you've set in Deno Deploy.
-
-```yml
-# Github action to deploy this project to Deno Deploy
-name: Deploy
-on: [push]
-
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # Needed for auth with Deno Deploy
-      contents: read  # Needed to clone the repository
-
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
-
-      - name: Install Deno
-        uses: denoland/setup-deno@main
-        # If you need to install a specific Deno version
-        # with:
-        #   deno-version: 1.32.4
-
-## You would put your building, linting, testing and other CI/CD steps here
-
-## Finally, deploy
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: YOUR_DENO_DEPLOY_PROJECT_NAME
-          entrypoint: main.ts
-          # root: dist
-          import-map: import_map.json
-          exclude: .git/** .gitignore .vscode/** .github/** README.md .env .example.env
-```
-
+   [GitHub Actions](https://docs.github.com/en/actions) are configured using a
+   `.yml` file placed in the `.github/workflows` folder of your repo. Here's an
+   example `.yml` file to deploy to Deno Deploy. Be sure to update the
+   `YOUR_DENO_DEPLOY_PROJECT_NAME` with one that you've set in Deno Deploy.
+   
+   ```yml
+   # Github action to deploy this project to Deno Deploy
+   name: Deploy
+   on: [push]
+   
+   jobs:
+     deploy:
+       name: Deploy
+       runs-on: ubuntu-latest
+       permissions:
+         id-token: write  # Needed for auth with Deno Deploy
+         contents: read  # Needed to clone the repository
+   
+       steps:
+         - name: Clone repository
+           uses: actions/checkout@v3
+   
+         - name: Install Deno
+           uses: denoland/setup-deno@main
+           # If you need to install a specific Deno version
+           # with:
+           #   deno-version: 1.32.4
+   
+   ## You would put your building, linting, testing and other CI/CD steps here
+   
+   ## Finally, deploy
+         - name: Upload to Deno Deploy
+           uses: denoland/deployctl@v1
+           with:
+             project: YOUR_DENO_DEPLOY_PROJECT_NAME
+             entrypoint: main.ts
+             # root: dist
+             import-map: import_map.json
+             exclude: .git/** .gitignore .vscode/** .github/** README.md .env .example.env
+   ```
+   
 3. Commit and push your code to GitHub. This should trigger the GitHub Action.
    When the action successfully completes, your app should be available on Deno
    Deploy.
@@ -362,17 +361,17 @@ AWS account if you don’t already have one.
    that the `Dockerfile` and `docker-compose.yml` have beed created
    [as above](#setting-up-docker):
 
-```sh
-docker compose -f docker-compose.yml build
-```
+   ```sh
+   docker compose -f docker-compose.yml build
+   ```
 
 2. Tag your image locally using the following command:
 
-```sh
-docker tag deno-image {{ username }}/deno-saaskit-aws
-```
+   ```sh
+   docker tag deno-image {{ username }}/deno-saaskit-aws
+   ```
 
-The name `deno-image` comes from your `docker-compose.yml` file.
+   The name `deno-image` comes from your `docker-compose.yml` file.
 
 3. The tagged image needs to be registered on
    [Docker Hub](https://hub.docker.com). In order to do that, sign into your Hub
@@ -382,11 +381,11 @@ The name `deno-image` comes from your `docker-compose.yml` file.
    `deno-saaskit-aws` which you can change. Substitute `{{username}}` with your
    Docker Hub username.
 
-```sh
-docker push {{ username }}/deno-saaskit-aws
-```
+   ```sh
+   docker push {{ username }}/deno-saaskit-aws
+   ```
 
-You should then be able to see your image on Docker Hub where it can be picked
+   You should then be able to see your image on Docker Hub where it can be picked
 up by the AWS container service.
 
 5. Go to the
@@ -394,18 +393,18 @@ up by the AWS container service.
    On that page you can choose a server location and service capacity or keep
    the defaults.
 
-- Click on “Setup deployment” and choose “Specify a custom deployment” which
-  will result in the display of a form. Here’s what you need to fill out:
-
-  - _Container name_: Give it a name of your choosing.
-  - _Image_: Use the Docker Hub name {{username}}/deno-saaskit-aws.
-  - _Open Ports_: Click “Add open ports” and then enter “8000” as the port.
-  - _Environmental Variables_: Enter the name and values of all production
-    environmental variables from `.env`.
-  - _Public Endpoint_: Select the container name you just entered.
-
-Under “Identify your service”, enter a container service name of your choosing.
-It will become part of the app's domain.
+   - Click on “Setup deployment” and choose “Specify a custom deployment” which
+     will result in the display of a form. Here’s what you need to fill out:
+   
+     - _Container name_: Give it a name of your choosing.
+     - _Image_: Use the Docker Hub name {{username}}/deno-saaskit-aws.
+     - _Open Ports_: Click “Add open ports” and then enter “8000” as the port.
+     - _Environmental Variables_: Enter the name and values of all production
+       environmental variables from `.env`.
+     - _Public Endpoint_: Select the container name you just entered.
+   
+   Under “Identify your service”, enter a container service name of your choosing.
+   It will become part of the app's domain.
 
 6. Click the “Create Container Service” button. It will take some time for the
    deployment to complete. You will see a "Deployed” message when it is
@@ -425,46 +424,46 @@ installed and validated locally.
    Registry. This requires that you have created `Dockerfile` and
    `docker-compose.yml` files [as instructed above](#setting-up-docker)
 
-```sh
-# Local Docker build
-docker compose -f docker-compose.yml build
-```
-
-```sh
-# Tag for DO container registry (separate from Docker Hub)
-docker tag deno-image registry.digitalocean.com/deno-saaskit/deno-image:new
-```
+   ```sh
+   # Local Docker build
+   docker compose -f docker-compose.yml build
+   ```
+   
+   ```sh
+   # Tag for DO container registry (separate from Docker Hub)
+   docker tag deno-image registry.digitalocean.com/deno-saaskit/deno-image:new
+   ```
 
 2. Push your tagged image to your DO container registry.
 
-- [Create an API token with `doctl`](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-2-create-an-api-token)
-  and
-  [validate that you can authenticate with the CLI](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-4-validate-that-doctl-is-working).
-
-- Login using `doctl` and the API token you just created:
-
-```sh
-doctl registry login -t {{ API Access Token }}
-```
-
-- Create a Digital Ocean Container Registry named `deno-saaskit`:
-
-```sh
-doctl registry create deno-saaskit
-```
-
-Alternatively, you can
-[create the container registry online](https://docs.digitalocean.com/products/container-registry/quickstart/).
-
-- Push the image to Digital Ocean’s registry (make sure you are logged in using
-  `doctl registry login`).
-
-```sh
-docker push registry.digitalocean.com/deno-saaskit/deno-image:new
-```
-
-You should now be able to see your image in the
-[DO Container Registry](https://cloud.digitalocean.com/registry).
+   - [Create an API token with `doctl`](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-2-create-an-api-token)
+     and
+     [validate that you can authenticate with the CLI](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-4-validate-that-doctl-is-working).
+   
+   - Login using `doctl` and the API token you just created:
+   
+   ```sh
+   doctl registry login -t {{ API Access Token }}
+   ```
+   
+   - Create a Digital Ocean Container Registry named `deno-saaskit`:
+   
+   ```sh
+   doctl registry create deno-saaskit
+   ```
+   
+   Alternatively, you can
+   [create the container registry online](https://docs.digitalocean.com/products/container-registry/quickstart/).
+   
+   - Push the image to Digital Ocean’s registry (make sure you are logged in using
+     `doctl registry login`).
+   
+   ```sh
+   docker push registry.digitalocean.com/deno-saaskit/deno-image:new
+   ```
+   
+   You should now be able to see your image in the
+   [DO Container Registry](https://cloud.digitalocean.com/registry).
 
 3. Once the `deno-image` has been pushed to the Digital Ocean registry we can
    run it in a
@@ -478,12 +477,12 @@ You should now be able to see your image in the
    [use SSH locally](https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/)
    run this command:
 
-```sh
-docker run -d --restart always -it -p 8000:8000 --name deno-image registry.digitalocean.com/deno-on-digital-ocean/deno-image:new
-```
+   ```sh
+   docker run -d --restart always -it -p 8000:8000 --name deno-image registry.digitalocean.com/deno-on-digital-ocean/deno-image:new
+   ```
 
 The URL will be visible once the command completes. Use the droplet's IP address
-with port 8000 to browse to your application deployed on Digital Ocean.
+with port `8000` to browse to your application deployed on Digital Ocean.
 
 ## Contributing
 
