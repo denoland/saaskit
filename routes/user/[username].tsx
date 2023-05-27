@@ -34,9 +34,9 @@ export const handler: Handlers<UserData, State> = {
     const items = await getItemsByUserId(user.id);
     items.sort(compareScore);
     const areVoted = await getVotedItemsBySessionUser(
-        ctx.state.sessionId,
-        items
-    )
+      ctx.state.sessionId,
+      items,
+    );
 
     return ctx.render({ ...ctx.state, user, items, areVoted });
   },
