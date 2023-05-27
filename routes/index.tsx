@@ -6,7 +6,6 @@ import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import {
-  getAllItems,
   getAllItemsByScore,
   getUserBySessionId,
   getUsersByIds,
@@ -23,18 +22,6 @@ interface HomePageData extends State {
   areVoted: boolean[];
 }
 
-export function compareScore(a: Item, b: Item) {
-  const x = Number(a.score);
-  const y = Number(b.score);
-  if (x > y) {
-    return -1;
-  }
-  if (x < y) {
-    return 1;
-  }
-  return 0;
-}
-
 export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
     /** @todo Add pagination functionality */
@@ -44,7 +31,7 @@ export const handler: Handlers<HomePageData, State> = {
       cursor: start,
       reverse: true,
     });
-    items.sort(compareScore);
+
     const users = await getUsersByIds(items.map((item) => item.userId));
     let votedItemIds: string[] = [];
     if (ctx.state.sessionId) {
