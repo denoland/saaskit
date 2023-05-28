@@ -59,6 +59,13 @@ export async function getItemByUser(userId: string, itemId: string) {
   return res.value;
 }
 
+export async function getItemsByUserId(userId: string) {
+  const iter = await kv.list<Item>({ prefix: ["items_by_user", userId] });
+  const items = [];
+  for await (const res of iter) items.push(res.value);
+  return items;
+}
+
 interface InitComment {
   userId: string;
   itemId: string;
@@ -377,4 +384,35 @@ export async function getUsersByIds(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
   const res = await kv.getMany<User[]>(keys);
   return res.map((entry) => entry.value!);
+}
+
+export async function incrementVisitsPerDay(date: Date) {
+  // convert to universal timezone (UTC)
+  const visitsKey = [
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ];
+  await kv.atomic()
+    .sum(visitsKey, 1n)
+    .commit();
+}
+
+export async function getVisitsPerDay(date: Date) {
+  const res = await kv.get<bigint>([
+    "visits",
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ]);
+
+  return res.value;
+}
+
+export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
+  const iter = await kv.list<bigint>({ prefix: ["visits"] }, options);
+  const visits = [];
+  const dates = [];
+  for await (const res of iter) {
+    visits.push(Number(res.value));
+    dates.push(String(res.key[1]));
+  }
+  return { visits, dates };
 }
