@@ -13,7 +13,7 @@ import {
   type User,
 } from "@/utils/db.ts";
 import compareScore from "../utils/compareScore.ts";
-import { getVotedItemsBySessionUser } from "../utils/db.ts";
+import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 interface HomePageData extends State {
   users: User[];
