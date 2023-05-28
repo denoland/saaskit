@@ -407,7 +407,7 @@ export async function getVisitsPerDay(date: Date) {
 }
 
 export async function getVotedItemsBySessionUser(
-  sessionId: string | undefined,
+  sessionId?: string,
   items: Item[],
 ) {
   let votedItemIds: string[] = [];
