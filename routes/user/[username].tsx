@@ -12,7 +12,7 @@ import {
   type Item,
   type User,
 } from "@/utils/db.ts";
-import { pluralize } from "../../utils/display.ts";
+import { pluralize } from "@/utils/display.ts";
 import compareScore from "@/utils/compareScore.ts";
 import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
