@@ -93,9 +93,10 @@ Deno.test("[db] visit", async () => {
   const date = new Date("2023-01-01");
   const visitsKey = [
     "visits",
-    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+    `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`,
   ];
   await incrementVisitsPerDay(date);
+  assertEquals((await kv.get(visitsKey)).key[1], "2023-1-1");
   assertEquals((await getVisitsPerDay(date))!.valueOf(), 1n);
   await kv.delete(visitsKey);
   assertEquals(await getVisitsPerDay(date), null);

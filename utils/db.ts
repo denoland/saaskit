@@ -390,7 +390,7 @@ export async function incrementVisitsPerDay(date: Date) {
   // convert to universal timezone (UTC)
   const visitsKey = [
     "visits",
-    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+    `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`,
   ];
   await kv.atomic()
     .sum(visitsKey, 1n)
@@ -400,7 +400,7 @@ export async function incrementVisitsPerDay(date: Date) {
 export async function getVisitsPerDay(date: Date) {
   const res = await kv.get<bigint>([
     "visits",
-    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+    `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`,
   ]);
 
   return res.value;
