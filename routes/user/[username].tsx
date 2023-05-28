@@ -7,13 +7,13 @@ import type { State } from "@/routes/_middleware.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import {
+  compareScore,
   getItemsByUserId,
   getUserByLogin,
   type Item,
   type User,
 } from "@/utils/db.ts";
 import { pluralize } from "@/utils/display.ts";
-import compareScore from "@/utils/compareScore.ts";
 import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 export interface UserData extends State {

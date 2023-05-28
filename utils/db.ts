@@ -432,3 +432,7 @@ export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
   }
   return { visits, dates };
 }
+
+export function compareScore(a: Item, b: Item) {
+  return Number(b.score) - Number(a.score);
+}

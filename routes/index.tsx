@@ -6,13 +6,13 @@ import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import {
+  compareScore,
   getAllItems,
   getUsersByIds,
   incrementVisitsPerDay,
   type Item,
   type User,
 } from "@/utils/db.ts";
-import compareScore from "../utils/compareScore.ts";
 import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 interface HomePageData extends State {
