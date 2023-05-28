@@ -418,7 +418,6 @@ export async function getVotedItemsBySessionUser(
       votedItemIds = await getVotedItemIdsByUser(sessionUser!.id);
     }
   }
-  /** @todo Optimise */
   return items.map((item) => votedItemIds.includes(item.id));
 }
 
