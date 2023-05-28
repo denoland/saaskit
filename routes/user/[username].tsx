@@ -14,7 +14,7 @@ import {
 } from "@/utils/db.ts";
 import { pluralize } from "../../utils/display.ts";
 import compareScore from "../../utils/compareScore.ts";
-import { getVotedItemsBySessionUser } from "../../utils/db.ts";
+import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 export interface UserData extends State {
   user: User;
