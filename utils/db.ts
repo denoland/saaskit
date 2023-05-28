@@ -421,3 +421,14 @@ export async function getVotedItemsBySessionUser(
   /** @todo Optimise */
   return items.map((item) => votedItemIds.includes(item.id));
 }
+
+export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
+  const iter = await kv.list<bigint>({ prefix: ["visits"] }, options);
+  const visits = [];
+  const dates = [];
+  for await (const res of iter) {
+    visits.push(Number(res.value));
+    dates.push(String(res.key[1]));
+  }
+  return { visits, dates };
+}
