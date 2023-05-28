@@ -31,8 +31,8 @@ export const handler: Handlers<HomePageData, State> = {
     const users = await getUsersByIds(items.map((item) => item.userId));
     await incrementVisitsPerDay(new Date());
     const areVoted = await getVotedItemsBySessionUser(
-      ctx.state.sessionId,
       items,
+      ctx.state.sessionId,
     );
     return ctx.render({ ...ctx.state, items, cursor, users, areVoted });
   },
