@@ -9,11 +9,11 @@ import {
   compareScore,
   getAllItems,
   getUsersByIds,
+  getVotedItemsBySessionUser,
   incrementVisitsPerDay,
   type Item,
   type User,
 } from "@/utils/db.ts";
-import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 interface HomePageData extends State {
   users: User[];

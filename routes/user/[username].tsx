@@ -10,11 +10,11 @@ import {
   compareScore,
   getItemsByUserId,
   getUserByLogin,
+  getVotedItemsBySessionUser,
   type Item,
   type User,
 } from "@/utils/db.ts";
 import { pluralize } from "@/utils/display.ts";
-import { getVotedItemsBySessionUser } from "@/utils/db.ts";
 
 export interface UserData extends State {
   user: User;
