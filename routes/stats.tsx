@@ -4,8 +4,9 @@ import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
-import LineChart from "@/components/LineChart.tsx";
-import { getAllVisitsPerDay, getVisitsPerDay, type User } from "@/utils/db.ts";
+import { getAllVisitsPerDay } from "@/utils/db.ts";
+import { Chart } from "fresh_charts/mod.ts";
+import { ChartColors } from "fresh_charts/utils.ts";
 
 interface StatsPageData extends State {
   visits?: number[];
@@ -23,7 +24,41 @@ export const handler: Handlers<StatsPageData, State> = {
   },
 };
 
-export default function HomePage(props: PageProps<StatsPageData>) {
+function LineChart(
+  props: { title: string; x: string[]; y: number[] },
+) {
+  return (
+    <>
+      <h3 class="py-4 text-2xl font-bold">{props.title}</h3>
+      <Chart
+        type="line"
+        options={{
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            y: { grid: { display: false } },
+            x: { grid: { display: false } },
+          },
+        }}
+        data={{
+          labels: props.x,
+          datasets: [{
+            label: props.title,
+            data: props.y,
+            borderColor: ChartColors.Blue,
+            backgroundColor: ChartColors.Blue,
+            borderWidth: 3,
+            cubicInterpolationMode: "monotone",
+            tension: 0.4,
+          }],
+        }}
+      />
+    </>
+  );
+}
+
+export default function StatsPage(props: PageProps<StatsPageData>) {
   return (
     <>
       <Head title="Stats" href={props.url.href} />
