@@ -74,7 +74,7 @@ Want to know where Deno SaaSKit is headed? Check out
 
    > Note: go to [tools/init_stripe.ts](tools/init_stripe.ts) if you'd like to
    > learn more about how the `init:stripe` task works.
- 
+
 3. Install [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
 
 4. Listen locally to Stripe events:
@@ -208,11 +208,12 @@ AWS Lightsail and Digital Ocean.
 
 ### Setting up Docker
 
-1. [Install Docker](https://docker.com) on your machine, which should also install
-[the `docker` CLI](https://docs.docker.com/engine/reference/commandline/cli/).
+1. [Install Docker](https://docker.com) on your machine, which should also
+   install
+   [the `docker` CLI](https://docs.docker.com/engine/reference/commandline/cli/).
 
-2. Create an account on [Docker Hub](https://hub.docker.com), a registry for Docker
-container images.
+2. Create an account on [Docker Hub](https://hub.docker.com), a registry for
+   Docker container images.
 
 3. Create a `Dockerfile` in the root of your repo:
 
@@ -221,14 +222,14 @@ container images.
    EXPOSE 8000
    WORKDIR /app
    ADD . /app
-   
+
    # Add dependencies to the container's Deno cache
    RUN deno cache main.ts --import-map=import_map.json
    CMD ["run", "--allow-run", "--allow-write", "--allow-read", "--allow-env", "--allow-net", "main.ts"]
    ```
 
 4. Create a `.dockerignore` file in the root folder of your repo to make sure
-certain files are not deployed to the docker container:
+   certain files are not deployed to the docker container:
 
    ```dockerignore
    README.md
@@ -238,11 +239,11 @@ certain files are not deployed to the docker container:
    ```
 
 5. A `docker-compose.yml` file will be needed to run the docker file on a VPS.
-Here’s what that file in your repo's root folder will look like:
+   Here’s what that file in your repo's root folder will look like:
 
    ```yml
    version: '3'
-   
+
    services:
      web:
        build: .
@@ -311,12 +312,12 @@ which offers more flexibility. For instance, with the GitHub Action, you could:
    `.yml` file placed in the `.github/workflows` folder of your repo. Here's an
    example `.yml` file to deploy to Deno Deploy. Be sure to update the
    `YOUR_DENO_DEPLOY_PROJECT_NAME` with one that you've set in Deno Deploy.
-   
+
    ```yml
    # Github action to deploy this project to Deno Deploy
    name: Deploy
    on: [push]
-   
+
    jobs:
      deploy:
        name: Deploy
@@ -324,19 +325,19 @@ which offers more flexibility. For instance, with the GitHub Action, you could:
        permissions:
          id-token: write  # Needed for auth with Deno Deploy
          contents: read  # Needed to clone the repository
-   
+
        steps:
          - name: Clone repository
            uses: actions/checkout@v3
-   
+
          - name: Install Deno
            uses: denoland/setup-deno@main
            # If you need to install a specific Deno version
            # with:
            #   deno-version: 1.32.4
-   
+
    ## You would put your building, linting, testing and other CI/CD steps here
-   
+
    ## Finally, deploy
          - name: Upload to Deno Deploy
            uses: denoland/deployctl@v1
@@ -347,7 +348,7 @@ which offers more flexibility. For instance, with the GitHub Action, you could:
              import-map: import_map.json
              exclude: .git/** .gitignore .vscode/** .github/** README.md .env .example.env
    ```
-   
+
 3. Commit and push your code to GitHub. This should trigger the GitHub Action.
    When the action successfully completes, your app should be available on Deno
    Deploy.
@@ -385,8 +386,8 @@ AWS account if you don’t already have one.
    docker push {{ username }}/deno-saaskit-aws
    ```
 
-   You should then be able to see your image on Docker Hub where it can be picked
-up by the AWS container service.
+   You should then be able to see your image on Docker Hub where it can be
+   picked up by the AWS container service.
 
 5. Go to the
    [AWS LIghtsail Create a Container Service landing page](https://lightsail.aws.amazon.com/ls/webapp/create/container-service).
@@ -395,16 +396,16 @@ up by the AWS container service.
 
    - Click on “Setup deployment” and choose “Specify a custom deployment” which
      will result in the display of a form. Here’s what you need to fill out:
-   
+
      - _Container name_: Give it a name of your choosing.
      - _Image_: Use the Docker Hub name {{username}}/deno-saaskit-aws.
      - _Open Ports_: Click “Add open ports” and then enter “8000” as the port.
      - _Environmental Variables_: Enter the name and values of all production
        environmental variables from `.env`.
      - _Public Endpoint_: Select the container name you just entered.
-   
-   Under “Identify your service”, enter a container service name of your choosing.
-   It will become part of the app's domain.
+
+   Under “Identify your service”, enter a container service name of your
+   choosing. It will become part of the app's domain.
 
 6. Click the “Create Container Service” button. It will take some time for the
    deployment to complete. You will see a "Deployed” message when it is
@@ -428,7 +429,7 @@ installed and validated locally.
    # Local Docker build
    docker compose -f docker-compose.yml build
    ```
-   
+
    ```sh
    # Tag for DO container registry (separate from Docker Hub)
    docker tag deno-image registry.digitalocean.com/deno-saaskit/deno-image:new
@@ -439,29 +440,29 @@ installed and validated locally.
    - [Create an API token with `doctl`](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-2-create-an-api-token)
      and
      [validate that you can authenticate with the CLI](https://docs.digitalocean.com/reference/doctl/how-to/install/#step-4-validate-that-doctl-is-working).
-   
+
    - Login using `doctl` and the API token you just created:
-   
+
    ```sh
    doctl registry login -t {{ API Access Token }}
    ```
-   
+
    - Create a Digital Ocean Container Registry named `deno-saaskit`:
-   
+
    ```sh
    doctl registry create deno-saaskit
    ```
-   
+
    Alternatively, you can
    [create the container registry online](https://docs.digitalocean.com/products/container-registry/quickstart/).
-   
-   - Push the image to Digital Ocean’s registry (make sure you are logged in using
-     `doctl registry login`).
-   
+
+   - Push the image to Digital Ocean’s registry (make sure you are logged in
+     using `doctl registry login`).
+
    ```sh
    docker push registry.digitalocean.com/deno-saaskit/deno-image:new
    ```
-   
+
    You should now be able to see your image in the
    [DO Container Registry](https://cloud.digitalocean.com/registry).
 
