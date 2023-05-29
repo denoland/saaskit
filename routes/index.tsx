@@ -86,7 +86,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
           {props.data.items.map((item, index) => (
             <ItemSummary
               item={item}
-              isVoted={props.data.areVoted?.[index]}
+              isVoted={props.data.areVoted[index]}
               user={props.data.itemsUsers[index]}
             />
           ))}
