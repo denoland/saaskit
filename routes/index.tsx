@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
-import { INPUT_STYLES, SITE_WIDTH_STYLES } from "@/utils/constants.ts";
+import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
@@ -15,7 +15,7 @@ import {
   type User,
 } from "@/utils/db.ts";
 
-const PAGE_LENGTH = 2;
+const PAGE_LENGTH = 10;
 
 interface HomePageData extends State {
   itemsUsers: User[];
