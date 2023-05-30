@@ -30,7 +30,6 @@ Want to know where Deno SaaSKit is headed? Check out
 ### Prerequisites
 
 - [Deno](https://deno.com/manual/getting_started/installation)
-- [Docker](https://docs.docker.com/engine/install/)
 - [Git](https://github.com/git-guides/install-git)
 - [A free Stripe account](https://stripe.com)
 - [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
@@ -71,19 +70,13 @@ Want to know where Deno SaaSKit is headed? Check out
 2. Run `deno task init:stripe` and follow the instructions. This automatically
    creates your "Premium tier" product and configures the Stripe customer
    portal.
-
    > Note: go to [tools/init_stripe.ts](tools/init_stripe.ts) if you'd like to
    > learn more about how the `init:stripe` task works.
-
-3. Install [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
-
-4. Listen locally to Stripe events:
-
+3. Listen locally to Stripe events:
    ```
    stripe listen --forward-to localhost:8000/api/stripe-webhooks --events=customer.subscription.created,customer.subscription.deleted
    ```
-
-5. Copy the webhook signing secret to [.env](.env) as `STRIPE_WEBHOOK_SECRET`.
+4. Copy the webhook signing secret to [.env](.env) as `STRIPE_WEBHOOK_SECRET`.
 
 > Note: You can use
 > [Stripe's test credit cards](https://stripe.com/docs/testing) to make test
