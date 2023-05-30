@@ -386,6 +386,17 @@ export async function getAnalyticsMetricsPerDay(
   return { metricsValue, dates };
 }
 
+export async function getManyAnalyticsMetricsPerDay(
+  metrics: string[],
+  options?: Deno.KvListOptions,
+) {
+  const analyticsByDay = await Promise.all(
+    metrics.map((metric) => getAnalyticsMetricsPerDay(metric, options)),
+  );
+
+  return analyticsByDay;
+}
+
 export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
   const iter = await kv.list<bigint>({ prefix: ["visits"] }, options);
   const visits = [];

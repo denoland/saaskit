@@ -4,7 +4,7 @@ import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
-import { getAnalyticsMetricsPerDay } from "@/utils/db.ts";
+import { getManyAnalyticsMetricsPerDay } from "@/utils/db.ts";
 import { Chart } from "fresh_charts/mod.ts";
 import { ChartColors } from "fresh_charts/utils.ts";
 
@@ -14,35 +14,26 @@ interface AnalyticsByDay {
 }
 
 interface StatsPageData extends State {
-  visitsCountByDay: AnalyticsByDay;
-  userCountByDay: AnalyticsByDay;
-  itemsCountByDay: AnalyticsByDay;
-  votesCountByDay: AnalyticsByDay;
+  metricsByDay: AnalyticsByDay[];
+  metricsTitles: string[];
 }
 
 export const handler: Handlers<StatsPageData, State> = {
   async GET(_, ctx) {
     const daysBefore = 30;
-    const visitsCountByDay = await getAnalyticsMetricsPerDay("visits_count", {
-      limit: daysBefore,
-    });
-    const userCountByDay = await getAnalyticsMetricsPerDay("users_count", {
-      limit: daysBefore,
-    });
-    const itemsCountByDay = await getAnalyticsMetricsPerDay("items_count", {
-      limit: daysBefore,
-    });
-    const votesCountByDay = await getAnalyticsMetricsPerDay("votes_count", {
+
+    const metricsKeys = [
+      "visits_count",
+      "users_count",
+      "items_count",
+      "votes_count",
+    ];
+    const metricsTitles = ["Visits", "New Users", "New Items", "New Votes"];
+    const metricsByDay = await getManyAnalyticsMetricsPerDay(metricsKeys, {
       limit: daysBefore,
     });
 
-    return ctx.render({
-      ...ctx.state,
-      visitsCountByDay,
-      userCountByDay,
-      itemsCountByDay,
-      votesCountByDay,
-    });
+    return ctx.render({ ...ctx.state, metricsByDay, metricsTitles });
   },
 };
 
@@ -87,26 +78,13 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
           <div class="p-4 mx-auto max-w-screen-md">
-            <LineChart
-              title="Visits"
-              x={props.data.visitsCountByDay.dates!}
-              y={props.data.visitsCountByDay.metricsValue!}
-            />
-            <LineChart
-              title="New Users"
-              x={props.data.userCountByDay.dates!}
-              y={props.data.userCountByDay.metricsValue!}
-            />
-            <LineChart
-              title="New Items"
-              x={props.data.itemsCountByDay.dates!}
-              y={props.data.itemsCountByDay.metricsValue!}
-            />
-            <LineChart
-              title="New Votes"
-              x={props.data.votesCountByDay.dates!}
-              y={props.data.votesCountByDay.metricsValue!}
-            />
+            {props.data.metricsByDay.map((metric, index) => (
+              <LineChart
+                title={props.data.metricsTitles[index]}
+                x={metric.dates!}
+                y={metric.metricsValue!}
+              />
+            ))}
           </div>
         </div>
       </Layout>
