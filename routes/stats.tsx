@@ -4,23 +4,45 @@ import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
-import { getAllVisitsPerDay } from "@/utils/db.ts";
+import { getAnalyticsMetricsPerDay } from "@/utils/db.ts";
 import { Chart } from "fresh_charts/mod.ts";
 import { ChartColors } from "fresh_charts/utils.ts";
 
+interface AnalyticsByDay {
+  metricsValue: number[];
+  dates: string[];
+}
+
 interface StatsPageData extends State {
-  visits?: number[];
-  dates?: string[];
+  visitsCountByDay: AnalyticsByDay;
+  userCountByDay: AnalyticsByDay;
+  itemsCountByDay: AnalyticsByDay;
+  votesCountByDay: AnalyticsByDay;
 }
 
 export const handler: Handlers<StatsPageData, State> = {
   async GET(_, ctx) {
     const daysBefore = 30;
-    const { visits, dates } = await getAllVisitsPerDay({
+    const visitsCountByDay = await getAnalyticsMetricsPerDay("visits_count", {
+      limit: daysBefore,
+    });
+    const userCountByDay = await getAnalyticsMetricsPerDay("users_count", {
+      limit: daysBefore,
+    });
+    const itemsCountByDay = await getAnalyticsMetricsPerDay("items_count", {
+      limit: daysBefore,
+    });
+    const votesCountByDay = await getAnalyticsMetricsPerDay("votes_count", {
       limit: daysBefore,
     });
 
-    return ctx.render({ ...ctx.state, visits, dates });
+    return ctx.render({
+      ...ctx.state,
+      visitsCountByDay,
+      userCountByDay,
+      itemsCountByDay,
+      votesCountByDay,
+    });
   },
 };
 
@@ -67,8 +89,23 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
           <div class="p-4 mx-auto max-w-screen-md">
             <LineChart
               title="Visits"
-              x={props.data.dates!}
-              y={props.data.visits!}
+              x={props.data.visitsCountByDay.dates!}
+              y={props.data.visitsCountByDay.metricsValue!}
+            />
+            <LineChart
+              title="New Users"
+              x={props.data.userCountByDay.dates!}
+              y={props.data.userCountByDay.metricsValue!}
+            />
+            <LineChart
+              title="New Items"
+              x={props.data.itemsCountByDay.dates!}
+              y={props.data.itemsCountByDay.metricsValue!}
+            />
+            <LineChart
+              title="New Votes"
+              x={props.data.votesCountByDay.dates!}
+              y={props.data.votesCountByDay.metricsValue!}
             />
           </div>
         </div>

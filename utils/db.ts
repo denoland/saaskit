@@ -58,6 +58,8 @@ export async function createItem(initItem: InitItem) {
 
   if (!res.ok) throw new Error(`Failed to set item: ${item}`);
 
+  await incrementAnalyticsMetricPerDay("items_count", new Date());
+
   return item;
 }
 
@@ -165,6 +167,8 @@ export async function createVote(vote: Vote) {
 
   if (!res.ok) throw new Error(`Failed to set vote: ${vote}`);
 
+  await incrementAnalyticsMetricPerDay("votes_count", new Date());
+
   return vote;
 }
 
@@ -251,6 +255,8 @@ export async function createUser(initUser: InitUser) {
 
   if (!res.ok) throw new Error(`Failed to create user: ${user}`);
 
+  await incrementAnalyticsMetricPerDay("users_count", new Date());
+
   return user;
 }
 
@@ -317,7 +323,37 @@ export async function getManyUsers(ids: string[]) {
   return res.map((entry) => entry.value!);
 }
 
-// Visit
+export async function getAreVotedBySessionId(
+  items: Item[],
+  sessionId?: string,
+) {
+  if (!sessionId) return [];
+  const sessionUser = await getUserBySessionId(sessionId);
+  if (!sessionUser) return [];
+  const votedItems = await getVotedItemsByUser(sessionUser.id);
+  const votedItemIds = votedItems.map((item) => item.id);
+  return items.map((item) => votedItemIds.includes(item.id));
+}
+
+export function compareScore(a: Item, b: Item) {
+  return Number(b.score) - Number(a.score);
+}
+
+// Analytics
+export async function incrementAnalyticsMetricPerDay(
+  metric: string,
+  date: Date,
+) {
+  // convert to universal timezone (UTC)
+  const metricKey = [
+    metric,
+    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+  ];
+  await kv.atomic()
+    .sum(metricKey, 1n)
+    .commit();
+}
+
 export async function incrementVisitsPerDay(date: Date) {
   // convert to universal timezone (UTC)
   const visitsKey = [
@@ -336,16 +372,18 @@ export async function getVisitsPerDay(date: Date) {
   ]);
 }
 
-export async function getAreVotedBySessionId(
-  items: Item[],
-  sessionId?: string,
+export async function getAnalyticsMetricsPerDay(
+  metric: string,
+  options?: Deno.KvListOptions,
 ) {
-  if (!sessionId) return [];
-  const sessionUser = await getUserBySessionId(sessionId);
-  if (!sessionUser) return [];
-  const votedItems = await getVotedItemsByUser(sessionUser.id);
-  const votedItemIds = votedItems.map((item) => item.id);
-  return items.map((item) => votedItemIds.includes(item.id));
+  const iter = await kv.list<bigint>({ prefix: [metric] }, options);
+  const metricsValue = [];
+  const dates = [];
+  for await (const res of iter) {
+    metricsValue.push(Number(res.value));
+    dates.push(String(res.key[1]));
+  }
+  return { metricsValue, dates };
 }
 
 export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
@@ -357,8 +395,4 @@ export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
     dates.push(String(res.key[1]));
   }
   return { visits, dates };
-}
-
-export function compareScore(a: Item, b: Item) {
-  return Number(b.score) - Number(a.score);
 }
