@@ -2,16 +2,10 @@
 import { type Item, kv } from "@/utils/db.ts";
 
 export async function migrateKv() {
-  const iter = kv.list<Item>({ prefix: ["items"] });
+  const iter = kv.list<Item>({ prefix: ["items_by_time"] });
   const promises = [];
   for await (const res of iter) {
-    promises.push(kv.delete(res.key));
-    promises.push(
-      kv.set(
-        ["items_by_time", res.value.createdAt.getTime(), res.key.at(-1)!],
-        res.value,
-      ),
-    );
+    promises.push(kv.set(["items", res.value.id], res.value));
   }
   await Promise.all(promises);
 }
