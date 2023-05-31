@@ -81,7 +81,13 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
             {props.data.metricsByDay.map((metric, index) => (
               <LineChart
                 title={props.data.metricsTitles[index]}
-                x={metric.dates!}
+                x={props.data.dates!.map((date) =>
+                  new Date(date).toLocaleDateString("en-us", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                )}
                 y={metric.metricsValue!}
               />
             ))}
