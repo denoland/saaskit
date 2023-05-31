@@ -4,6 +4,7 @@ import type { Item, User } from "@/utils/db.ts";
 import UserPostedAt from "./UserPostedAt.tsx";
 
 export interface ItemSummaryProps {
+  rank?: number;
   item: Item;
   user: User;
   isVoted: boolean;
@@ -12,6 +13,7 @@ export interface ItemSummaryProps {
 export default function ItemSummary(props: ItemSummaryProps) {
   return (
     <div class="py-2 flex gap-2 text-gray-500">
+      {props.rank && (props.rank + ".")}
       <VoteButton
         item={props.item}
         isVoted={props.isVoted}

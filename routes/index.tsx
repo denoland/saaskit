@@ -32,6 +32,10 @@ function calcLastPage(total = 0, pageLength = PAGE_LENGTH): number {
   return Math.ceil(total / pageLength);
 }
 
+function itemRank(index: number, url: URL) {
+  return index + PAGE_LENGTH * (calcPageNum(url) - 1) + 1;
+}
+
 export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
     await incrementVisitsPerDay(new Date());
@@ -85,6 +89,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
           {props.data.items.map((item, index) => (
             <ItemSummary
+              rank={itemRank(index, props.url)}
               item={item}
               isVoted={props.data.areVoted[index]}
               user={props.data.itemsUsers[index]}
