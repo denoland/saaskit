@@ -41,33 +41,38 @@ function LineChart(
   props: { title: string; x: string[]; y: number[] },
 ) {
   return (
-    <>
+    <div class="py-4">
       <h3 class="py-4 text-2xl font-bold">{props.title}</h3>
-      <Chart
-        type="line"
-        options={{
-          plugins: {
-            legend: { display: false },
-          },
-          scales: {
-            y: { grid: { display: false } },
-            x: { grid: { display: false } },
-          },
-        }}
-        data={{
-          labels: props.x,
-          datasets: [{
-            label: props.title,
-            data: props.y,
-            borderColor: ChartColors.Blue,
-            backgroundColor: ChartColors.Blue,
-            borderWidth: 3,
-            cubicInterpolationMode: "monotone",
-            tension: 0.4,
-          }],
-        }}
-      />
-    </>
+      <div class="relative">
+        <Chart
+          width={550}
+          height={300}
+          type="line"
+          options={{
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+            scales: {
+              y: { grid: { display: false } },
+              x: { grid: { display: false } },
+            },
+          }}
+          data={{
+            labels: props.x,
+            datasets: [{
+              label: props.title,
+              data: props.y,
+              borderColor: ChartColors.Blue,
+              backgroundColor: ChartColors.Blue,
+              borderWidth: 3,
+              cubicInterpolationMode: "monotone",
+              tension: 0.4,
+            }],
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -77,20 +82,22 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
       <Head title="Stats" href={props.url.href} />
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
-          <div class="p-4 mx-auto max-w-screen-md">
-            {props.data.metricsByDay.map((metric, index) => (
-              <LineChart
-                title={props.data.metricsTitles[index]}
-                x={metric.dates!.map((date) =>
-                  new Date(date).toLocaleDateString("en-us", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })
-                )}
-                y={metric.metricsValue!}
-              />
-            ))}
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+              {props.data.metricsByDay.map((metric, index) => (
+                <LineChart
+                  title={props.data.metricsTitles[index]}
+                  x={metric.dates!.map((date) =>
+                    new Date(date).toLocaleDateString("en-us", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  )}
+                  y={metric.metricsValue!}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </Layout>
