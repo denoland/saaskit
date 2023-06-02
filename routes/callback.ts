@@ -11,6 +11,7 @@ import { stripe } from "@/utils/payments.ts";
 import { State } from "./_middleware.ts";
 import { getAccessToken, setCallbackHeaders } from "@/utils/deno_kv_oauth.ts";
 import { oauth2Client } from "@/utils/oauth2_client.ts";
+import { deleteCookie, getCookies } from "std/http/cookie.ts";
 
 interface GitHubUser {
   id: number;
@@ -53,8 +54,9 @@ export const handler: Handlers<any, State> = {
     } else {
       await setUserSessionId(user, sessionId);
     }
-
-    const response = redirect("/");
+    const { redirectUrl } = getCookies(req.headers);
+    const response = redirect(redirectUrl);
+    deleteCookie(response.headers, "redirectUrl");
     setCallbackHeaders(response.headers, sessionId);
     return response;
   },
