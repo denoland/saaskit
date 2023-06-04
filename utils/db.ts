@@ -344,7 +344,7 @@ export async function incrementAnalyticsMetricPerDay(
   metric: string,
   date: Date,
 ) {
-  // convert to universal timezone (UTC)
+  // convert to ISO format that is zero UTC offset
   const metricKey = [
     metric,
     `${date.toISOString().split("T")[0]}`,
