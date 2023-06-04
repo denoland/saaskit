@@ -347,7 +347,7 @@ export async function incrementAnalyticsMetricPerDay(
   // convert to universal timezone (UTC)
   const metricKey = [
     metric,
-    `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`,
+    `${date.toISOString().split("T")[0]}`,
   ];
   await kv.atomic()
     .sum(metricKey, 1n)
