@@ -13,7 +13,7 @@ export async function handler(
   req: Request,
   ctx: MiddlewareHandlerContext<AccountState>,
 ) {
-  const redirectResponse =  redirect(`/login?from=${req.url}`);
+  const redirectResponse = redirect(`/login?from=${req.url}`);
 
   if (!ctx.state.sessionId) return redirectResponse;
   const user = await getUserBySessionId(ctx.state.sessionId);

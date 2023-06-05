@@ -9,7 +9,9 @@ import { redirect } from "@/utils/http.ts";
 
 export const handler: Handlers<State, State> = {
   GET(req, ctx) {
-    return ctx.state.sessionId ? ctx.render(ctx.state) : redirect(`/login?from=${req.url}`);
+    return ctx.state.sessionId
+      ? ctx.render(ctx.state)
+      : redirect(`/login?from=${req.url}`);
   },
   async POST(req, ctx) {
     if (!ctx.state.sessionId) {
