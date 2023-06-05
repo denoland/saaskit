@@ -29,9 +29,10 @@ export async function handler(
   const res = await ctx.next();
 
   if (ctx.destination === "route" && pathname === "/login") {
+    const from = new URL(req.url).searchParams.get("from");
     setCookie(res.headers, {
       name: "redirectUrl",
-      value: req.headers.get("referer")!,
+      value: from ? from : req.headers.get("referer")!,
       path: "/",
     });
   }

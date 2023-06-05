@@ -8,8 +8,8 @@ import { createItem, getUserBySessionId } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 
 export const handler: Handlers<State, State> = {
-  GET(_req, ctx) {
-    return ctx.state.sessionId ? ctx.render(ctx.state) : redirect("/login");
+  GET(req, ctx) {
+    return ctx.state.sessionId ? ctx.render(ctx.state) : redirect(`/login?from=${req.url}`);
   },
   async POST(req, ctx) {
     if (!ctx.state.sessionId) {

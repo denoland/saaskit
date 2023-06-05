@@ -71,7 +71,7 @@ export const handler: Handlers<ItemPageData, State> = {
   },
   async POST(req, ctx) {
     if (!ctx.state.sessionId) {
-      return redirect("/login");
+      return redirect(`/login?from=${req.url}`);
     }
 
     const form = await req.formData();
