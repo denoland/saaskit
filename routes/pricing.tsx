@@ -44,7 +44,7 @@ interface PricingCardProps {
 
 function PricingCard(props: PricingCardProps) {
   return (
-    <div class="flex-1 space-y-4 p-4 ring-1 ring-gray-300 rounded-xl text-center dark:bg-red-100">
+    <div class="flex-1 space-y-4 p-4 ring-1 ring-gray-300 rounded-xl text-center dark:bg-gray-700">
       <div>
         <h3 class="text-2xl font-bold">
           {props.name}
@@ -78,7 +78,7 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
         <div
           class={`mx-auto max-w-4xl w-full flex-1 flex flex-col justify-center px-8`}
         >
-          <div class="mb-8 text-center dark:text-white">
+          <div class="mb-8 text-center">
             <h1 class="text-3xl font-bold">Pricing</h1>
             <p class="text-lg">Choose the plan that suites you</p>
           </div>

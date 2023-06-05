@@ -52,7 +52,7 @@ function Header(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <header
       {...props}
-      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10  dark:text-white ${
+      class={`p-4 justify-between ${SITE_WIDTH_STYLES} flex z-10 ${
         props.class ?? ""
       }`}
     >
@@ -68,7 +68,7 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <footer
       {...props}
-      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 dark:text-gray-300 ${SITE_WIDTH_STYLES} ${
+      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
         props.class ?? ""
       } `}
     >
@@ -133,7 +133,7 @@ export default function Layout(props: LayoutProps) {
   ];
 
   return (
-    <div class="flex flex-col min-h-screen dark:bg-gray-900">
+    <div class="flex flex-col min-h-screen dark:bg-gray-900 dark:text-white">
       <Notice />
       <Header>
         <Nav items={headerNavItems} />
