@@ -5,9 +5,11 @@ import {
   getUserByLogin,
   getUserBySessionId,
   getUserByStripeCustomerId,
+  getVisitsPerDay,
+  incrementVisitsPerDay,
   kv,
-  setUserSession,
-  setUserSubscription,
+  setUserSessionId,
+  updateUserIsSubscribed,
   type User,
 } from "./db.ts";
 import { assertEquals } from "std/testing/asserts.ts";
@@ -65,7 +67,7 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserBySessionId(user.sessionId), user);
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), user);
 
-  await setUserSubscription(user, true);
+  await updateUserIsSubscribed(user, true);
   user = { ...user, isSubscribed: true };
   assertEquals(await getUserById(user.id), user);
   assertEquals(await getUserByLogin(user.login), user);
@@ -73,7 +75,7 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), user);
 
   const sessionId = crypto.randomUUID();
-  await setUserSession(user, sessionId);
+  await setUserSessionId(user, sessionId);
   user = { ...user, sessionId };
   assertEquals(await getUserById(user.id), user);
   assertEquals(await getUserByLogin(user.login), user);
@@ -85,4 +87,17 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserByLogin(user.login), null);
   assertEquals(await getUserBySessionId(user.sessionId), null);
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), null);
+});
+
+Deno.test("[db] visit", async () => {
+  const date = new Date("2023-01-01");
+  const visitsKey = [
+    "visits",
+    `${date.toISOString().split("T")[0]}`,
+  ];
+  await incrementVisitsPerDay(date);
+  assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
+  assertEquals((await getVisitsPerDay(date))!.valueOf(), 1n);
+  await kv.delete(visitsKey);
+  assertEquals(await getVisitsPerDay(date), null);
 });
