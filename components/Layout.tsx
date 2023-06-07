@@ -97,7 +97,7 @@ export default function Layout(props: LayoutProps) {
         inner: "Account",
       }
       : {
-        href: "/sigin",
+        href: "/signin",
         inner: "Sign in",
       },
     {
