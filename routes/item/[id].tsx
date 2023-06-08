@@ -18,7 +18,6 @@ import {
   getManyUsers,
   getUserById,
   getUserBySessionId,
-  getVotedItemsByUser,
   type Item,
   type User,
 } from "@/utils/db.ts";
@@ -26,24 +25,42 @@ import { redirect } from "@/utils/http.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { pluralize } from "@/utils/display.ts";
 
+const PAGE_LENGTH = 10;
+
 interface ItemPageData extends State {
   user: User;
   item: Item;
   comments: Comment[];
   commentsUsers: User[];
   isVoted: boolean;
+  lastPage: number;
+}
+
+function calcPageNum(url: URL) {
+  return parseInt(url.searchParams.get("page") || "1");
+}
+
+function calcLastPage(total = 0, pageLength = PAGE_LENGTH): number {
+  return Math.ceil(total / pageLength);
 }
 
 export const handler: Handlers<ItemPageData, State> = {
-  async GET(_req, ctx) {
+  async GET(req, ctx) {
     const { id } = ctx.params;
+
+    const url = new URL(req.url);
+    const pageNum = calcPageNum(url);
 
     const item = await getItemById(id);
     if (item === null) {
       return ctx.renderNotFound();
     }
 
-    const comments = await getCommentsByItem(id);
+    const allComments = await getCommentsByItem(id);
+    const comments = allComments
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
+
     const commentsUsers = await getManyUsers(
       comments.map((comment) => comment.userId),
     );
@@ -54,6 +71,8 @@ export const handler: Handlers<ItemPageData, State> = {
       ctx.state.sessionId,
     );
 
+    const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
+
     return ctx.render({
       ...ctx.state,
       item,
@@ -61,6 +80,7 @@ export const handler: Handlers<ItemPageData, State> = {
       user: user!,
       commentsUsers,
       isVoted,
+      lastPage,
     });
   },
   async POST(req, ctx) {
@@ -101,6 +121,45 @@ function CommentInput() {
   );
 }
 
+function CommentSummary(
+  props: { user: User; comment: Comment },
+) {
+  return (
+    <div class="py-4">
+      <UserPostedAt
+        user={props.user}
+        createdAt={props.comment.createdAt}
+      />
+      <p>{props.comment.text}</p>
+    </div>
+  );
+}
+
+function PageSelector(
+  props: { currentPage: number; lastPage: number },
+) {
+  return (
+    <div class="flex justify-center py-4 mx-auto">
+      <form class="inline-flex items-center gap-x-2">
+        <input
+          id="current_page"
+          class={`bg-transparent rounded rounded-lg outline-none w-full border-1 border-gray-500 hover:border-black transition duration-300 disabled:(opacity-50 cursor-not-allowed) rounded-md px-2 py-1 dark:(hover:border-white)`}
+          type="number"
+          name="page"
+          min="1"
+          max={props.lastPage}
+          value={props.currentPage}
+          // @ts-ignore: this is valid HTML
+          onchange="this.form.submit()"
+        />
+        <label for="current_page" class="whitespace-nowrap align-middle">
+          of {props.lastPage}
+        </label>
+      </form>
+    </div>
+  );
+}
+
 export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
     <>
@@ -114,21 +173,19 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
           />
           <CommentInput />
           <div>
-            <h2 class="font-bold">
-              {pluralize(props.data.comments.length, "comment")}
-            </h2>
-            {props.data.comments.sort((a, b) =>
-              b.createdAt.getTime() - a.createdAt.getTime()
-            ).map((comment, index) => (
-              <div class="py-4">
-                <UserPostedAt
-                  user={props.data.commentsUsers[index]}
-                  createdAt={comment.createdAt}
-                />
-                <p>{comment.text}</p>
-              </div>
+            {props.data.comments.map((comment, index) => (
+              <CommentSummary
+                user={props.data.commentsUsers[index]}
+                comment={comment}
+              />
             ))}
           </div>
+          {props.data.lastPage > 1 && (
+            <PageSelector
+              currentPage={calcPageNum(props.url)}
+              lastPage={props.data.lastPage}
+            />
+          )}
         </div>
       </Layout>
     </>

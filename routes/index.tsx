@@ -44,6 +44,7 @@ export const handler: Handlers<HomePageData, State> = {
     const timeAgo = calcTimeAgoFilter(url);
     const pageNum = calcPageNum(url);
     const allItems = await getAllItemsInTimeAgo(timeAgo);
+
     const items = allItems
       .toSorted(compareScore)
       .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
