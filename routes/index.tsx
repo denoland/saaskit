@@ -66,7 +66,10 @@ function PageSelector(
   return (
     <div class="flex justify-center py-4 mx-auto">
       <form class="inline-flex items-center gap-x-2">
-        <input type="hidden" name="time-ago" value={props.timeSelector}></input>
+        {props.timeSelector && (
+          <input type="hidden" name="time-ago" value={props.timeSelector}>
+          </input>
+        )}
         <input
           id="current_page"
           class={`bg-transparent rounded rounded-lg outline-none w-full border-1 border-gray-500 hover:border-black transition duration-300 disabled:(opacity-50 cursor-not-allowed) rounded-md px-2 py-1 dark:(hover:border-white)`}
