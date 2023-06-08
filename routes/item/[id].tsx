@@ -12,6 +12,7 @@ import {
 import {
   type Comment,
   createComment,
+  getAreVotedBySessionId,
   getCommentsByItem,
   getItemById,
   getManyUsers,
@@ -48,17 +49,10 @@ export const handler: Handlers<ItemPageData, State> = {
     );
     const user = await getUserById(item.userId);
 
-    let votedItemIds: string[] = [];
-    if (ctx.state.sessionId) {
-      const sessionUser = await getUserBySessionId(ctx.state.sessionId);
-
-      if (sessionUser) {
-        const votedItems = await getVotedItemsByUser(sessionUser?.id);
-        votedItemIds = votedItems.map((item) => item.id);
-      }
-    }
-
-    const isVoted = votedItemIds.includes(id);
+    const [isVoted] = await getAreVotedBySessionId(
+      [item],
+      ctx.state.sessionId,
+    );
 
     return ctx.render({
       ...ctx.state,
