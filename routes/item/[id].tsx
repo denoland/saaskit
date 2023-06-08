@@ -87,6 +87,20 @@ export const handler: Handlers<ItemPageData, State> = {
   },
 };
 
+function CommentInput() {
+  return (
+    <form method="post">
+      <textarea
+        class={INPUT_STYLES}
+        type="text"
+        name="text"
+        required
+      />
+      <button type="submit" class={BUTTON_STYLES}>Comment</button>
+    </form>
+  );
+}
+
 export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
     <>
@@ -98,15 +112,7 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
             isVoted={props.data.isVoted}
             user={props.data.user}
           />
-          <form method="post">
-            <textarea
-              class={INPUT_STYLES}
-              type="text"
-              name="text"
-              required
-            />
-            <button type="submit" class={BUTTON_STYLES}>Comment</button>
-          </form>
+          <CommentInput />
           <div>
             <h2 class="font-bold">
               {pluralize(props.data.comments.length, "comment")}
