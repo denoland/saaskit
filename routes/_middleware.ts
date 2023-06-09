@@ -28,7 +28,9 @@ export async function handler(
 
   const res = await ctx.next();
 
-  if (ctx.destination === "route" && pathname === "/signin") setRedirectUrlCookie(req, res)
-  
+  if (ctx.destination === "route" && pathname === "/signin") {
+    setRedirectUrlCookie(req, res);
+  }
+
   return res;
 }
