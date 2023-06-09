@@ -1,6 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers } from "$fresh/server.ts";
-import { redirect } from "@/utils/http.ts";
 import {
   createUser,
   getUserById,
@@ -9,9 +8,8 @@ import {
 } from "@/utils/db.ts";
 import { stripe } from "@/utils/payments.ts";
 import { State } from "./_middleware.ts";
-import { getAccessToken, setCallbackHeaders } from "@/utils/deno_kv_oauth.ts";
-import { oauth2Client } from "@/utils/oauth2_client.ts";
-import { deleteCookie, getCookies } from "std/http/cookie.ts";
+import { handleCallback } from "deno_kv_oauth";
+import { client } from "@/utils/kv_oauth.ts";
 
 interface GitHubUser {
   id: number;
@@ -34,9 +32,12 @@ async function getUser(accessToken: string): Promise<GitHubUser> {
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
   async GET(req) {
-    const accessToken = await getAccessToken(req, oauth2Client);
+    const { response, accessToken, sessionId } = await handleCallback(
+      req,
+      client,
+    );
+
     const githubUser = await getUser(accessToken);
-    const sessionId = crypto.randomUUID();
 
     const user = await getUserById(githubUser.id.toString());
     if (!user) {
@@ -54,10 +55,6 @@ export const handler: Handlers<any, State> = {
     } else {
       await setUserSessionId(user, sessionId);
     }
-    const { redirectUrl } = getCookies(req.headers);
-    const response = redirect(redirectUrl);
-    deleteCookie(response.headers, "redirectUrl");
-    setCallbackHeaders(response.headers, sessionId);
     return response;
   },
 };
