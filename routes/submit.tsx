@@ -6,12 +6,13 @@ import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 import { createItem, getUserBySessionId } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
+import { redirectToLogin } from "@/utils/redirect.ts";
 
 export const handler: Handlers<State, State> = {
   GET(req, ctx) {
     return ctx.state.sessionId
       ? ctx.render(ctx.state)
-      : redirect(`/login?from=${req.url}`);
+      : redirectToLogin(req.url);
   },
   async POST(req, ctx) {
     if (!ctx.state.sessionId) {
