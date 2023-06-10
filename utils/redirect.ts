@@ -25,9 +25,9 @@ export function deleteRedirectUrlCookie(headers: Headers) {
   deleteCookie(headers, REDIRECT_URL_COOKIE_NAME);
 }
 
-export function getRedirectUrlCookie(headers: Headers){
-   const { redirectUrl } = getCookies(headers);
-   return redirectUrl;
+export function getRedirectUrlCookie(headers: Headers) {
+  const { redirectUrl } = getCookies(headers);
+  return redirectUrl;
 }
 
 export function setCallbackHeaders(req: Request, res: Response) {
