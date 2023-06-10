@@ -17,12 +17,17 @@ export function setRedirectUrlCookie(req: Request, res: Response) {
   });
 }
 
-function setHeaderLocation(headers: Headers, url: string) {
+export function setHeaderLocation(headers: Headers, url: string) {
   headers.set("location", url);
 }
 
-function deleteRedirectUrlCookie(headers: Headers) {
+export function deleteRedirectUrlCookie(headers: Headers) {
   deleteCookie(headers, REDIRECT_URL_COOKIE_NAME);
+}
+
+export function getRedirectUrlCookie(headers: Headers){
+   const { redirectUrl } = getCookies(headers);
+   return redirectUrl;
 }
 
 export function setCallbackHeaders(req: Request, res: Response) {

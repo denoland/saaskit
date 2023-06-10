@@ -10,7 +10,7 @@ import { stripe } from "@/utils/payments.ts";
 import { State } from "./_middleware.ts";
 import { handleCallback } from "deno_kv_oauth";
 import { client } from "@/utils/kv_oauth.ts";
-import { setCallbackHeaders } from "@/utils/redirect.ts";
+import { getRedirectUrlCookie, deleteRedirectUrlCookie } from "@/utils/redirect.ts";
 
 interface GitHubUser {
   id: number;
@@ -36,7 +36,10 @@ export const handler: Handlers<any, State> = {
     const { response, accessToken, sessionId } = await handleCallback(
       req,
       client,
+      getRedirectUrlCookie(req.headers)
     );
+
+    deleteRedirectUrlCookie(response.headers);
 
     const githubUser = await getUser(accessToken);
 
@@ -56,7 +59,6 @@ export const handler: Handlers<any, State> = {
     } else {
       await setUserSessionId(user, sessionId);
     }
-    setCallbackHeaders(req, response);
     return response;
   },
 };
