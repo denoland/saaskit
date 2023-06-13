@@ -1,8 +1,25 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { redirect } from "@/utils/http.ts";
+import type { RedirectStatus, Status } from "std/http/http_status.ts";
 import { deleteCookie, getCookies, setCookie } from "std/http/cookie.ts";
 
-const REDIRECT_URL_COOKIE_NAME = "redirectUrl";
+export const REDIRECT_URL_COOKIE_NAME = "redirectUrl";
+
+/**
+ * @param location A relative (to the request URL) or absolute URL.
+ * @param status HTTP status
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Location}
+ */
+export function redirect(
+  location: string,
+  status: Status.Created | RedirectStatus = 303,
+) {
+  return new Response(null, {
+    headers: {
+      location,
+    },
+    status,
+  });
+}
 
 export function redirectToLogin(url: string) {
   return redirect(`/signin?from=${url}`);
@@ -12,13 +29,9 @@ export function setRedirectUrlCookie(req: Request, res: Response) {
   const from = new URL(req.url).searchParams.get("from");
   setCookie(res.headers, {
     name: REDIRECT_URL_COOKIE_NAME,
-    value: from ? from : req.headers.get("referer")!,
+    value: from ?? req.headers.get("referer")!,
     path: "/",
   });
-}
-
-export function setHeaderLocation(headers: Headers, url: string) {
-  headers.set("location", url);
 }
 
 export function deleteRedirectUrlCookie(headers: Headers) {
@@ -26,12 +39,5 @@ export function deleteRedirectUrlCookie(headers: Headers) {
 }
 
 export function getRedirectUrlCookie(headers: Headers) {
-  const { redirectUrl } = getCookies(headers);
-  return redirectUrl;
-}
-
-export function setCallbackHeaders(req: Request, res: Response) {
-  const { redirectUrl } = getCookies(req.headers);
-  setHeaderLocation(res.headers, redirectUrl);
-  deleteRedirectUrlCookie(res.headers);
+  return getCookies(headers)[REDIRECT_URL_COOKIE_NAME];
 }

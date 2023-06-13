@@ -21,7 +21,7 @@ import {
   type Item,
   type User,
 } from "@/utils/db.ts";
-import { redirect } from "@/utils/http.ts";
+import { redirect } from "@/utils/redirect.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { pluralize } from "@/utils/display.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
