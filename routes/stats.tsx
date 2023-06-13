@@ -41,7 +41,7 @@ function LineChart(
   props: { title: string; x: string[]; y: number[] },
 ) {
   return (
-    <div class="py-4">
+    <div class="py-4 resize lg:chart">
       <h3 class="py-4 text-2xl font-bold">{props.title}</h3>
       <Chart
         width={550}
