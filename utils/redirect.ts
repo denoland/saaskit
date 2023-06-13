@@ -2,7 +2,7 @@
 import type { RedirectStatus, Status } from "std/http/http_status.ts";
 import { deleteCookie, getCookies, setCookie } from "std/http/cookie.ts";
 
-export const REDIRECT_URL_COOKIE_NAME = "redirectUrl";
+export const REDIRECT_URL_COOKIE_NAME = "redirect-url";
 
 /**
  * @param location A relative (to the request URL) or absolute URL.
