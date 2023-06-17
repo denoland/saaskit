@@ -77,7 +77,17 @@ function LineChart(
 export default function StatsPage(props: PageProps<StatsPageData>) {
   return (
     <>
-      <Head title="Stats" href={props.url.href} />
+      <Head title="Stats" href={props.url.href}>
+        <style
+          type="text/css"
+          dangerouslySetInnerHTML={{
+            __html: `
+            .resize svg {
+              width:100%;
+            }`,
+          }}
+        />
+      </Head>
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
