@@ -70,6 +70,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
       <Head href={props.url.href} />
       <Layout session={props.data.sessionId}>
         <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
+          <TimeSelector />
           {props.data.items.map((item, index) => (
             <ItemSummary
               item={item}
@@ -77,7 +78,6 @@ export default function HomePage(props: PageProps<HomePageData>) {
               user={props.data.itemsUsers[index]}
             />
           ))}
-
           {props.data.lastPage > 1 && (
             <PageSelector
               currentPage={calcPageNum(props.url)}
@@ -85,7 +85,6 @@ export default function HomePage(props: PageProps<HomePageData>) {
               timeSelector={calcTimeAgoFilter(props.url)}
             />
           )}
-          <TimeSelector />
         </div>
       </Layout>
     </>
