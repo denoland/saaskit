@@ -1,6 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
+import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
@@ -16,21 +17,11 @@ import {
   type User,
 } from "@/utils/db.ts";
 
-const PAGE_LENGTH = 10;
-
 interface HomePageData extends State {
   itemsUsers: User[];
   items: Item[];
   lastPage: number;
   areVoted: boolean[];
-}
-
-function calcPageNum(url: URL) {
-  return parseInt(url.searchParams.get("page") || "1");
-}
-
-function calcLastPage(total = 0, pageLength = PAGE_LENGTH): number {
-  return Math.ceil(total / pageLength);
 }
 
 function calcTimeAgoFilter(url: URL) {
@@ -65,6 +56,7 @@ export const handler: Handlers<HomePageData, State> = {
 function TimeSelector() {
   return (
     <div class="flex justify-center">
+      {/* These links do not preserve current URL queries. E.g. if ?page=2, that'll be removed once one of these links is clicked */}
       <a class="hover:underline mr-4" href="/?time-ago=week">Last Week</a>
       <a class="hover:underline mr-4" href="/?time-ago=month">Last Month</a>
       <a class="hover:underline mr-4" href="/?time-ago=all">All time</a>

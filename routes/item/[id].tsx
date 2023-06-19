@@ -10,6 +10,7 @@ import {
   INPUT_STYLES,
   SITE_WIDTH_STYLES,
 } from "@/utils/constants.ts";
+import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import {
   type Comment,
   createComment,
@@ -26,8 +27,6 @@ import { redirect } from "@/utils/http.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { pluralize } from "@/utils/display.ts";
 
-const PAGE_LENGTH = 10;
-
 interface ItemPageData extends State {
   user: User;
   item: Item;
@@ -35,14 +34,6 @@ interface ItemPageData extends State {
   commentsUsers: User[];
   isVoted: boolean;
   lastPage: number;
-}
-
-function calcPageNum(url: URL) {
-  return parseInt(url.searchParams.get("page") || "1");
-}
-
-function calcLastPage(total = 0, pageLength = PAGE_LENGTH): number {
-  return Math.ceil(total / pageLength);
 }
 
 export const handler: Handlers<ItemPageData, State> = {
