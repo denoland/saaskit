@@ -1,12 +1,17 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  createItem,
   createUser,
+  getItemById,
+  getItemByUser,
+  getItemsByUserId,
   getUserById,
   getUserByLogin,
   getUserBySessionId,
   getUserByStripeCustomerId,
   getVisitsPerDay,
   incrementVisitsPerDay,
+  type Item,
   kv,
   setUserSessionId,
   updateUserIsSubscribed,
@@ -23,19 +28,16 @@ async function deleteUser(user: User) {
     user.stripeCustomerId,
   ];
 
-  const [
-    userRes,
-    userByLoginRes,
-    userBySessionRes,
-    userByStripeCustomerRes,
-  ] = await kv.getMany<User[]>([
-    usersKey,
-    usersByLoginKey,
-    usersBySessionKey,
-    usersByStripeCustomerKey,
-  ]);
+  const [userRes, userByLoginRes, userBySessionRes, userByStripeCustomerRes] =
+    await kv.getMany<User[]>([
+      usersKey,
+      usersByLoginKey,
+      usersBySessionKey,
+      usersByStripeCustomerKey,
+    ]);
 
-  const res = await kv.atomic()
+  const res = await kv
+    .atomic()
     .check(userRes)
     .check(userByLoginRes)
     .check(userBySessionRes)
@@ -89,12 +91,26 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), null);
 });
 
+Deno.test("[db] item", async () => {
+  const initItem = {
+    createdAt: new Date("2023-01-01"),
+    id: crypto.randomUUID(),
+    score: 0,
+    title: "title",
+    url: "url",
+    userId: crypto.randomUUID(),
+  };
+
+  await createItem(initItem);
+  const item = { ...initItem } as Item;
+  assertEquals(await getItemById(item.id), item);
+  assertEquals(await getItemByUser(item.userId, item.id), item);
+  assertEquals(await getItemsByUserId(item.userId), [item]);
+});
+
 Deno.test("[db] visit", async () => {
   const date = new Date("2023-01-01");
-  const visitsKey = [
-    "visits",
-    `${date.toISOString().split("T")[0]}`,
-  ];
+  const visitsKey = ["visits", `${date.toISOString().split("T")[0]}`];
   await incrementVisitsPerDay(date);
   assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
   assertEquals((await getVisitsPerDay(date))!.valueOf(), 1n);
