@@ -1,17 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
-  createItem,
   createUser,
-  getItemById,
-  getItemByUser,
-  getItemsByUserId,
   getUserById,
   getUserByLogin,
   getUserBySessionId,
   getUserByStripeCustomerId,
   getVisitsPerDay,
   incrementVisitsPerDay,
-  type Item,
   kv,
   setUserSessionId,
   updateUserIsSubscribed,
@@ -89,23 +84,6 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserByLogin(user.login), null);
   assertEquals(await getUserBySessionId(user.sessionId), null);
   assertEquals(await getUserByStripeCustomerId(user.stripeCustomerId), null);
-});
-
-Deno.test("[db] item", async () => {
-  const initItem = {
-    createdAt: new Date("2023-01-01"),
-    id: crypto.randomUUID(),
-    score: 0,
-    title: "title",
-    url: "url",
-    userId: crypto.randomUUID(),
-  };
-
-  await createItem(initItem);
-  const item = { ...initItem } as Item;
-  assertEquals(await getItemById(item.id), item);
-  assertEquals(await getItemByUser(item.userId, item.id), item);
-  assertEquals(await getItemsByUserId(item.userId), [item]);
 });
 
 Deno.test("[db] visit", async () => {
