@@ -23,16 +23,19 @@ async function deleteUser(user: User) {
     user.stripeCustomerId,
   ];
 
-  const [userRes, userByLoginRes, userBySessionRes, userByStripeCustomerRes] =
-    await kv.getMany<User[]>([
-      usersKey,
-      usersByLoginKey,
-      usersBySessionKey,
-      usersByStripeCustomerKey,
-    ]);
+  const [
+    userRes,
+    userByLoginRes,
+    userBySessionRes,
+    userByStripeCustomerRes,
+  ] = await kv.getMany<User[]>([
+    usersKey,
+    usersByLoginKey,
+    usersBySessionKey,
+    usersByStripeCustomerKey,
+  ]);
 
-  const res = await kv
-    .atomic()
+  const res = await kv.atomic()
     .check(userRes)
     .check(userByLoginRes)
     .check(userBySessionRes)
@@ -88,7 +91,10 @@ Deno.test("[db] user", async () => {
 
 Deno.test("[db] visit", async () => {
   const date = new Date("2023-01-01");
-  const visitsKey = ["visits", `${date.toISOString().split("T")[0]}`];
+  const visitsKey = [
+    "visits",
+    `${date.toISOString().split("T")[0]}`,
+  ];
   await incrementVisitsPerDay(date);
   assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
   assertEquals((await getVisitsPerDay(date))!.valueOf(), 1n);
