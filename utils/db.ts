@@ -83,20 +83,6 @@ export async function createItem(item: Item) {
   if (!res.ok) throw new Error(`Failed to create item: ${item}`);
 }
 
-export async function deleteItem(item: Item) {
-  const itemsKey = ["items", item.id];
-  const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
-  const itemsByUserKey = ["items_by_user", item.userId, item.id];
-
-  const res = await kv.atomic()
-    .delete(itemsKey)
-    .delete(itemsByTimeKey)
-    .delete(itemsByUserKey)
-    .commit();
-
-  if (!res.ok) throw new Error(`Failed to delete item: ${item}`);
-}
-
 export async function getItem(id: string) {
   return await getValue<Item>(["items", id]);
 }

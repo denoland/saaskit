@@ -2,7 +2,6 @@
 import {
   createItem,
   createUser,
-  deleteItem,
   getAllItems,
   getItem,
   getItemsByUser,
@@ -72,7 +71,28 @@ Deno.test("[db] newItemProps()", () => {
   assertEquals(itemProps.score, 0);
 });
 
-Deno.test("[db] (get/create/delete)Item()", async () => {
+Deno.test("[db] getAllItems()", async () => {
+  const item1: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+  };
+  const item2: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+  };
+
+  assertEquals(await getAllItems(), []);
+
+  await createItem(item1);
+  await createItem(item2);
+  assertArrayIncludes(await getAllItems(), [item1, item2]);
+});
+
+Deno.test("[db] (get/create)Item()", async () => {
   const item: Item = {
     userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
@@ -85,9 +105,6 @@ Deno.test("[db] (get/create/delete)Item()", async () => {
   await createItem(item);
   await assertRejects(async () => await createItem(item));
   assertEquals(await getItem(item.id), item);
-
-  await deleteItem(item);
-  assertEquals(await getItem(item.id), null);
 });
 
 Deno.test("[db] getItemsByUser()", async () => {
@@ -111,35 +128,6 @@ Deno.test("[db] getItemsByUser()", async () => {
   await createItem(item2);
   const itemsByUser = await getItemsByUser(userId);
   assertArrayIncludes(itemsByUser, [item1, item2]);
-
-  await deleteItem(item1);
-  await deleteItem(item2);
-  assertEquals(await getItemsByUser(userId), []);
-});
-
-Deno.test("[db] getAllItems()", async () => {
-  const item1: Item = {
-    userId: crypto.randomUUID(),
-    title: crypto.randomUUID(),
-    url: `http://${crypto.randomUUID()}.com`,
-    ...newItemProps(),
-  };
-  const item2: Item = {
-    userId: crypto.randomUUID(),
-    title: crypto.randomUUID(),
-    url: `http://${crypto.randomUUID()}.com`,
-    ...newItemProps(),
-  };
-
-  assertEquals(await getAllItems(), []);
-
-  await createItem(item1);
-  await createItem(item2);
-  assertArrayIncludes(await getAllItems(), [item1, item2]);
-
-  await deleteItem(item1);
-  await deleteItem(item2);
-  assertEquals(await getAllItems(), []);
 });
 
 Deno.test("[db] getItemsSince()", async () => {
@@ -160,7 +148,7 @@ Deno.test("[db] getItemsSince()", async () => {
   await createItem(item1);
   await createItem(item2);
 
-  assertEquals(await getItemsSince(DAY), [item1]);
+  assertArrayIncludes(await getItemsSince(DAY), [item1]);
   assertArrayIncludes(await getItemsSince(3 * DAY), [item1, item2]);
 });
 
