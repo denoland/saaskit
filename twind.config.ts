@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { Options } from "$fresh/plugins/twindv1.ts";
-import { defineConfig, Preset } from "https://esm.sh/@twind/core@1.1.3";
+import { defineConfig, Preset } from "twind/core";
 // twind preset
 import presetAutoPrefix from "twind-preset-autoprefix";
 import presetTailWind from "twind-preset-tailwind";
