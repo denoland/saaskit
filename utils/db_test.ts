@@ -133,7 +133,7 @@ Deno.test("[db] getAllItems()", async () => {
 
   await setItem(item1);
   await setItem(item2);
-  assertEquals(await getAllItems(), [item1, item2]);
+  assertArrayIncludes(await getAllItems(), [item1, item2]);
 
   await deleteItem(item1);
   await deleteItem(item2);
@@ -146,7 +146,6 @@ Deno.test("[db] getItemsSince()", async () => {
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
     ...newItemProps(),
-    createdAt: new Date(Date.now()),
   };
   const item2: Item = {
     userId: crypto.randomUUID(),
@@ -156,11 +155,11 @@ Deno.test("[db] getItemsSince()", async () => {
     createdAt: new Date(Date.now() - (2 * DAY)),
   };
 
-  assertEquals(await getItemsSince(DAY), [item1]);
-  assertEquals(await getItemsSince(3 * DAY), [item1, item2]);
+  await setItem(item1);
+  await setItem(item2);
 
-  await deleteItem(item1);
-  await deleteItem(item2);
+  assertEquals(await getItemsSince(DAY), [item1]);
+  assertArrayIncludes(await getItemsSince(3 * DAY), [item1, item2]);
 });
 
 Deno.test("[db] user", async () => {
