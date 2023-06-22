@@ -49,11 +49,11 @@ export function newItemProps(): Omit<Item, "userId" | "title" | "url"> {
 }
 
 /**
- * Sets an item in KV.
+ * Creates a new item in KV. Throws if the item already exists in one of the indexes.
  *
  * @example New item creation
  * ```ts
- * import { newItemProps, setItem, incrementAnalyticsMetricPerDay } from "@/utils/db.ts";
+ * import { newItemProps, createItem, incrementAnalyticsMetricPerDay } from "@/utils/db.ts";
  *
  * const item: Item = {
  *   userId: "example-user-id",
@@ -62,22 +62,25 @@ export function newItemProps(): Omit<Item, "userId" | "title" | "url"> {
  *   ..newItemProps(),
  * };
  *
- * await setItem(item);
+ * await createItem(item);
  * await incrementAnalyticsMetricPerDay("items_count", item.createdAt);
  * ```
  */
-export async function setItem(item: Item) {
+export async function createItem(item: Item) {
   const itemsKey = ["items", item.id];
   const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
   const itemsByUserKey = ["items_by_user", item.userId, item.id];
 
   const res = await kv.atomic()
+    .check({ key: itemsKey, versionstamp: null })
+    .check({ key: itemsByTimeKey, versionstamp: null })
+    .check({ key: itemsByUserKey, versionstamp: null })
     .set(itemsKey, item)
     .set(itemsByTimeKey, item)
     .set(itemsByUserKey, item)
     .commit();
 
-  if (!res.ok) throw new Error(`Failed to set item: ${item}`);
+  if (!res.ok) throw new Error(`Failed to create item: ${item}`);
 }
 
 export async function deleteItem(item: Item) {
@@ -91,7 +94,7 @@ export async function deleteItem(item: Item) {
     .delete(itemsByUserKey)
     .commit();
 
-  if (!res.ok) throw new Error(`Failed to set item: ${item}`);
+  if (!res.ok) throw new Error(`Failed to delete item: ${item}`);
 }
 
 export async function getItem(id: string) {

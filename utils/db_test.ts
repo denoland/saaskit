@@ -1,5 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  createItem,
   createUser,
   deleteItem,
   getAllItems,
@@ -15,7 +16,6 @@ import {
   type Item,
   kv,
   newItemProps,
-  setItem,
   setUserSessionId,
   updateUserIsSubscribed,
   type User,
@@ -24,6 +24,7 @@ import {
   assertAlmostEquals,
   assertArrayIncludes,
   assertEquals,
+  assertRejects,
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
 
@@ -71,7 +72,7 @@ Deno.test("[db] newItemProps()", () => {
   assertEquals(itemProps.score, 0);
 });
 
-Deno.test("[db] (get/set/delete)Item()", async () => {
+Deno.test("[db] (get/create/delete)Item()", async () => {
   const item: Item = {
     userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
@@ -81,7 +82,8 @@ Deno.test("[db] (get/set/delete)Item()", async () => {
 
   assertEquals(await getItem(item.id), null);
 
-  await setItem(item);
+  await createItem(item);
+  await assertRejects(async () => await createItem(item));
   assertEquals(await getItem(item.id), item);
 
   await deleteItem(item);
@@ -105,8 +107,8 @@ Deno.test("[db] getItemsByUser()", async () => {
 
   assertEquals(await getItemsByUser(userId), []);
 
-  await setItem(item1);
-  await setItem(item2);
+  await createItem(item1);
+  await createItem(item2);
   const itemsByUser = await getItemsByUser(userId);
   assertArrayIncludes(itemsByUser, [item1, item2]);
 
@@ -131,8 +133,8 @@ Deno.test("[db] getAllItems()", async () => {
 
   assertEquals(await getAllItems(), []);
 
-  await setItem(item1);
-  await setItem(item2);
+  await createItem(item1);
+  await createItem(item2);
   assertArrayIncludes(await getAllItems(), [item1, item2]);
 
   await deleteItem(item1);
@@ -155,8 +157,8 @@ Deno.test("[db] getItemsSince()", async () => {
     createdAt: new Date(Date.now() - (2 * DAY)),
   };
 
-  await setItem(item1);
-  await setItem(item2);
+  await createItem(item1);
+  await createItem(item2);
 
   assertEquals(await getItemsSince(DAY), [item1]);
   assertArrayIncludes(await getItemsSince(3 * DAY), [item1, item2]);

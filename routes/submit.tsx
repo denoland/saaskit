@@ -4,11 +4,11 @@ import Head from "@/components/Head.tsx";
 import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 import {
+  createItem,
   getUserBySessionId,
   incrementAnalyticsMetricPerDay,
   type Item,
   newItemProps,
-  setItem,
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/redirect.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
@@ -50,7 +50,7 @@ export const handler: Handlers<State, State> = {
       url,
       ...newItemProps(),
     };
-    await setItem(item);
+    await createItem(item);
     await incrementAnalyticsMetricPerDay("items_count", new Date());
 
     return redirect(`/item/${item!.id}`);

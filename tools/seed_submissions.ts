@@ -1,11 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 // Description: Seeds the kv db with Hacker News stories
 import {
+  createItem,
   createUser,
   incrementAnalyticsMetricPerDay,
   type Item,
   newItemProps,
-  setItem,
 } from "@/utils/db.ts";
 
 // Reference: https://github.com/HackerNews/API
@@ -75,7 +75,7 @@ async function seedSubmissions(stories: Story[]) {
     await Promise.all(
       batch.map((item) =>
         Promise.all([
-          setItem(item),
+          createItem(item),
           incrementAnalyticsMetricPerDay("items_count", new Date()),
         ])
       ),
