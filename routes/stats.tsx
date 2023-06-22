@@ -60,7 +60,13 @@ function LineChart(
             legend: { display: false },
           },
           scales: {
-            y: { grid: { display: false }, beginAtZero: true },
+            y: {
+              beginAtZero: true,
+              grid: { display: false },
+              ticks: {
+                stepSize: 1,
+              },
+            },
             x: { grid: { display: false } },
           },
         }}

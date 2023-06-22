@@ -1,4 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
+import { DAY } from "https://deno.land/std@0.192.0/datetime/constants.ts";
 
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
@@ -161,7 +162,8 @@ export function newCommentProps(): Pick<Comment, "id" | "createdAt"> {
 export async function createComment(comment: Comment) {
   const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
 
-  const res = await kv.atomic()
+  const res = await kv
+    .atomic()
     .check({ key: commentsByItemKey, versionstamp: null })
     .set(commentsByItemKey, comment)
     .commit();
@@ -216,7 +218,8 @@ export async function createVote(vote: Vote) {
     itemsByTimeKey,
     itemsByUserKey,
   ]);
-  const res = await kv.atomic()
+  const res = await kv
+    .atomic()
     .check(itemRes)
     .check(itemsByTimeRes)
     .check(itemsByUserRes)
@@ -261,7 +264,8 @@ export async function deleteVote(vote: Vote) {
     itemsByTimeKey,
     itemsByUserKey,
   ]);
-  const res = await kv.atomic()
+  const res = await kv
+    .atomic()
     .check(itemRes)
     .check(itemsByTimeRes)
     .check(itemsByUserRes)
@@ -383,9 +387,11 @@ export async function getUserByLogin(login: string) {
 
 export async function getUserBySession(sessionId: string) {
   const usersBySessionKey = ["users_by_session", sessionId];
-  return await getValue<User>(usersBySessionKey, {
-    consistency: "eventual",
-  }) ?? await getValue<User>(usersBySessionKey);
+  return (
+    (await getValue<User>(usersBySessionKey, {
+      consistency: "eventual",
+    })) ?? (await getValue<User>(usersBySessionKey))
+  );
 }
 
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
