@@ -80,22 +80,20 @@ export default function UserPage(props: PageProps<UserData>) {
   return (
     <>
       <Head title={props.data.user.login} href={props.url.href} />
-      <Layout session={props.data.sessionId}>
-        <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
-          <Row
-            title={props.data.user.login}
-            text={pluralize(props.data.items.length, "submission")}
-            img={props.data.user.avatarUrl}
+      <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
+        <Row
+          title={props.data.user.login}
+          text={pluralize(props.data.items.length, "submission")}
+          img={props.data.user.avatarUrl}
+        />
+        {props.data.items.map((item, index) => (
+          <ItemSummary
+            item={item}
+            isVoted={props.data.areVoted[index]}
+            user={props.data.user}
           />
-          {props.data.items.map((item, index) => (
-            <ItemSummary
-              item={item}
-              isVoted={props.data.areVoted[index]}
-              user={props.data.user}
-            />
-          ))}
-        </div>
-      </Layout>
+        ))}
+      </div>
     </>
   );
 }

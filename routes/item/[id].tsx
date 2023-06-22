@@ -132,30 +132,28 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
     <>
       <Head title={props.data.item.title} href={props.url.href} />
-      <Layout session={props.data.sessionId}>
-        <div class={`${SITE_WIDTH_STYLES} flex-1 px-4 space-y-8`}>
-          <ItemSummary
-            item={props.data.item}
-            isVoted={props.data.isVoted}
-            user={props.data.user}
-          />
-          <CommentInput />
-          <div>
-            {props.data.comments.map((comment, index) => (
-              <CommentSummary
-                user={props.data.commentsUsers[index]}
-                comment={comment}
-              />
-            ))}
-          </div>
-          {props.data.lastPage > 1 && (
-            <PageSelector
-              currentPage={calcPageNum(props.url)}
-              lastPage={props.data.lastPage}
+      <div class={`${SITE_WIDTH_STYLES} flex-1 px-4 space-y-8`}>
+        <ItemSummary
+          item={props.data.item}
+          isVoted={props.data.isVoted}
+          user={props.data.user}
+        />
+        <CommentInput />
+        <div>
+          {props.data.comments.map((comment, index) => (
+            <CommentSummary
+              user={props.data.commentsUsers[index]}
+              comment={comment}
             />
-          )}
+          ))}
         </div>
-      </Layout>
+        {props.data.lastPage > 1 && (
+          <PageSelector
+            currentPage={calcPageNum(props.url)}
+            lastPage={props.data.lastPage}
+          />
+        )}
+      </div>
     </>
   );
 }
