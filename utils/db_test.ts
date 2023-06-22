@@ -126,8 +126,7 @@ Deno.test("[db] getItemsByUser()", async () => {
 
   await createItem(item1);
   await createItem(item2);
-  const itemsByUser = await getItemsByUser(userId);
-  assertArrayIncludes(itemsByUser, [item1, item2]);
+  assertArrayIncludes(await getItemsByUser(userId), [item1, item2]);
 });
 
 Deno.test("[db] getItemsSince()", async () => {
