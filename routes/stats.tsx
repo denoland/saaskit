@@ -1,7 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
-import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import { getManyAnalyticsMetricsPerDay } from "@/utils/db.ts";

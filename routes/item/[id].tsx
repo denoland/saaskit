@@ -1,7 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import type { State } from "@/routes/_middleware.ts";
-import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
@@ -25,7 +24,6 @@ import {
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/redirect.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
-import { pluralize } from "@/utils/display.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
 
 interface ItemPageData extends State {

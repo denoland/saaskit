@@ -3,7 +3,6 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { CSS, render } from "$gfm";
 import { getPost, Post } from "@/utils/posts.ts";
 import Head from "@/components/Head.tsx";
-import Layout from "@/components/Layout.tsx";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 

@@ -2,7 +2,6 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
-import Layout from "@/components/Layout.tsx";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
