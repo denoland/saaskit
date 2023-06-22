@@ -1,10 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { assertArrayIncludes } from "https://deno.land/std@0.191.0/testing/asserts.ts";
 import {
   createUser,
   deleteItem,
+  getAllItems,
   getItem,
   getItemsByUser,
+  getItemsSince,
   getUserById,
   getUserByLogin,
   getUserBySessionId,
@@ -19,7 +20,12 @@ import {
   updateUserIsSubscribed,
   type User,
 } from "./db.ts";
-import { assertAlmostEquals, assertEquals } from "std/testing/asserts.ts";
+import {
+  assertAlmostEquals,
+  assertArrayIncludes,
+  assertEquals,
+} from "std/testing/asserts.ts";
+import { DAY } from "std/datetime/constants.ts";
 
 async function deleteUser(user: User) {
   const usersKey = ["users", user.id];
@@ -107,6 +113,54 @@ Deno.test("[db] getItemsByUser()", async () => {
   await deleteItem(item1);
   await deleteItem(item2);
   assertEquals(await getItemsByUser(userId), []);
+});
+
+Deno.test("[db] getAllItems()", async () => {
+  const item1: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+  };
+  const item2: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+  };
+
+  assertEquals(await getAllItems(), []);
+
+  await setItem(item1);
+  await setItem(item2);
+  assertEquals(await getAllItems(), [item1, item2]);
+
+  await deleteItem(item1);
+  await deleteItem(item2);
+  assertEquals(await getAllItems(), []);
+});
+
+Deno.test("[db] getItemsSince()", async () => {
+  const item1: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    createdAt: new Date(Date.now()),
+  };
+  const item2: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    createdAt: new Date(Date.now() - (2 * DAY)),
+  };
+
+  assertEquals(await getItemsSince(DAY), [item1]);
+  assertEquals(await getItemsSince(3 * DAY), [item1, item2]);
+
+  await deleteItem(item1);
+  await deleteItem(item2);
 });
 
 Deno.test("[db] user", async () => {
