@@ -51,10 +51,12 @@ export const handler: Handlers<HomePageData, State> = {
 
     const itemsUsers = await getManyUsers(items.map((item) => item.userId));
 
-    const areVoted = await getAreVotedBySessionId(
-      items,
-      ctx.state.sessionId,
-    );
+    const areVoted = ctx.state.sessionId
+      ? await getAreVotedBySessionId(
+        items,
+        ctx.state.sessionId,
+      )
+      : [];
     const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
 
     return ctx.render({ ...ctx.state, items, itemsUsers, areVoted, lastPage });

@@ -58,10 +58,12 @@ export const handler: Handlers<ItemPageData, State> = {
     );
     const user = await getUser(item.userId);
 
-    const [isVoted] = await getAreVotedBySessionId(
-      [item],
-      ctx.state.sessionId,
-    );
+    const [isVoted] = ctx.state.sessionId
+      ? await getAreVotedBySessionId(
+        [item],
+        ctx.state.sessionId,
+      )
+      : [];
 
     const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
 

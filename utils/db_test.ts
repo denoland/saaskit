@@ -10,6 +10,7 @@ import {
   getItem,
   getItemsByUser,
   getItemsSince,
+  getManyUsers,
   getUser,
   getUserByLogin,
   getUserBySession,
@@ -119,13 +120,8 @@ Deno.test("[db] getItemsSince()", async () => {
   assertArrayIncludes(await getItemsSince(3 * DAY), [item1, item2]);
 });
 
-Deno.test("[db] newUserProps()", () => {
-  const userProps = newUserProps();
-  assertEquals(userProps.isSubscribed, false);
-});
-
-Deno.test("[db] (create/get/update)User() + deleteUserBySession()", async () => {
-  const user: User = {
+function genNewUser(): User {
+  return {
     id: crypto.randomUUID(),
     login: crypto.randomUUID(),
     avatarUrl: `http://${crypto.randomUUID()}`,
@@ -133,6 +129,10 @@ Deno.test("[db] (create/get/update)User() + deleteUserBySession()", async () => 
     stripeCustomerId: crypto.randomUUID(),
     ...newUserProps(),
   };
+}
+
+Deno.test("[db] user", async () => {
+  const user = genNewUser();
 
   assertEquals(await getUser(user.id), null);
   assertEquals(await getUserByLogin(user.login), null);
@@ -145,6 +145,10 @@ Deno.test("[db] (create/get/update)User() + deleteUserBySession()", async () => 
   assertEquals(await getUserByLogin(user.login), user);
   assertEquals(await getUserBySession(user.sessionId), user);
   assertEquals(await getUserByStripeCustomer(user.stripeCustomerId!), user);
+
+  const user1 = genNewUser();
+  await createUser(user1);
+  assertArrayIncludes(await getManyUsers([user.id, user1.id]), [user, user1]);
 
   await deleteUserBySession(user.sessionId);
   assertEquals(await getUserBySession(user.sessionId), null);
