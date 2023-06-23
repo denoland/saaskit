@@ -162,8 +162,7 @@ export function newCommentProps(): Pick<Comment, "id" | "createdAt"> {
 export async function createComment(comment: Comment) {
   const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
 
-  const res = await kv
-    .atomic()
+  const res = await kv.atomic()
     .check({ key: commentsByItemKey, versionstamp: null })
     .set(commentsByItemKey, comment)
     .commit();
@@ -351,6 +350,7 @@ export async function updateUser(user: User) {
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
+<<<<<<< HEAD
   const atomicOp = kv.atomic();
 
   if (user.stripeCustomerId !== undefined) {
@@ -363,6 +363,9 @@ export async function updateUser(user: User) {
   }
 
   const res = await atomicOp
+=======
+  const res = await kv.atomic()
+>>>>>>> e6ae61b (chore: revert unintended formatting)
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
