@@ -63,9 +63,7 @@ function LineChart(
             y: {
               beginAtZero: true,
               grid: { display: false },
-              ticks: {
-                stepSize: 1,
-              },
+              ticks: { stepSize: 1 },
             },
             x: { grid: { display: false } },
           },

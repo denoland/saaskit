@@ -218,8 +218,7 @@ export async function createVote(vote: Vote) {
     itemsByTimeKey,
     itemsByUserKey,
   ]);
-  const res = await kv
-    .atomic()
+  const res = await kv.atomic()
     .check(itemRes)
     .check(itemsByTimeRes)
     .check(itemsByUserRes)
@@ -264,8 +263,7 @@ export async function deleteVote(vote: Vote) {
     itemsByTimeKey,
     itemsByUserKey,
   ]);
-  const res = await kv
-    .atomic()
+  const res = await kv.atomic()
     .check(itemRes)
     .check(itemsByTimeRes)
     .check(itemsByUserRes)
@@ -387,11 +385,9 @@ export async function getUserByLogin(login: string) {
 
 export async function getUserBySession(sessionId: string) {
   const usersBySessionKey = ["users_by_session", sessionId];
-  return (
-    (await getValue<User>(usersBySessionKey, {
-      consistency: "eventual",
-    })) ?? (await getValue<User>(usersBySessionKey))
-  );
+  return await getValue<User>(usersBySessionKey, {
+    consistency: "eventual",
+  }) ?? await getValue<User>(usersBySessionKey);
 }
 
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
