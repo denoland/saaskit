@@ -28,7 +28,7 @@ export default function ItemSummary(props: ItemSummaryProps) {
         <span>
           <a
             class="hover:underline text-gray-500"
-            href={props.item.url}
+            href={props.item.url.toString()}
             target="_blank"
           >
             {new URL(props.item.url).host} ↗

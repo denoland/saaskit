@@ -83,7 +83,7 @@ export default function UserPage(props: PageProps<UserData>) {
         <Row
           title={props.data.user.login}
           text={pluralize(props.data.items.length, "submission")}
-          img={props.data.user.avatarUrl}
+          img={props.data.user.avatarUrl.toString()}
         />
         {props.data.items.map((item, index) => (
           <ItemSummary
