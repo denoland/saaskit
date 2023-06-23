@@ -1,5 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  analyticsKey,
   type Comment,
   createComment,
   createItem,
@@ -204,4 +205,11 @@ Deno.test("[db] createComment() + getCommentsByItem()", async () => {
   await createComment(comment2);
   await assertRejects(async () => await createComment(comment2));
   assertArrayIncludes(await getCommentsByItem(itemId), [comment1, comment2]);
+});
+
+Deno.test("[db] analyticsKey()", () => {
+  assertEquals(analyticsKey("metric_test"), [
+    "metric_test",
+    `${new Date().toISOString().split("T")[0]}`,
+  ]);
 });

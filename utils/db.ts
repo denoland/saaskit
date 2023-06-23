@@ -63,7 +63,6 @@ export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
  * };
  *
  * await createItem(item);
- * await incrementAnalyticsMetricPerDay("items_count", item.createdAt);
  * ```
  */
 export async function createItem(item: Item) {
@@ -78,6 +77,7 @@ export async function createItem(item: Item) {
     .set(itemsKey, item)
     .set(itemsByTimeKey, item)
     .set(itemsByUserKey, item)
+    .sum(analyticsKey("items_count"), 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create item: ${item}`);
@@ -196,11 +196,10 @@ export async function createVote(vote: Vote) {
     .set(itemsByUserKey, vote.item)
     .set(votedItemsByUserKey, vote.item)
     .set(votedUsersByItemKey, vote.user)
+    .sum(analyticsKey("votes_count"), 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to set vote: ${vote}`);
-
-  await incrementAnalyticsMetricPerDay("votes_count", new Date());
 
   return vote;
 }
@@ -281,7 +280,6 @@ export function newUserProps(): Pick<User, "isSubscribed"> {
  *   ...newUserProps(),
  * };
  * await createUser(user);
- * await incrementAnalyticsMetricPerDay("users_count", new Date());
  * ```
  */
 export async function createUser(user: User) {
@@ -308,6 +306,7 @@ export async function createUser(user: User) {
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
+    .sum(analyticsKey("users_count"), 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create user: ${user}`);
@@ -399,6 +398,16 @@ export async function incrementAnalyticsMetricPerDay(
   await kv.atomic()
     .sum(metricKey, 1n)
     .commit();
+}
+
+export function analyticsKey(
+  metric: string,
+) {
+  // convert to ISO format that is zero UTC offset
+  return [
+    metric,
+    `${new Date().toISOString().split("T")[0]}`,
+  ];
 }
 
 export async function incrementVisitsPerDay(date: Date) {

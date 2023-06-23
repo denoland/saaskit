@@ -4,7 +4,6 @@ import {
   createUser,
   deleteUserBySession,
   getUser,
-  incrementAnalyticsMetricPerDay,
   newUserProps,
   updateUser,
   type User,
@@ -63,7 +62,6 @@ export const handler: Handlers<any, State> = {
         ...newUserProps(),
       };
       await createUser(user);
-      await incrementAnalyticsMetricPerDay("users_count", new Date());
     } else {
       await deleteUserBySession(sessionId);
       await updateUser({ ...user, sessionId });
