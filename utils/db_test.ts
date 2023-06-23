@@ -4,7 +4,6 @@ import {
   createComment,
   createItem,
   createUser,
-  createUser,
   getAllItems,
   getCommentsByItem,
   getItem,
