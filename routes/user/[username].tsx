@@ -32,12 +32,10 @@ export const handler: Handlers<UserData, State> = {
 
     const items = await getItemsByUser(user.id);
     items.sort(compareScore);
-    const areVoted = ctx.state.sessionId
-      ? await getAreVotedBySessionId(
-        items,
-        ctx.state.sessionId,
-      )
-      : [];
+    const areVoted = await getAreVotedBySessionId(
+      items,
+      ctx.state.sessionId,
+    );
 
     return ctx.render({ ...ctx.state, user, items, areVoted });
   },
@@ -85,7 +83,7 @@ export default function UserPage(props: PageProps<UserData>) {
         <Row
           title={props.data.user.login}
           text={pluralize(props.data.items.length, "submission")}
-          img={props.data.user.avatarUrl.toString()}
+          img={props.data.user.avatarUrl}
         />
         {props.data.items.map((item, index) => (
           <ItemSummary

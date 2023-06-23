@@ -41,7 +41,7 @@ export default function AccountPage(props: PageProps<AccountState>) {
       <Head title="Account" href={props.url.href} />
       <div class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center">
         <img
-          src={props.data.user?.avatarUrl.toString()}
+          src={props.data.user?.avatarUrl}
           alt="User Avatar"
           crossOrigin="anonymous"
           class="max-w-[50%] self-center rounded-full aspect-square mb-4 md:mb-6"

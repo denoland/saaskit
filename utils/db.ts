@@ -372,8 +372,9 @@ export async function getManyUsers(ids: string[]) {
 
 export async function getAreVotedBySessionId(
   items: Item[],
-  sessionId: string,
+  sessionId?: string,
 ) {
+  if (!sessionId) return [];
   const sessionUser = await getUserBySession(sessionId);
   if (!sessionUser) return [];
   const votedItems = await getVotedItemsByUser(sessionUser.id);
