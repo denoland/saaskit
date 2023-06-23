@@ -350,7 +350,6 @@ export async function updateUser(user: User) {
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
-<<<<<<< HEAD
   const atomicOp = kv.atomic();
 
   if (user.stripeCustomerId !== undefined) {
@@ -363,9 +362,6 @@ export async function updateUser(user: User) {
   }
 
   const res = await atomicOp
-=======
-  const res = await kv.atomic()
->>>>>>> e6ae61b (chore: revert unintended formatting)
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
