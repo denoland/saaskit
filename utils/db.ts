@@ -1,5 +1,4 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { DAY, WEEK } from "std/datetime/constants.ts";
 
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
@@ -31,109 +30,123 @@ async function getValues<T>(
 }
 
 // Item
-interface InitItem {
+export interface Item {
   userId: string;
   title: string;
   url: string;
-}
-
-export interface Item extends InitItem {
+  // The below properties can be automatically generated upon item creation
   id: string;
   createdAt: Date;
   score: number;
 }
 
-export async function createItem(initItem: InitItem) {
-  const item: Item = {
+export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
+  return {
     id: crypto.randomUUID(),
     score: 0,
     createdAt: new Date(),
-    ...initItem,
   };
+}
 
-  const itemKey = ["items", item.id];
-  const itemByTime = ["items_by_time", item.createdAt.getTime(), item.id];
+/**
+ * Creates a new item in KV. Throws if the item already exists in one of the indexes.
+ *
+ * @example New item creation
+ * ```ts
+ * import { newItemProps, createItem, incrementAnalyticsMetricPerDay } from "@/utils/db.ts";
+ *
+ * const item: Item = {
+ *   userId: "example-user-id",
+ *   title: "example-title",
+ *   url: "https://example.com"
+ *   ..newItemProps(),
+ * };
+ *
+ * await createItem(item);
+ * await incrementAnalyticsMetricPerDay("items_count", item.createdAt);
+ * ```
+ */
+export async function createItem(item: Item) {
+  const itemsKey = ["items", item.id];
+  const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
   const itemsByUserKey = ["items_by_user", item.userId, item.id];
 
   const res = await kv.atomic()
-    .check({ key: itemKey, versionstamp: null })
-    .check({ key: itemByTime, versionstamp: null })
+    .check({ key: itemsKey, versionstamp: null })
+    .check({ key: itemsByTimeKey, versionstamp: null })
     .check({ key: itemsByUserKey, versionstamp: null })
-    .set(itemKey, item)
-    .set(itemByTime, item)
+    .set(itemsKey, item)
+    .set(itemsByTimeKey, item)
     .set(itemsByUserKey, item)
     .commit();
 
-  if (!res.ok) throw new Error(`Failed to set item: ${item}`);
-
-  await incrementAnalyticsMetricPerDay("items_count", new Date());
-
-  return item;
+  if (!res.ok) throw new Error(`Failed to create item: ${item}`);
 }
 
-export async function getAllItemsInTimeAgo(timeAgo: string) {
-  switch (timeAgo) {
-    case "month":
-      return await getValues<Item>({
-        prefix: ["items_by_time"],
-        start: ["items_by_time", Date.now() - DAY * 30],
-      });
-    case "all":
-      return await getValues<Item>({
-        prefix: ["items_by_time"],
-      });
-    default:
-      return await getValues<Item>({
-        prefix: ["items_by_time"],
-        start: ["items_by_time", Date.now() - WEEK],
-      });
-  }
-}
-
-export async function getItemById(id: string) {
+export async function getItem(id: string) {
   return await getValue<Item>(["items", id]);
 }
 
-export async function getItemByUser(userId: string, itemId: string) {
-  return await getValue<Item>(["items_by_user", userId, itemId]);
-}
-
-export async function getItemsByUserId(userId: string) {
+export async function getItemsByUser(userId: string) {
   return await getValues<Item>({ prefix: ["items_by_user", userId] });
 }
 
+export async function getAllItems() {
+  return await getValues<Item>({ prefix: ["items"] });
+}
+
+/**
+ * Gets all items since a given number of milliseconds ago from KV.
+ *
+ * @example Since a week ago
+ * ```ts
+ * import { WEEK } from "std/datetime/constants.ts";
+ * import { getItemsSince } from "@/utils/db.ts";
+ *
+ * const itemsSinceAllTime = await getItemsSince(WEEK);
+ * ```
+ *
+ * @example Since a month ago
+ * ```ts
+ * import { DAY } from "std/datetime/constants.ts";
+ * import { getItemsSince } from "@/utils/db.ts";
+ *
+ * const itemsSinceAllTime = await getItemsSince(DAY * 30);
+ * ```
+ */
+export async function getItemsSince(msAgo: number) {
+  return await getValues<Item>({
+    prefix: ["items_by_time"],
+    start: ["items_by_time", Date.now() - msAgo],
+  });
+}
+
 // Comment
-interface InitComment {
+export interface Comment {
   userId: string;
   itemId: string;
   text: string;
-}
-
-export interface Comment extends InitComment {
+  // The below properties can be automatically generated upon comment creation
   id: string;
   createdAt: Date;
 }
 
-export async function createComment(initComment: InitComment) {
-  const comment: Comment = {
+export function newCommentProps(): Pick<Comment, "id" | "createdAt"> {
+  return {
     id: crypto.randomUUID(),
     createdAt: new Date(),
-    ...initComment,
   };
+}
 
+export async function createComment(comment: Comment) {
   const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
-  const commentsByUserKey = ["comments_by_user", comment.userId, comment.id];
 
   const res = await kv.atomic()
     .check({ key: commentsByItemKey, versionstamp: null })
-    .check({ key: commentsByUserKey, versionstamp: null })
     .set(commentsByItemKey, comment)
-    .set(commentsByUserKey, comment)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create comment: ${comment}`);
-
-  return comment;
 }
 
 export async function getCommentsByItem(itemId: string) {
@@ -236,86 +249,100 @@ export async function getVotedItemsByUser(userId: string) {
   return await getValues<Item>({ prefix: ["voted_items_by_user", userId] });
 }
 
-interface InitUser {
+// User
+export interface User {
   id: string;
   login: string;
   avatarUrl: string;
-  stripeCustomerId: string;
   sessionId: string;
-}
-
-export interface User extends InitUser {
+  stripeCustomerId?: string;
+  // The below properties can be automatically generated upon comment creation
   isSubscribed: boolean;
 }
 
-export async function createUser(initUser: InitUser) {
-  const user: User = {
+export function newUserProps(): Pick<User, "isSubscribed"> {
+  return {
     isSubscribed: false,
-    ...initUser,
   };
+}
 
+/**
+ * Creates a new user in KV. Throws if the user already exists.
+ *
+ * @example
+ * ```ts
+ * import { createUser, newUser } from "@/utils/db.ts";
+ *
+ * const user = {
+ *   id: "id",
+ *   login: "login",
+ *   avatarUrl: "https://example.com/avatar-url",
+ *   sessionId: "sessionId",
+ *   ...newUserProps(),
+ * };
+ * await createUser(user);
+ * await incrementAnalyticsMetricPerDay("users_count", new Date());
+ * ```
+ */
+export async function createUser(user: User) {
   const usersKey = ["users", user.id];
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
-  const usersByStripeCustomerKey = [
-    "users_by_stripe_customer",
-    user.stripeCustomerId,
-  ];
 
-  const res = await kv.atomic()
+  const atomicOp = kv.atomic();
+
+  if (user.stripeCustomerId !== undefined) {
+    const usersByStripeCustomerKey = [
+      "users_by_stripe_customer",
+      user.stripeCustomerId,
+    ];
+    atomicOp
+      .check({ key: usersByStripeCustomerKey, versionstamp: null })
+      .set(usersByStripeCustomerKey, user);
+  }
+
+  const res = await atomicOp
     .check({ key: usersKey, versionstamp: null })
     .check({ key: usersByLoginKey, versionstamp: null })
     .check({ key: usersBySessionKey, versionstamp: null })
-    .check({ key: usersByStripeCustomerKey, versionstamp: null })
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
-    .set(usersByStripeCustomerKey, user)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create user: ${user}`);
-
-  await incrementAnalyticsMetricPerDay("users_count", new Date());
-
-  return user;
 }
 
 export async function updateUser(user: User) {
   const usersKey = ["users", user.id];
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
-  const usersByStripeCustomerKey = [
-    "users_by_stripe_customer",
-    user.stripeCustomerId,
-  ];
 
-  const res = await kv.atomic()
+  const atomicOp = kv.atomic();
+
+  if (user.stripeCustomerId !== undefined) {
+    const usersByStripeCustomerKey = [
+      "users_by_stripe_customer",
+      user.stripeCustomerId,
+    ];
+    atomicOp
+      .set(usersByStripeCustomerKey, user);
+  }
+
+  const res = await atomicOp
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
-    .set(usersByStripeCustomerKey, user)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to update user: ${user}`);
-}
-
-export async function updateUserIsSubscribed(
-  user: User,
-  isSubscribed: User["isSubscribed"],
-) {
-  await updateUser({ ...user, isSubscribed });
-}
-
-/** This assumes that the previous session has been cleared */
-export async function setUserSessionId(user: User, sessionId: string) {
-  await updateUser({ ...user, sessionId });
 }
 
 export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
 
-export async function getUserById(id: string) {
+export async function getUser(id: string) {
   return await getValue<User>(["users", id]);
 }
 
@@ -323,14 +350,14 @@ export async function getUserByLogin(login: string) {
   return await getValue<User>(["users_by_login", login]);
 }
 
-export async function getUserBySessionId(sessionId: string) {
+export async function getUserBySession(sessionId: string) {
   const usersBySessionKey = ["users_by_session", sessionId];
   return await getValue<User>(usersBySessionKey, {
     consistency: "eventual",
   }) ?? await getValue<User>(usersBySessionKey);
 }
 
-export async function getUserByStripeCustomerId(stripeCustomerId: string) {
+export async function getUserByStripeCustomer(stripeCustomerId: string) {
   return await getValue<User>([
     "users_by_stripe_customer",
     stripeCustomerId,
@@ -348,7 +375,7 @@ export async function getAreVotedBySessionId(
   sessionId?: string,
 ) {
   if (!sessionId) return [];
-  const sessionUser = await getUserBySessionId(sessionId);
+  const sessionUser = await getUserBySession(sessionId);
   if (!sessionUser) return [];
   const votedItems = await getVotedItemsByUser(sessionUser.id);
   const votedItemIds = votedItems.map((item) => item.id);

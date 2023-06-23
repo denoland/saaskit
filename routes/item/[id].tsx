@@ -15,11 +15,12 @@ import {
   createComment,
   getAreVotedBySessionId,
   getCommentsByItem,
-  getItemById,
+  getItem,
   getManyUsers,
-  getUserById,
-  getUserBySessionId,
+  getUser,
+  getUserBySession,
   type Item,
+  newCommentProps,
   type User,
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/redirect.ts";
@@ -42,7 +43,7 @@ export const handler: Handlers<ItemPageData, State> = {
     const url = new URL(req.url);
     const pageNum = calcPageNum(url);
 
-    const item = await getItemById(id);
+    const item = await getItem(id);
     if (item === null) {
       return ctx.renderNotFound();
     }
@@ -55,7 +56,7 @@ export const handler: Handlers<ItemPageData, State> = {
     const commentsUsers = await getManyUsers(
       comments.map((comment) => comment.userId),
     );
-    const user = await getUserById(item.userId);
+    const user = await getUser(item.userId);
 
     const [isVoted] = await getAreVotedBySessionId(
       [item],
@@ -86,13 +87,15 @@ export const handler: Handlers<ItemPageData, State> = {
       return new Response(null, { status: 400 });
     }
 
-    const user = await getUserBySessionId(ctx.state.sessionId);
+    const user = await getUserBySession(ctx.state.sessionId);
 
-    await createComment({
+    const comment: Comment = {
       userId: user!.id,
       itemId: ctx.params.id,
       text,
-    });
+      ...newCommentProps(),
+    };
+    await createComment(comment);
 
     return redirect(`/item/${ctx.params.id}`);
   },

@@ -3,7 +3,13 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
-import { createItem, getUserBySessionId } from "@/utils/db.ts";
+import {
+  createItem,
+  getUserBySession,
+  incrementAnalyticsMetricPerDay,
+  type Item,
+  newItemProps,
+} from "@/utils/db.ts";
 import { redirect } from "@/utils/redirect.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
 
@@ -34,15 +40,18 @@ export const handler: Handlers<State, State> = {
       return new Response(null, { status: 400 });
     }
 
-    const user = await getUserBySessionId(ctx.state.sessionId);
+    const user = await getUserBySession(ctx.state.sessionId);
 
     if (!user) return new Response(null, { status: 400 });
 
-    const item = await createItem({
+    const item: Item = {
       userId: user.id,
       title,
       url,
-    });
+      ...newItemProps(),
+    };
+    await createItem(item);
+    await incrementAnalyticsMetricPerDay("items_count", new Date());
 
     return redirect(`/item/${item!.id}`);
   },
