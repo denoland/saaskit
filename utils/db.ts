@@ -400,6 +400,13 @@ export async function incrementAnalyticsMetricPerDay(
     .commit();
 }
 
+export async function getAnalyticsMetricPerDay(metric: string, date: Date) {
+  return await getValue<bigint>([
+    metric,
+    `${date.toISOString().split("T")[0]}`,
+  ]);
+}
+
 export function analyticsKey(
   metric: string,
 ) {
@@ -410,25 +417,7 @@ export function analyticsKey(
   ];
 }
 
-export async function incrementVisitsPerDay(date: Date) {
-  // convert to ISO format that is zero UTC offset
-  const visitsKey = [
-    "visits",
-    `${date.toISOString().split("T")[0]}`,
-  ];
-  await kv.atomic()
-    .sum(visitsKey, 1n)
-    .commit();
-}
-
-export async function getVisitsPerDay(date: Date) {
-  return await getValue<bigint>([
-    "visits",
-    `${date.toISOString().split("T")[0]}`,
-  ]);
-}
-
-export async function getAnalyticsMetricsPerDay(
+export async function getAnalyticsMetricListPerDay(
   metric: string,
   options?: Deno.KvListOptions,
 ) {
@@ -447,19 +436,8 @@ export async function getManyAnalyticsMetricsPerDay(
   options?: Deno.KvListOptions,
 ) {
   const analyticsByDay = await Promise.all(
-    metrics.map((metric) => getAnalyticsMetricsPerDay(metric, options)),
+    metrics.map((metric) => getAnalyticsMetricListPerDay(metric, options)),
   );
 
   return analyticsByDay;
-}
-
-export async function getAllVisitsPerDay(options?: Deno.KvListOptions) {
-  const iter = await kv.list<bigint>({ prefix: ["visits"] }, options);
-  const visits = [];
-  const dates = [];
-  for await (const res of iter) {
-    visits.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { visits, dates };
 }
