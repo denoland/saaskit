@@ -1,11 +1,14 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   type Comment,
+  compareScore,
   createComment,
   createItem,
   createUser,
+  createVote,
   deleteUserBySession,
   getAllItems,
+  getAreVotedBySessionId,
   getCommentsByItem,
   getItem,
   getItemsByUser,
@@ -204,4 +207,50 @@ Deno.test("[db] createComment() + getCommentsByItem()", async () => {
   await createComment(comment2);
   await assertRejects(async () => await createComment(comment2));
   assertArrayIncludes(await getCommentsByItem(itemId), [comment1, comment2]);
+});
+
+Deno.test("[db] compareScore()", () => {
+  const item1: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 1,
+  };
+  const item2: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 2,
+  };
+
+  assertEquals(compareScore(item1, item2), 1);
+});
+
+Deno.test("[db] getAreVotedBySessionId()", async () => {
+  const item: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 1,
+  };
+  const user = genNewUser();
+
+  const vote = { item, user };
+
+  assertEquals(await getUserBySession(user.sessionId), null);
+  assertEquals(await getItem(item.id), null);
+
+  await createUser(user);
+  await createItem(item);
+  await createVote(vote);
+
+  assertEquals(await getItem(item.id), item);
+  assertEquals(await getUserBySession(user.sessionId), user);
+
+  assertArrayIncludes(await getAreVotedBySessionId([item], user.sessionId), [
+    true,
+  ]);
 });
