@@ -20,6 +20,8 @@ function comparePrices(productA: Stripe.Product, productB: Stripe.Product) {
 
 export const handler: Handlers<PricingPageData, State> = {
   async GET(_req, ctx) {
+    if (stripe === undefined) return ctx.renderNotFound();
+
     const { data } = await stripe.products.list({
       expand: ["data.default_price"],
       active: true,
