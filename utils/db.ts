@@ -1,6 +1,4 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { DAY } from "https://deno.land/std@0.192.0/datetime/constants.ts";
-
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
 if (
@@ -28,6 +26,20 @@ async function getValues<T>(
   const iter = kv.list<T>(selector, options);
   for await (const { value } of iter) values.push(value);
   return values;
+}
+
+/** Gets all dates since a given number of milliseconds ago */
+export function getDatesSince(msAgo: number) {
+  const dates = [];
+  const now = Date.now();
+  const start = new Date(now - msAgo);
+
+  while (+start < now) {
+    start.setDate(start.getDate() + 1);
+    dates.push(formatDate(new Date(start)));
+  }
+
+  return dates;
 }
 
 /** Converts `Date` to ISO format that is zero UTC offset */
@@ -428,20 +440,6 @@ export async function incrVisitsCountByDay(date: Date) {
   await kv.atomic()
     .sum(visitsKey, 1n)
     .commit();
-}
-
-/** Gets all dates since a given number of milliseconds ago */
-export function getDatesSince(msAgo: number) {
-  const dates = [];
-  const now = Date.now();
-  const start = new Date(now - msAgo);
-
-  while (+start < now) {
-    start.setDate(start.getDate() + 1);
-    dates.push(formatDate(new Date(start)));
-  }
-
-  return dates;
 }
 
 export async function getManyMetrics(

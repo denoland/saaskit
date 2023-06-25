@@ -11,6 +11,7 @@ import {
   deleteVote,
   formatDate,
   getAllItems,
+  getAnalyticsMetricsSince,
   getCommentsByItem,
   getDatesSince,
   getItem,

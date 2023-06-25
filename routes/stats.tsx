@@ -1,12 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
+import { DAY } from "std/datetime/constants.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import { Chart } from "fresh_charts/mod.ts";
 import { ChartColors } from "fresh_charts/utils.ts";
-import { DAY } from "std/datetime/constants.ts";
 
 interface StatsPageData extends State {
   dates: Date[];
