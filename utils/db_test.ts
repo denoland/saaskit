@@ -36,7 +36,7 @@ import {
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
 
-function genNewComment(comment: Partial<Comment> = {}): Comment {
+function genNewComment(comment?: Partial<Comment>): Comment {
   return {
     itemId: crypto.randomUUID(),
     userId: crypto.randomUUID(),
@@ -46,7 +46,7 @@ function genNewComment(comment: Partial<Comment> = {}): Comment {
   };
 }
 
-function genNewItem(item: Partial<Item> = {}): Item {
+function genNewItem(item?: Partial<Item>): Item {
   return {
     userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
