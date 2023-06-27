@@ -1,18 +1,20 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import Stripe from "./stripe.ts";
+import Stripe from "stripe";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 
-let stripe: Stripe | undefined;
-if (STRIPE_SECRET_KEY !== undefined) {
-  new Stripe(
+export const stripe = STRIPE_SECRET_KEY !== undefined
+  ? new Stripe(
     STRIPE_SECRET_KEY,
     {
       apiVersion: "2022-11-15",
       // Use the Fetch API instead of Node's HTTP client.
       httpClient: Stripe.createFetchHttpClient(),
     },
-  );
+  )
+  : undefined;
+
+if (stripe) {
   console.log(
     "`STRIPE_SECRET_KEY` environment variable is defined. Stripe is enabled.",
   );
@@ -21,8 +23,6 @@ if (STRIPE_SECRET_KEY !== undefined) {
     "`STRIPE_SECRET_KEY` environment variable is not defined. Stripe is disabled.",
   );
 }
-
-export { stripe };
 
 export function formatAmountForDisplay(
   amount: number,

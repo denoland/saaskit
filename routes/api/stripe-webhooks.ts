@@ -1,10 +1,10 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers } from "$fresh/server.ts";
 import { stripe } from "@/utils/payments.ts";
-import Stripe from "@/utils/stripe.ts";
+import { Stripe } from "stripe";
 import { getUserByStripeCustomer, updateUser } from "@/utils/db.ts";
 
-const cryptoProvider = Stripe.Stripe.createSubtleCryptoProvider();
+const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
 export const handler: Handlers = {
   /**
@@ -12,7 +12,9 @@ export const handler: Handlers = {
    * 1. customer.subscription.created (when a user subscribes to the premium plan)
    * 2. customer.subscription.deleted (when a user cancels the premium plan)
    */
-  async POST(req) {
+  async POST(req, ctx) {
+    if (stripe === undefined) return ctx.renderNotFound();
+
     const body = await req.text();
     const signature = req.headers.get("stripe-signature")!;
     const signingSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
