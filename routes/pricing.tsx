@@ -4,7 +4,7 @@ import Head from "@/components/Head.tsx";
 import type { State } from "@/routes/_middleware.ts";
 import { BUTTON_STYLES } from "@/utils/constants.ts";
 import { formatAmountForDisplay, stripe } from "@/utils/payments.ts";
-import Stripe from "stripe";
+import Stripe from "@/utils/stripe.ts";
 import { ComponentChild } from "preact";
 import { getUserBySession, type User } from "@/utils/db.ts";
 
