@@ -4,7 +4,7 @@ import { stripe } from "@/utils/payments.ts";
 import Stripe from "@/utils/stripe.ts";
 import { getUserByStripeCustomer, updateUser } from "@/utils/db.ts";
 
-const cryptoProvider = Stripe.createSubtleCryptoProvider();
+const cryptoProvider = Stripe.Stripe.createSubtleCryptoProvider();
 
 export const handler: Handlers = {
   /**
