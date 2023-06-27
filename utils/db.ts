@@ -29,6 +29,11 @@ async function getValues<T>(
   return values;
 }
 
+/** Converts `Date` to ISO format that is zero UTC offset */
+export function formatDate(date: Date) {
+  return date.toISOString().split("T")[0];
+}
+
 // Item
 export interface Item {
   userId: string;
@@ -69,6 +74,7 @@ export async function createItem(item: Item) {
   const itemsKey = ["items", item.id];
   const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
   const itemsByUserKey = ["items_by_user", item.userId, item.id];
+  const itemsCountKey = ["items_count", `${formatDate(new Date())}`];
 
   const res = await kv.atomic()
     .check({ key: itemsKey, versionstamp: null })
@@ -77,7 +83,7 @@ export async function createItem(item: Item) {
     .set(itemsKey, item)
     .set(itemsByTimeKey, item)
     .set(itemsByUserKey, item)
-    .sum(analyticsKey("items_count"), 1n)
+    .sum(itemsCountKey, 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create item: ${item}`);
@@ -179,6 +185,7 @@ export async function createVote(vote: Vote) {
     vote.item.id,
     vote.user.id,
   ];
+  const votesCountKey = ["votes_count", `${formatDate(new Date())}`];
 
   const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
     itemKey,
@@ -196,7 +203,7 @@ export async function createVote(vote: Vote) {
     .set(itemsByUserKey, vote.item)
     .set(votedItemsByUserKey, vote.item)
     .set(votedUsersByItemKey, vote.user)
-    .sum(analyticsKey("votes_count"), 1n)
+    .sum(votesCountKey, 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to set vote: ${vote}`);
@@ -286,6 +293,7 @@ export async function createUser(user: User) {
   const usersKey = ["users", user.id];
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
+  const usersCountKey = ["users_count", `${formatDate(new Date())}`];
 
   const atomicOp = kv.atomic();
 
@@ -306,7 +314,7 @@ export async function createUser(user: User) {
     .set(usersKey, user)
     .set(usersByLoginKey, user)
     .set(usersBySessionKey, user)
-    .sum(analyticsKey("users_count"), 1n)
+    .sum(usersCountKey, 1n)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create user: ${user}`);
@@ -405,16 +413,6 @@ export async function getAnalyticsMetricPerDay(metric: string, date: Date) {
     metric,
     `${date.toISOString().split("T")[0]}`,
   ]);
-}
-
-export function analyticsKey(
-  metric: string,
-) {
-  // convert to ISO format that is zero UTC offset
-  return [
-    metric,
-    `${new Date().toISOString().split("T")[0]}`,
-  ];
 }
 
 export async function getAnalyticsMetricListPerDay(

@@ -1,11 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
-  analyticsKey,
   type Comment,
   createComment,
   createItem,
   createUser,
   deleteUserBySession,
+  formatDate,
   getAllItems,
   getAnalyticsMetricPerDay,
   getCommentsByItem,
@@ -223,9 +223,7 @@ Deno.test("[db] createComment() + getCommentsByItem()", async () => {
   assertArrayIncludes(await getCommentsByItem(itemId), [comment1, comment2]);
 });
 
-Deno.test("[db] analyticsKey()", () => {
-  assertEquals(analyticsKey("metric_test"), [
-    "metric_test",
-    `${new Date().toISOString().split("T")[0]}`,
-  ]);
+Deno.test("[db] formatDate()", () => {
+  assertEquals(formatDate(new Date("2023-01-01")), "2023-01-01");
+  assertEquals(formatDate(new Date("2023-01-01T13:59:08.740Z")), "2023-01-01");
 });
