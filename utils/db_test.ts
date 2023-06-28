@@ -12,6 +12,7 @@ import {
   formatDate,
   getAllItems,
   getCommentsByItem,
+  getDatesSince,
   getItem,
   getItemsByUser,
   getItemsSince,
@@ -217,4 +218,13 @@ Deno.test("[db] votes", async () => {
 Deno.test("[db] formatDate()", () => {
   assertEquals(formatDate(new Date("2023-01-01")), "2023-01-01");
   assertEquals(formatDate(new Date("2023-01-01T13:59:08.740Z")), "2023-01-01");
+});
+
+Deno.test("[db] getDatesSince()", () => {
+  assertEquals(getDatesSince(0), []);
+  assertEquals(getDatesSince(DAY), [new Date()]);
+  assertEquals(getDatesSince(DAY * 2), [
+    new Date(Date.now() - DAY),
+    new Date(),
+  ]);
 });
