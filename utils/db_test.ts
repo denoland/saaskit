@@ -278,7 +278,6 @@ Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
       metricsValue: [],
     }],
   );
-
   assertEquals(
     await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY),
     [{
@@ -289,7 +288,6 @@ Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
       metricsValue: [7],
     }],
   );
-
   assertEquals(
     await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY * 3),
     [{
