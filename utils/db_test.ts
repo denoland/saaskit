@@ -235,30 +235,37 @@ Deno.test("[db] getAnalyticsMetricsSince", async () => {
   const yesterday = new Date(+today - DAY);
   const twoDaysAgo = new Date(+today - 2 * DAY);
 
+  const visitsCountToday = Number((await getVisitsCountByDay(today))?.valueOf() ?? 0n);
+  const visitsCountYesterday = Number((await getVisitsCountByDay(yesterday))?.valueOf() ?? 0n)
+  const visitsCountTwoDaysAgo = Number((await getVisitsCountByDay(twoDaysAgo))?.valueOf() ?? 0n)
+
+
   assertEquals(await getAnalyticsMetricsSince("", 0), {
     dates: [],
     metricsValue: [],
   });
   assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
     dates: [formatDate(today)],
-    metricsValue: [0],
+    metricsValue: [visitsCountToday],
   });
 
   await incrVisitsCountByDay(today);
   await incrVisitsCountByDay(today);
-  await incrVisitsCountByDay(yesterday);
 
   assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
     dates: [formatDate(today)],
-    metricsValue: [2],
+    metricsValue: [visitsCountToday + 2],
   });
+
+  await incrVisitsCountByDay(yesterday);
+
   assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 2), {
     dates: [formatDate(yesterday), formatDate(today)],
-    metricsValue: [1, 2],
+    metricsValue: [visitsCountYesterday + 1, visitsCountToday + 2],
   });
   assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 3), {
     dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-    metricsValue: [0, 1, 2],
+    metricsValue: [visitsCountTwoDaysAgo, visitsCountYesterday + 1, visitsCountToday + 2],
   });
 });
 
@@ -266,6 +273,14 @@ Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
   const today = new Date();
   const yesterday = new Date(+today - DAY);
   const twoDaysAgo = new Date(+today - 2 * DAY);
+
+  const usersCountToday = Number((await getUsersCountByDay(today))?.valueOf() ?? 0n);
+  const usersCountYesterday = Number((await getUsersCountByDay(yesterday))?.valueOf() ?? 0n);
+  const usersCountTwoDaysAgo = Number((await getUsersCountByDay(twoDaysAgo))?.valueOf() ?? 0n);
+
+  const itemsCountToday = Number((await getItemsCountByDay(today))?.valueOf() ?? 0n);
+  const itemsCountYesterday = Number((await getItemsCountByDay(yesterday))?.valueOf() ?? 0n);
+  const itemsCountTwoDaysAgo = Number((await getItemsCountByDay(twoDaysAgo))?.valueOf() ?? 0n);
 
   assertEquals(await getManyAnalyticsMetricsSince([], 0), []);
   assertEquals(
@@ -282,20 +297,20 @@ Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
     await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY),
     [{
       dates: [formatDate(today)],
-      metricsValue: [2],
+      metricsValue: [usersCountToday],
     }, {
       dates: [formatDate(today)],
-      metricsValue: [7],
+      metricsValue: [itemsCountToday],
     }],
   );
   assertEquals(
     await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY * 3),
     [{
       dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-      metricsValue: [0, 0, 2],
+      metricsValue: [usersCountTwoDaysAgo, usersCountYesterday, usersCountToday],
     }, {
       dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-      metricsValue: [0, 0, 7],
+      metricsValue: [itemsCountTwoDaysAgo, itemsCountYesterday, itemsCountToday],
     }],
   );
 >>>>>>> 6280473 (chore: tweak tests)
