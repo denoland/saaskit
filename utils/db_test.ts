@@ -216,6 +216,7 @@ Deno.test("[db] votes", async () => {
   assertRejects(async () => await deleteVote({ item, user }));
 });
 
+<<<<<<< HEAD
 Deno.test("[db] formatDate()", () => {
   assertEquals(formatDate(new Date("2023-01-01")), "2023-01-01");
   assertEquals(formatDate(new Date("2023-01-01T13:59:08.740Z")), "2023-01-01");
@@ -228,4 +229,76 @@ Deno.test("[db] getDatesSince()", () => {
     formatDate(new Date(Date.now() - DAY)),
     formatDate(new Date()),
   ]);
+=======
+Deno.test("[db] getAnalyticsMetricsSince", async () => {
+  const today = new Date();
+  const yesterday = new Date(+today - DAY);
+  const twoDaysAgo = new Date(+today - 2 * DAY);
+
+  assertEquals(await getAnalyticsMetricsSince("", 0), {
+    dates: [],
+    metricsValue: [],
+  });
+  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
+    dates: [formatDate(today)],
+    metricsValue: [0],
+  });
+
+  await incrAnalyticsMetricPerDay("visits_count", today);
+  await incrAnalyticsMetricPerDay("visits_count", today);
+  await incrAnalyticsMetricPerDay("visits_count", yesterday);
+
+  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
+    dates: [formatDate(today)],
+    metricsValue: [2],
+  });
+  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 2), {
+    dates: [formatDate(yesterday), formatDate(today)],
+    metricsValue: [1, 2],
+  });
+  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 3), {
+    dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
+    metricsValue: [0, 1, 2],
+  });
+});
+
+Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
+  const today = new Date();
+  const yesterday = new Date(+today - DAY);
+  const twoDaysAgo = new Date(+today - 2 * DAY);
+
+  assertEquals(await getManyAnalyticsMetricsSince([], 0), []);
+  assertEquals(
+    await getManyAnalyticsMetricsSince(["users_count", "items_count"], 0),
+    [{
+      dates: [],
+      metricsValue: [],
+    }, {
+      dates: [],
+      metricsValue: [],
+    }],
+  );
+
+  assertEquals(
+    await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY),
+    [{
+      dates: [formatDate(today)],
+      metricsValue: [2],
+    }, {
+      dates: [formatDate(today)],
+      metricsValue: [7],
+    }],
+  );
+
+  assertEquals(
+    await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY * 3),
+    [{
+      dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
+      metricsValue: [0, 0, 2],
+    }, {
+      dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
+      metricsValue: [0, 0, 7],
+    }],
+  );
+>>>>>>> 6280473 (chore: tweak tests)
 });
