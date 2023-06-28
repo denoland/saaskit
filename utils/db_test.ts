@@ -7,17 +7,19 @@ import {
   deleteUserBySession,
   formatDate,
   getAllItems,
-  getAnalyticsMetricPerDay,
   getCommentsByItem,
   getItem,
   getItemsByUser,
+  getItemsCountByDay,
   getItemsSince,
   getManyUsers,
   getUser,
   getUserByLogin,
   getUserBySession,
   getUserByStripeCustomer,
-  incrementAnalyticsMetricPerDay,
+  getUsersCountDay,
+  getVisitsCountByDay,
+  incrementVisitsCountByDay,
   type Item,
   kv,
   newCommentProps,
@@ -72,12 +74,11 @@ Deno.test("[db] (get/create)Item()", async () => {
 
   assertEquals(await getItem(item.id), null);
 
-  const itemsCount =
-    (await getAnalyticsMetricPerDay("items_count", new Date()))?.valueOf() ??
-      0n;
+  const itemsCount = (await getItemsCountByDay(new Date()))?.valueOf() ??
+    0n;
   await createItem(item);
   assertEquals(
-    (await getAnalyticsMetricPerDay("items_count", new Date()))!.valueOf(),
+    (await getItemsCountByDay(new Date()))!.valueOf(),
     itemsCount + 1n,
   );
   await assertRejects(async () => await createItem(item));
@@ -147,12 +148,12 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getUserByStripeCustomer(user.stripeCustomerId!), null);
 
-  const usersCount = (await getAnalyticsMetricPerDay("users_count", new Date()))
+  const usersCount = (await getUsersCountDay(new Date()))
     ?.valueOf() ?? 0n;
   await createUser(user);
   await assertRejects(async () => await createUser(user));
   assertEquals(
-    (await getAnalyticsMetricPerDay("users_count", new Date()))!.valueOf(),
+    (await getUsersCountDay(new Date()))!.valueOf(),
     usersCount + 1n,
   );
   assertEquals(await getUser(user.id), user);
@@ -178,20 +179,17 @@ Deno.test("[db] user", async () => {
   );
 });
 
-Deno.test("[db] analytics increment/get", async () => {
+Deno.test("[db] visit", async () => {
   const date = new Date("2023-01-01");
-  const dummyKey = [
-    "example",
+  const visitsKey = [
+    "visits_count",
     `${date.toISOString().split("T")[0]}`,
   ];
-  await incrementAnalyticsMetricPerDay("example", date);
-  assertEquals((await kv.get(dummyKey)).key[1], "2023-01-01");
-  assertEquals(
-    (await getAnalyticsMetricPerDay("example", date))!.valueOf(),
-    1n,
-  );
-  await kv.delete(dummyKey);
-  assertEquals(await getAnalyticsMetricPerDay("example", date), null);
+  await incrementVisitsCountByDay(date);
+  assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
+  assertEquals((await getVisitsCountByDay(date))!.valueOf(), 1n);
+  await kv.delete(visitsKey);
+  assertEquals(await getVisitsCountByDay(date), null);
 });
 
 Deno.test("[db] newCommentProps()", () => {
