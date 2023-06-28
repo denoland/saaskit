@@ -244,9 +244,9 @@ Deno.test("[db] getAnalyticsMetricsSince", async () => {
     metricsValue: [0],
   });
 
-  await incrAnalyticsMetricPerDay("visits_count", today);
-  await incrAnalyticsMetricPerDay("visits_count", today);
-  await incrAnalyticsMetricPerDay("visits_count", yesterday);
+  await incrVisitsCountByDay(today);
+  await incrVisitsCountByDay(today);
+  await incrVisitsCountByDay(yesterday);
 
   assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
     dates: [formatDate(today)],
