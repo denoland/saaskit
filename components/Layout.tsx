@@ -84,6 +84,7 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
 interface LayoutProps {
   children: ComponentChildren;
   session?: string;
+  notificationsCount?: number;
 }
 
 export default function Layout(props: LayoutProps) {
@@ -100,7 +101,8 @@ export default function Layout(props: LayoutProps) {
     props.session
       ? {
         href: "/notifications",
-        inner: "Notifications",
+        //TODO: How to display info when there is no notification?
+        inner: "Notifications: " + (props.notificationsCount ?? 0),
       }
       : "",
     {

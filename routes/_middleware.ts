@@ -4,9 +4,11 @@ import { walk } from "std/fs/walk.ts";
 import { getSessionId } from "kv_oauth";
 import { redirect, setRedirectUrlCookie } from "@/utils/redirect.ts";
 import { Status } from "std/http/http_status.ts";
+import { getNotificationsCountByUser, getUserBySession } from "@/utils/db.ts";
 
 export interface State {
   sessionId?: string;
+  notificationsCount?: number;
 }
 
 const STATIC_DIR_ROOT = new URL("../static", import.meta.url);
@@ -30,7 +32,13 @@ export async function handler(
     return await ctx.next();
   }
 
-  ctx.state.sessionId = await getSessionId(req);
+  const sessionId = await getSessionId(req);
+  ctx.state.sessionId = sessionId;
+  // TODO: would this really be the best place for it?
+  if (sessionId) {
+    const user = await getUserBySession(sessionId);
+    ctx.state.notificationsCount = await getNotificationsCountByUser(user.id);
+  }
 
   const res = await ctx.next();
 
