@@ -141,6 +141,105 @@ export async function getItemsSince(msAgo: number) {
   });
 }
 
+// Notification
+export interface Notification {
+  userId: string;
+  type: string;
+  userFrom: string; // TODO: improve names and structure
+  origin: string;
+  // The below properties can be automatically generated upon item creation
+  id: string;
+  createdAt: Date;
+}
+
+export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
+  return {
+    id: crypto.randomUUID(),
+    createdAt: new Date(),
+  };
+}
+
+/**
+ * Creates a new notification in KV. Throws if the item already exists in one of the indexes.
+ *
+ * @example New notification creation
+ * ```ts
+ * import { newNotificationProps, createNotification } from "@/utils/db.ts";
+ *
+ * const notification: Notification = {
+ *   userId: "example-user-id",
+ *   type: "example-type",
+ *   userFrom: "example-user-from"
+ *   origin: "example-origin"
+ *   ...newNotificationProps(),
+ * };
+ *
+ * await createItem(item);
+ * ```
+ */
+export async function createNotification(notif: Notification) {
+  const notificationsKey = ["notifications", notif.id];
+  const notificationsByTimeKey = [
+    "notifications_by_time",
+    notif.createdAt.getTime(),
+    notif.id,
+  ];
+  const notificationsByUserKey = [
+    "notifications_by_user",
+    notif.userId,
+    notif.id,
+  ];
+
+  const res = await kv.atomic()
+    .check({ key: notificationsKey, versionstamp: null })
+    .check({ key: notificationsByTimeKey, versionstamp: null })
+    .check({ key: notificationsByUserKey, versionstamp: null })
+    .set(notificationsKey, notif)
+    .set(notificationsByTimeKey, notif)
+    .set(notificationsByUserKey, notif)
+    .commit();
+
+  if (!res.ok) throw new Error(`Failed to create notification: ${notif}`);
+}
+
+export async function deleteNotification(notif: Notification) {
+  const notificationsKey = ["notifications", notif.id];
+  const notificationsByTimeKey = [
+    "notifications_by_time",
+    notif.createdAt.getTime(),
+    notif.id,
+  ];
+  const notificationsByUserKey = [
+    "notifications_by_user",
+    notif.userId,
+    notif.id,
+  ];
+
+  const res = await kv.atomic()
+    .delete(notificationsKey)
+    .delete(notificationsByTimeKey)
+    .delete(notificationsByUserKey)
+    .commit();
+
+  if (!res.ok) throw new Error(`Failed to delete notification: ${notif}`);
+}
+
+export async function getNotification(id: string) {
+  return await getValue<Notification>(["notifications", id]);
+}
+
+export async function getNotificationsByUser(userId: string) {
+  return await getValues<Notification>({
+    prefix: ["notifications_by_user", userId],
+  });
+}
+
+export async function getNotificationsCountByUser(userId: string) {
+  const notificationsCountByUser =
+    (await getNotificationsByUser(userId)).length;
+  return notificationsCountByUser;
+}
+
 // Comment
 export interface Comment {
   userId: string;
@@ -167,6 +266,16 @@ export async function createComment(comment: Comment) {
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create comment: ${comment}`);
+
+  // TODO: should this be inside or outside the createComment function?
+  const notification: Notification = {
+    userId: (await getItem(comment.itemId)).userId, // Como resolver isso aqui? passar o ItemTodo para o comment?
+    type: "comment",
+    userFrom: comment.userId,
+    origin: comment.itemId,
+    ...newNotificationProps(),
+  };
+  await createNotification(notification);
 }
 
 export async function deleteComment(comment: Comment) {

@@ -18,12 +18,14 @@ import * as $12 from "./routes/callback.ts";
 import * as $13 from "./routes/feed.ts";
 import * as $14 from "./routes/index.tsx";
 import * as $15 from "./routes/item/[id].tsx";
-import * as $16 from "./routes/pricing.tsx";
-import * as $17 from "./routes/signin.ts";
-import * as $18 from "./routes/signout.ts";
-import * as $19 from "./routes/stats.tsx";
-import * as $20 from "./routes/submit.tsx";
-import * as $21 from "./routes/user/[username].tsx";
+import * as $16 from "./routes/notifications/_middleware.ts";
+import * as $17 from "./routes/notifications/index.tsx";
+import * as $18 from "./routes/pricing.tsx";
+import * as $19 from "./routes/signin.ts";
+import * as $20 from "./routes/signout.ts";
+import * as $21 from "./routes/stats.tsx";
+import * as $22 from "./routes/submit.tsx";
+import * as $23 from "./routes/user/[username].tsx";
 import * as $$0 from "./islands/PageInput.tsx";
 import * as $$1 from "./islands/VoteButton.tsx";
 
@@ -45,12 +47,14 @@ const manifest = {
     "./routes/feed.ts": $13,
     "./routes/index.tsx": $14,
     "./routes/item/[id].tsx": $15,
-    "./routes/pricing.tsx": $16,
-    "./routes/signin.ts": $17,
-    "./routes/signout.ts": $18,
-    "./routes/stats.tsx": $19,
-    "./routes/submit.tsx": $20,
-    "./routes/user/[username].tsx": $21,
+    "./routes/notifications/_middleware.ts": $16,
+    "./routes/notifications/index.tsx": $17,
+    "./routes/pricing.tsx": $18,
+    "./routes/signin.ts": $19,
+    "./routes/signout.ts": $20,
+    "./routes/stats.tsx": $21,
+    "./routes/submit.tsx": $22,
+    "./routes/user/[username].tsx": $23,
   },
   islands: {
     "./islands/PageInput.tsx": $$0,

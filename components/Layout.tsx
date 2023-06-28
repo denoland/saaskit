@@ -97,6 +97,12 @@ export default function Layout(props: LayoutProps) {
         href: "/signin",
         inner: "Sign in",
       },
+    props.session
+      ? {
+        href: "/notifications",
+        inner: "Notifications",
+      }
+      : "",
     {
       href: "/submit",
       inner: <span class={BUTTON_STYLES}>Submit</span>,
