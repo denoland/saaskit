@@ -15,11 +15,8 @@ import {
   getItem,
   getItemsByUser,
   getItemsSince,
-  getManyItemsCounts,
+  getManyMetrics,
   getManyUsers,
-  getManyUsersCounts,
-  getManyVisitsCounts,
-  getManyVotesCounts,
   getUser,
   getUserByLogin,
   getUserBySession,
@@ -27,7 +24,6 @@ import {
   getVotedItemsByUser,
   incrVisitsCountByDay,
   type Item,
-  kv,
   newCommentProps,
   newItemProps,
   newUserProps,
@@ -96,9 +92,10 @@ Deno.test("[db] (get/create/delete)Item()", async () => {
 
   assertEquals(await getItem(item.id), null);
 
-  const [itemsCount] = await getManyItemsCounts([new Date()]);
+  const dates = [new Date()];
+  const [itemsCount] = await getManyMetrics("items_count", dates);
   await createItem(item);
-  assertEquals(await getManyItemsCounts([new Date()]), [itemsCount + 1n]);
+  assertEquals(await getManyMetrics("items_count", dates), [itemsCount + 1n]);
   await assertRejects(async () => await createItem(item));
   assertEquals(await getItem(item.id), item);
 
@@ -139,10 +136,9 @@ Deno.test("[db] user", async () => {
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getUserByStripeCustomer(user.stripeCustomerId!), null);
 
-  const [usersCount] = await getManyUsersCounts([new Date()]);
   await createUser(user);
   await assertRejects(async () => await createUser(user));
-  assertEquals(await getManyUsersCounts([new Date()]), [usersCount + 1n]);
+  assertEquals(await getManyMetrics("users_count", [new Date()]), [1n]);
   assertEquals(await getUser(user.id), user);
   assertEquals(await getUserByLogin(user.login), user);
   assertEquals(await getUserBySession(user.sessionId), user);
@@ -167,16 +163,9 @@ Deno.test("[db] user", async () => {
 });
 
 Deno.test("[db] visit", async () => {
-  const date = new Date("2023-01-01");
-  const visitsKey = [
-    "visits_count",
-    formatDate(date),
-  ];
+  const date = new Date();
   await incrVisitsCountByDay(date);
-  assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
-  assertEquals(await getManyVisitsCounts([date]), [1n]);
-  await kv.delete(visitsKey);
-  assertEquals(await getManyVisitsCounts([date]), [0n]);
+  assertEquals(await getManyMetrics("visits_count", [date]), [1n]);
 });
 
 Deno.test("[db] newCommentProps()", () => {
@@ -212,9 +201,10 @@ Deno.test("[db] votes", async () => {
 
   assertEquals(await getVotedItemsByUser(user.id), []);
 
-  const [votesCount] = await getManyVotesCounts([new Date()]);
+  const dates = [new Date()];
+  assertEquals(await getManyMetrics("votes_count", dates), [0n]);
   await createVote({ item, user });
-  assertEquals(await getManyVotesCounts([new Date()]), [votesCount + 1n]);
+  assertEquals(await getManyMetrics("votes_count", dates), [1n]);
   assertEquals(await getVotedItemsByUser(user.id), [item]);
   await deleteVote({ item, user });
   assertEquals(await getVotedItemsByUser(user.id), []);

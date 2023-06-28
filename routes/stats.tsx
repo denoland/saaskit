@@ -3,13 +3,7 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
-import {
-  getDatesSince,
-  getManyItemsCounts,
-  getManyUsersCounts,
-  getManyVisitsCounts,
-  getManyVotesCounts,
-} from "@/utils/db.ts";
+import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import { Chart } from "fresh_charts/mod.ts";
 import { ChartColors } from "fresh_charts/utils.ts";
 import { DAY } from "std/datetime/constants.ts";
@@ -24,7 +18,8 @@ interface StatsPageData extends State {
 
 export const handler: Handlers<StatsPageData, State> = {
   async GET(_req, ctx) {
-    const dates = getDatesSince(DAY * 10);
+    const msAgo = 7 * DAY;
+    const dates = getDatesSince(msAgo);
 
     const [
       visitsCounts,
@@ -32,10 +27,10 @@ export const handler: Handlers<StatsPageData, State> = {
       itemsCounts,
       votesCounts,
     ] = await Promise.all([
-      getManyVisitsCounts(dates),
-      getManyUsersCounts(dates),
-      getManyItemsCounts(dates),
-      getManyVotesCounts(dates),
+      getManyMetrics("visits_count", dates),
+      getManyMetrics("users_count", dates),
+      getManyMetrics("items_count", dates),
+      getManyMetrics("votes_count", dates),
     ]);
 
     return ctx.render({

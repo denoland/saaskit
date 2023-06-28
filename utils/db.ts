@@ -422,7 +422,7 @@ export async function incrVisitsCountByDay(date: Date) {
   // convert to ISO format that is zero UTC offset
   const visitsKey = [
     "visits_count",
-    `${date.toISOString().split("T")[0]}`,
+    formatDate(date),
   ];
   await kv.atomic()
     .sum(visitsKey, 1n)
@@ -443,26 +443,11 @@ export function getDatesSince(msAgo: number) {
   return dates;
 }
 
-export async function getManyVisitsCounts(dates: Date[]) {
-  const keys = dates.map((date) => ["visits_count", formatDate(date)]);
-  const res = await kv.getMany<bigint[]>(keys);
-  return res.map(({ value }) => value?.valueOf() ?? 0n);
-}
-
-export async function getManyItemsCounts(dates: Date[]) {
-  const keys = dates.map((date) => ["items_count", formatDate(date)]);
-  const res = await kv.getMany<bigint[]>(keys);
-  return res.map(({ value }) => value?.valueOf() ?? 0n);
-}
-
-export async function getManyVotesCounts(dates: Date[]) {
-  const keys = dates.map((date) => ["votes_count", formatDate(date)]);
-  const res = await kv.getMany<bigint[]>(keys);
-  return res.map(({ value }) => value?.valueOf() ?? 0n);
-}
-
-export async function getManyUsersCounts(dates: Date[]) {
-  const keys = dates.map((date) => ["users_count", formatDate(date)]);
+export async function getManyMetrics(
+  metric: "visits_count" | "items_count" | "votes_count" | "users_count",
+  dates: Date[],
+) {
+  const keys = dates.map((date) => [metric, formatDate(date)]);
   const res = await kv.getMany<bigint[]>(keys);
   return res.map(({ value }) => value?.valueOf() ?? 0n);
 }
