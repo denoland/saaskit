@@ -74,7 +74,7 @@ export async function createItem(item: Item) {
   const itemsKey = ["items", item.id];
   const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
   const itemsByUserKey = ["items_by_user", item.userId, item.id];
-  const itemsCountKey = ["items_count", `${formatDate(new Date())}`];
+  const itemsCountKey = ["items_count", formatDate(new Date())];
 
   const res = await kv.atomic()
     .check({ key: itemsKey, versionstamp: null })
@@ -209,7 +209,7 @@ export async function createVote(vote: Vote) {
     vote.item.id,
     vote.user.id,
   ];
-  const votesCountKey = ["votes_count", `${formatDate(new Date())}`];
+  const votesCountKey = ["votes_count", formatDate(new Date())];
 
   const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
     itemKey,
@@ -317,7 +317,7 @@ export async function createUser(user: User) {
   const usersKey = ["users", user.id];
   const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
-  const usersCountKey = ["users_count", `${formatDate(new Date())}`];
+  const usersCountKey = ["users_count", formatDate(new Date())];
 
   const atomicOp = kv.atomic();
 
@@ -418,7 +418,7 @@ export function compareScore(a: Item, b: Item) {
 }
 
 // Analytics
-export async function incrementVisitsCountByDay(date: Date) {
+export async function incrVisitsCountByDay(date: Date) {
   // convert to ISO format that is zero UTC offset
   const visitsKey = [
     "visits_count",
@@ -432,28 +432,28 @@ export async function incrementVisitsCountByDay(date: Date) {
 export async function getVisitsCountByDay(date: Date) {
   return await getValue<bigint>([
     "visits_count",
-    `${date.toISOString().split("T")[0]}`,
+    formatDate(date),
   ]);
 }
 
 export async function getItemsCountByDay(date: Date) {
   return await getValue<bigint>([
     "items_count",
-    `${date.toISOString().split("T")[0]}`,
+    formatDate(date),
   ]);
 }
 
 export async function getVotesCountByDay(date: Date) {
   return await getValue<bigint>([
     "votes_count",
-    `${date.toISOString().split("T")[0]}`,
+    formatDate(date),
   ]);
 }
 
 export async function getUsersCountByDay(date: Date) {
   return await getValue<bigint>([
     "users_count",
-    `${date.toISOString().split("T")[0]}`,
+    formatDate(date),
   ]);
 }
 

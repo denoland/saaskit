@@ -12,7 +12,7 @@ import {
   getAreVotedBySessionId,
   getItemsSince,
   getManyUsers,
-  incrementVisitsCountByDay,
+  incrVisitsCountByDay,
   type Item,
   type User,
 } from "@/utils/db.ts";
@@ -31,7 +31,7 @@ function calcTimeAgoFilter(url: URL) {
 
 export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
-    await incrementVisitsCountByDay(new Date());
+    await incrVisitsCountByDay(new Date());
 
     const url = new URL(req.url);
     const pageNum = calcPageNum(url);

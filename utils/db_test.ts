@@ -24,7 +24,7 @@ import {
   getUsersCountByDay,
   getVisitsCountByDay,
   getVotedItemsByUser,
-  incrementVisitsCountByDay,
+  incrVisitsCountByDay,
   type Item,
   kv,
   newCommentProps,
@@ -179,7 +179,7 @@ Deno.test("[db] visit", async () => {
     "visits_count",
     `${date.toISOString().split("T")[0]}`,
   ];
-  await incrementVisitsCountByDay(date);
+  await incrVisitsCountByDay(date);
   assertEquals((await kv.get(visitsKey)).key[1], "2023-01-01");
   assertEquals((await getVisitsCountByDay(date))!.valueOf(), 1n);
   await kv.delete(visitsKey);
