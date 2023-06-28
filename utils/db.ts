@@ -89,6 +89,20 @@ export async function createItem(item: Item) {
   if (!res.ok) throw new Error(`Failed to create item: ${item}`);
 }
 
+export async function deleteItem(item: Item) {
+  const itemsKey = ["items", item.id];
+  const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
+  const itemsByUserKey = ["items_by_user", item.userId, item.id];
+
+  const res = await kv.atomic()
+    .delete(itemsKey)
+    .delete(itemsByTimeKey)
+    .delete(itemsByUserKey)
+    .commit();
+
+  if (!res.ok) throw new Error(`Failed to delete item: ${item}`);
+}
+
 export async function getItem(id: string) {
   return await getValue<Item>(["items", id]);
 }
@@ -153,6 +167,16 @@ export async function createComment(comment: Comment) {
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create comment: ${comment}`);
+}
+
+export async function deleteComment(comment: Comment) {
+  const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
+
+  const res = await kv.atomic()
+    .delete(commentsByItemKey)
+    .commit();
+
+  if (!res.ok) throw new Error(`Failed to delete comment: ${comment}`);
 }
 
 export async function getCommentsByItem(itemId: string) {
@@ -426,7 +450,7 @@ export async function getVotesCountByDay(date: Date) {
   ]);
 }
 
-export async function getUsersCountDay(date: Date) {
+export async function getUsersCountByDay(date: Date) {
   return await getValue<bigint>([
     "users_count",
     `${date.toISOString().split("T")[0]}`,
