@@ -220,12 +220,12 @@ Deno.test("[db] votes", async () => {
 
   assertEquals(await getVotedItemsByUser(user.id), []);
 
-  const itemsCount = (await getVotesCountByDay(new Date()))?.valueOf() ??
+  const votesCount = (await getVotesCountByDay(new Date()))?.valueOf() ??
     0n;
   await createVote({ item, user });
   assertEquals(
     (await getVotesCountByDay(new Date()))!.valueOf(),
-    itemsCount + 1n,
+    votesCount + 1n,
   );
   assertEquals(await getVotedItemsByUser(user.id), [item]);
   await deleteVote({ item, user });
