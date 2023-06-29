@@ -449,7 +449,7 @@ export function compareScore(a: Item, b: Item) {
 
 // Analytics
 export async function incrVisitsCountByDay(date: Date) {
-  const visitsKey = ["visits_count", `${formatDate(date)}`];
+  const visitsKey = ["visits_count", formatDate(date)];
   await kv.atomic()
     .sum(visitsKey, 1n)
     .commit();
