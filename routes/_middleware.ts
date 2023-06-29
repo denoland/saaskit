@@ -5,6 +5,7 @@ import { getSessionId } from "kv_oauth";
 import { redirect, setRedirectUrlCookie } from "@/utils/redirect.ts";
 import { Status } from "std/http/http_status.ts";
 import { getNotificationsCountByUser, getUserBySession } from "@/utils/db.ts";
+import { incrVisitsCountByDay } from "@/utils/db.ts";
 
 export interface State {
   sessionId?: string;
@@ -31,6 +32,8 @@ export async function handler(
   if (["_frsh", ...staticFileNames].some((part) => pathname.includes(part))) {
     return await ctx.next();
   }
+
+  await incrVisitsCountByDay(new Date());
 
   const sessionId = await getSessionId(req);
   ctx.state.sessionId = sessionId;

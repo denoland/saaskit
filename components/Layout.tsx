@@ -2,29 +2,12 @@
 import type { ComponentChild, ComponentChildren, JSX } from "preact";
 import {
   BUTTON_STYLES,
-  NOTICE_STYLES,
   SITE_NAME,
   SITE_WIDTH_STYLES,
 } from "@/utils/constants.ts";
 import Logo from "./Logo.tsx";
 import { stripe } from "../utils/payments.ts";
-
-function Notice() {
-  return (
-    <div class={`${NOTICE_STYLES} rounded-none`}>
-      <div class={`text-center px-4`}>
-        Deno Hunt powered by Deno SaaSKit is currently in beta. Check out
-        progress in the{" "}
-        <a
-          href="https://github.com/denoland/saaskit/issues/60"
-          class="underline"
-        >
-          roadmap
-        </a>.
-      </div>
-    </div>
-  );
-}
+import { Discord, GitHub } from "./Icons.tsx";
 
 interface NavProps extends JSX.HTMLAttributes<HTMLElement> {
   active?: string;
@@ -41,7 +24,12 @@ function Nav(props: NavProps) {
       >
         {props.items.map((item) => (
           <li>
-            <a href={item.href}>{item.inner}</a>
+            <a
+              href={item.href}
+              class="text-gray-500 hover:text-black dark:(hover:text-white) transition duration-300"
+            >
+              {item.inner}
+            </a>
           </li>
         ))}
       </ul>
@@ -69,13 +57,11 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <footer
       {...props}
-      class={`flex flex-col md:flex-row p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
+      class={`flex flex-col md:flex-row mt-8 p-4 justify-between gap-y-4 ${SITE_WIDTH_STYLES} ${
         props.class ?? ""
       } `}
     >
-      <span>
-        <strong>{SITE_NAME}</strong>
-      </span>
+      <p>© {SITE_NAME}</p>
       {props.children}
     </footer>
   );
@@ -128,7 +114,11 @@ export default function Layout(props: LayoutProps) {
       inner: "Blog",
     },
     {
-      inner: "Source code",
+      inner: <Discord />,
+      href: "https://discord.gg/deno",
+    },
+    {
+      inner: <GitHub />,
       href: "https://github.com/denoland/saaskit",
     },
     {
@@ -146,7 +136,6 @@ export default function Layout(props: LayoutProps) {
 
   return (
     <div class="flex flex-col min-h-screen dark:bg-gray-900 dark:text-white">
-      <Notice />
       <Header>
         <Nav items={headerNavItems} />
       </Header>

@@ -1,4 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
+import { chunk } from "std/collections/chunk.ts";
 
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
@@ -27,6 +28,35 @@ async function getValues<T>(
   const iter = kv.list<T>(selector, options);
   for await (const { value } of iter) values.push(value);
   return values;
+}
+
+/**
+ * Gets many values from KV. Uses batched requests to get values in chunks of 10.
+ */
+async function getManyValues<T>(
+  keys: Deno.KvKey[],
+): Promise<(T | null)[]> {
+  const promises = [];
+  for (const batch of chunk(keys, 10)) {
+    promises.push(kv.getMany<T[]>(batch));
+  }
+  return (await Promise.all(promises))
+    .flat()
+    .map((entry) => entry?.value);
+}
+
+/** Gets all dates since a given number of milliseconds ago */
+export function getDatesSince(msAgo: number) {
+  const dates = [];
+  const now = Date.now();
+  const start = new Date(now - msAgo);
+
+  while (+start < now) {
+    start.setDate(start.getDate() + 1);
+    dates.push(formatDate(new Date(start)));
+  }
+
+  return dates;
 }
 
 /** Converts `Date` to ISO format that is zero UTC offset */
@@ -58,7 +88,7 @@ export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
  *
  * @example New item creation
  * ```ts
- * import { newItemProps, createItem, incrementAnalyticsMetricPerDay } from "@/utils/db.ts";
+ * import { newItemProps, createItem } from "@/utils/db.ts";
  *
  * const item: Item = {
  *   userId: "example-user-id",
@@ -506,8 +536,8 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 export async function getManyUsers(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
-  const res = await kv.getMany<User[]>(keys);
-  return res.map((entry) => entry.value!);
+  const res = await getManyValues<User>(keys);
+  return res.filter(Boolean) as User[];
 }
 
 export async function getAreVotedBySessionId(
@@ -528,109 +558,17 @@ export function compareScore(a: Item, b: Item) {
 
 // Analytics
 export async function incrVisitsCountByDay(date: Date) {
-  // convert to ISO format that is zero UTC offset
-  const visitsKey = [
-    "visits_count",
-    `${date.toISOString().split("T")[0]}`,
-  ];
+  const visitsKey = ["visits_count", formatDate(date)];
   await kv.atomic()
     .sum(visitsKey, 1n)
     .commit();
 }
 
-export async function getVisitsCountByDay(date: Date) {
-  return await getValue<bigint>([
-    "visits_count",
-    formatDate(date),
-  ]);
-}
-
-export async function getItemsCountByDay(date: Date) {
-  return await getValue<bigint>([
-    "items_count",
-    formatDate(date),
-  ]);
-}
-
-export async function getVotesCountByDay(date: Date) {
-  return await getValue<bigint>([
-    "votes_count",
-    formatDate(date),
-  ]);
-}
-
-export async function getUsersCountByDay(date: Date) {
-  return await getValue<bigint>([
-    "users_count",
-    formatDate(date),
-  ]);
-}
-
-export async function getAllVisitsCountByDay(options?: Deno.KvListOptions) {
-  const iter = await kv.list<bigint>({ prefix: ["visits_count"] }, options);
-  const visits = [];
-  const dates = [];
-  for await (const res of iter) {
-    visits.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { visits, dates };
-}
-
-export async function getAllItemsCountByDay(options?: Deno.KvListOptions) {
-  const iter = await kv.list<bigint>({ prefix: ["items_count"] }, options);
-  const visits = [];
-  const dates = [];
-  for await (const res of iter) {
-    visits.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { visits, dates };
-}
-
-export async function getAllVotesCountByDay(options?: Deno.KvListOptions) {
-  const iter = await kv.list<bigint>({ prefix: ["votes_count"] }, options);
-  const visits = [];
-  const dates = [];
-  for await (const res of iter) {
-    visits.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { visits, dates };
-}
-
-export async function getAllUsersCountByDay(options?: Deno.KvListOptions) {
-  const iter = await kv.list<bigint>({ prefix: ["users_count"] }, options);
-  const visits = [];
-  const dates = [];
-  for await (const res of iter) {
-    visits.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { visits, dates };
-}
-
-export async function getAnalyticsMetricListPerDay(
-  metric: string,
-  options?: Deno.KvListOptions,
+export async function getManyMetrics(
+  metric: "visits_count" | "items_count" | "votes_count" | "users_count",
+  dates: Date[],
 ) {
-  const iter = await kv.list<bigint>({ prefix: [metric] }, options);
-  const metricsValue = [];
-  const dates = [];
-  for await (const res of iter) {
-    metricsValue.push(Number(res.value));
-    dates.push(String(res.key[1]));
-  }
-  return { metricsValue, dates };
-}
-
-export async function getManyAnalyticsMetricsPerDay(
-  metrics: string[],
-  options?: Deno.KvListOptions,
-) {
-  const analyticsByDay = await Promise.all(
-    metrics.map((metric) => getAnalyticsMetricListPerDay(metric, options)),
-  );
-
-  return analyticsByDay;
+  const keys = dates.map((date) => [metric, formatDate(date)]);
+  const res = await getManyValues<bigint>(keys);
+  return res.map((value) => value?.valueOf() ?? 0n);
 }
