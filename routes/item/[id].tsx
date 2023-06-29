@@ -13,6 +13,7 @@ import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import {
   type Comment,
   createComment,
+  createNotification,
   getAreVotedBySessionId,
   getCommentsByItem,
   getItem,
@@ -21,11 +22,12 @@ import {
   getUserBySession,
   type Item,
   newCommentProps,
+  newNotificationProps,
+  Notification,
   type User,
 } from "@/utils/db.ts";
-import { redirect } from "@/utils/redirect.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
-import { redirectToLogin } from "@/utils/redirect.ts";
+import { redirect, redirectToLogin } from "@/utils/redirect.ts";
 
 interface ItemPageData extends State {
   user: User;
@@ -96,6 +98,23 @@ export const handler: Handlers<ItemPageData, State> = {
       ...newCommentProps(),
     };
     await createComment(comment);
+
+    const item = await getItem(comment.itemId);
+
+    // TODO: remember to uncomment before deploying
+    // if(item.userId != user!.id){
+    //   true
+    // }
+    const notification: Notification = {
+      userId: item.userId, // Como resolver isso aqui? passar o ItemTodo para o comment?
+      type: "comment",
+      userFromId: user!.id,
+      userFromLogin: user!.login,
+      originId: item.id,
+      originTitle: item.title,
+      ...newNotificationProps(),
+    };
+    await createNotification(notification);
 
     return redirect(`/item/${ctx.params.id}`);
   },

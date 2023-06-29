@@ -175,8 +175,10 @@ export async function getItemsSince(msAgo: number) {
 export interface Notification {
   userId: string;
   type: string;
-  userFrom: string; // TODO: improve names and structure
-  origin: string;
+  userFromId: string; // TODO: improve names and structure
+  userFromLogin: string; // TODO: improve names and structure
+  originId: string;
+  originTitle: string;
   // The below properties can be automatically generated upon item creation
   id: string;
   createdAt: Date;
@@ -296,16 +298,6 @@ export async function createComment(comment: Comment) {
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create comment: ${comment}`);
-
-  // TODO: should this be inside or outside the createComment function?
-  const notification: Notification = {
-    userId: (await getItem(comment.itemId)).userId, // Como resolver isso aqui? passar o ItemTodo para o comment?
-    type: "comment",
-    userFrom: comment.userId,
-    origin: comment.itemId,
-    ...newNotificationProps(),
-  };
-  await createNotification(notification);
 }
 
 export async function deleteComment(comment: Comment) {
