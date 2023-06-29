@@ -10,14 +10,22 @@ import {
   Notification,
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/redirect.ts";
+import { timeAgo } from "@/utils/display.ts";
 
 export interface NotificationState extends AccountState {
   notifications: Notification[];
 }
 
+export function compareCreatedAt(a: Notification, b: Notification) {
+  return Number(b.createdAt) - Number(a.createdAt);
+}
+
 export const handler: Handlers<NotificationState, AccountState> = {
   async GET(_request, ctx) {
-    const notifications = await getNotificationsByUser(ctx.state.user.id);
+    const notifications = (await getNotificationsByUser(ctx.state.user.id))!
+      .toSorted(
+        compareCreatedAt,
+      );
     return ctx.render({ ...ctx.state, notifications });
   },
   async POST(req, ctx) {
@@ -53,7 +61,7 @@ function Row(props: RowProps) {
         <button class="text-left" type="submit">
           <strong>New comment!</strong>
           <span class="text-gray-500 text-sm">
-            {" " + props.notification.createdAt.toISOString().split("T")[0]}
+            {" " + timeAgo(new Date(props.notification.createdAt))} ago
           </span>
           <p>
             {props.notification.userFromLogin} commented on your post:{" "}
