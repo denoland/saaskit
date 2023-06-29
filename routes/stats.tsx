@@ -18,7 +18,7 @@ interface StatsPageData extends State {
 
 export const handler: Handlers<StatsPageData, State> = {
   async GET(_req, ctx) {
-    const msAgo = 10 * DAY;
+    const msAgo = 30 * DAY;
     const dates = getDatesSince(msAgo).map((date) => new Date(date));
 
     const [
@@ -86,6 +86,12 @@ function LineChart(
 }
 
 export default function StatsPage(props: PageProps<StatsPageData>) {
+  const charts: [string, bigint[]][] = [
+    ["Visits", props.data.visitsCounts],
+    ["Users", props.data.usersCounts],
+    ["Items", props.data.itemsCounts],
+    ["Votes", props.data.votesCounts],
+  ];
   const x = props.data.dates.map((date) =>
     new Date(date).toLocaleDateString("en-us", {
       year: "numeric",
@@ -109,26 +115,13 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
       </Head>
       <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <LineChart
-            title="Visits"
-            x={x}
-            y={props.data.visitsCounts}
-          />
-          <LineChart
-            title="Users"
-            x={x}
-            y={props.data.usersCounts}
-          />
-          <LineChart
-            title="Items"
-            x={x}
-            y={props.data.itemsCounts}
-          />
-          <LineChart
-            title="Votes"
-            x={x}
-            y={props.data.votesCounts}
-          />
+          {charts.map(([title, values]) => (
+            <LineChart
+              title={title}
+              x={x}
+              y={values}
+            />
+          ))}
         </div>
       </div>
     </>

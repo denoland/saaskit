@@ -28,6 +28,22 @@ async function getValues<T>(
   return values;
 }
 
+async function getMany<T>(
+  keys: Deno.KvKey[],
+): Promise<Deno.KvEntryMaybe<T>[]> {
+  const res: Deno.KvEntryMaybe<T>[] = [];
+  for (const batch of batches(keys, 10)) {
+    res.push(...(await kv.getMany<T[]>(batch)));
+  }
+  return res;
+}
+
+function* batches<T>(array: T[], size: number): Generator<T[], void> {
+  for (let i = 0; i < array.length; i += size) {
+    yield array.slice(i, i + size);
+  }
+}
+
 /** Gets all dates since a given number of milliseconds ago */
 export function getDatesSince(msAgo: number) {
   const dates = [];
@@ -71,7 +87,7 @@ export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
  *
  * @example New item creation
  * ```ts
- * import { newItemProps, createItem, incrementAnalyticsMetricPerDay } from "@/utils/db.ts";
+ * import { newItemProps, createItem } from "@/utils/db.ts";
  *
  * const item: Item = {
  *   userId: "example-user-id",
@@ -410,7 +426,7 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 export async function getManyUsers(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
-  const res = await kv.getMany<User[]>(keys);
+  const res = await getMany<User>(keys);
   return res.map((entry) => entry.value!);
 }
 
@@ -443,6 +459,6 @@ export async function getManyMetrics(
   dates: Date[],
 ) {
   const keys = dates.map((date) => [metric, formatDate(date)]);
-  const res = await kv.getMany<bigint[]>(keys);
+  const res = await getMany<bigint>(keys);
   return res.map(({ value }) => value?.valueOf() ?? 0n);
 }
