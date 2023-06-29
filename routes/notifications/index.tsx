@@ -18,6 +18,7 @@ export interface NotificationState extends AccountState {
 export const handler: Handlers<NotificationState, AccountState> = {
   async GET(_request, ctx) {
     const notifications = await getNotificationsByUser(ctx.state.user.id);
+    console.log(notifications);
     return ctx.render({ ...ctx.state, notifications });
   },
   async POST(req, ctx) {
@@ -72,13 +73,13 @@ export default function NotificationPage(props: PageProps<NotificationState>) {
       <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
         <h1 class="text-3xl font-bold py-4">Notification Center</h1>
         <ul>
-          {props.data.notifications
+          {props.data.notifications.length > 0
             ? props.data.notifications.map((notif) => (
               <Row
                 notification={notif}
               />
             ))
-            : "No notifications for you"}
+            : "No notifications yet"}
         </ul>
       </div>
     </>

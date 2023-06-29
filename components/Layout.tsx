@@ -73,6 +73,9 @@ interface LayoutProps {
   notificationsCount?: number;
 }
 
+const notificationsStyle =
+  "px-2 py-1 bg-red-600 text-white text-xs rounded-full border-1 border-red-600 transition duration-300 disabled:(opacity-50 cursor-not-allowed) hover:(bg-transparent text-red-600)";
+
 export default function Layout(props: LayoutProps) {
   const headerNavItems = [
     props.session
@@ -84,11 +87,14 @@ export default function Layout(props: LayoutProps) {
         href: "/signin",
         inner: "Sign in",
       },
-    props.session
+    props.session && props.notificationsCount! > 0
       ? {
         href: "/notifications",
-        //TODO: better display info when there is no notification
-        inner: "Notifications: " + (props.notificationsCount ?? 0),
+        inner: (
+          <span class={notificationsStyle}>
+            {props.notificationsCount}
+          </span>
+        ),
       }
       : { href: "/", inner: "" },
     {
