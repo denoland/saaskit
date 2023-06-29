@@ -37,7 +37,7 @@ export async function handler(
 
   const sessionId = await getSessionId(req);
   ctx.state.sessionId = sessionId;
-  // TODO: would this really be the best place for it?
+
   if (sessionId) {
     const user = await getUserBySession(sessionId);
     ctx.state.notificationsCount = await getNotificationsCountByUser(user!.id);

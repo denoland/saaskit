@@ -101,10 +101,6 @@ export const handler: Handlers<ItemPageData, State> = {
 
     const item = await getItem(comment.itemId);
 
-    // TODO: remember to uncomment before deploying
-    // if(item.userId != user!.id){
-    //   true
-    // }
     const notification: Notification = {
       userId: item!.userId,
       type: "comment",

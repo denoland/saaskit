@@ -18,7 +18,6 @@ export interface NotificationState extends AccountState {
 export const handler: Handlers<NotificationState, AccountState> = {
   async GET(_request, ctx) {
     const notifications = await getNotificationsByUser(ctx.state.user.id);
-    console.log(notifications);
     return ctx.render({ ...ctx.state, notifications });
   },
   async POST(req, ctx) {

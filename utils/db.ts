@@ -175,8 +175,8 @@ export async function getItemsSince(msAgo: number) {
 export interface Notification {
   userId: string;
   type: string;
-  userFromId: string; // TODO: improve names and structure
-  userFromLogin: string; // TODO: improve names and structure
+  userFromId: string;
+  userFromLogin: string;
   originId: string;
   originTitle: string;
   // The below properties can be automatically generated upon item creation
@@ -201,12 +201,14 @@ export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
  * const notification: Notification = {
  *   userId: "example-user-id",
  *   type: "example-type",
- *   userFrom: "example-user-from"
- *   origin: "example-origin"
+ *   userFromId: "example-user-from-id"
+ *   userFromLogin: "exemple-user-from-login"
+ *   originId: "example-origin-id"
+ *   originTitle: "example-origin-title"
  *   ...newNotificationProps(),
  * };
  *
- * await createItem(item);
+ * await createNotification(notification);
  * ```
  */
 export async function createNotification(notif: Notification) {
