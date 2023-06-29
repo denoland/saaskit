@@ -87,10 +87,10 @@ export default function Layout(props: LayoutProps) {
     props.session
       ? {
         href: "/notifications",
-        //TODO: How to display info when there is no notification?
+        //TODO: better display info when there is no notification
         inner: "Notifications: " + (props.notificationsCount ?? 0),
       }
-      : "",
+      : { href: "/", inner: "" },
     {
       href: "/submit",
       inner: <span class={BUTTON_STYLES}>Submit</span>,

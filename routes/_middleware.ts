@@ -40,7 +40,7 @@ export async function handler(
   // TODO: would this really be the best place for it?
   if (sessionId) {
     const user = await getUserBySession(sessionId);
-    ctx.state.notificationsCount = await getNotificationsCountByUser(user.id);
+    ctx.state.notificationsCount = await getNotificationsCountByUser(user!.id);
   }
 
   const res = await ctx.next();

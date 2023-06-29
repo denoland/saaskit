@@ -17,20 +17,12 @@ export interface NotificationState extends AccountState {
 
 export const handler: Handlers<NotificationState, AccountState> = {
   async GET(_request, ctx) {
-    // TODO: Remove it after debug
-    console.log(ctx.state.user);
     const notifications = await getNotificationsByUser(ctx.state.user.id);
-    // TODO: Remove it after debug
-    console.log(notifications);
-    //notifications.map(notif => {})
-    //getItem(id)
-    //getUser(id: string)
-
     return ctx.render({ ...ctx.state, notifications });
   },
   async POST(req, ctx) {
     const form = await req.formData();
-    const itemId = form.get("itemId");
+    const itemId = form.get("itemId")!;
     const notifId = form.get("notifId");
 
     if (typeof itemId !== "string" || typeof notifId !== "string") {
@@ -38,7 +30,7 @@ export const handler: Handlers<NotificationState, AccountState> = {
     }
 
     const notif = await getNotification(notifId);
-    await deleteNotification(notif);
+    await deleteNotification(notif!);
 
     return redirect(`/item/${itemId}`);
   },

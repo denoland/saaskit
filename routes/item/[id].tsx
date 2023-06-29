@@ -106,12 +106,12 @@ export const handler: Handlers<ItemPageData, State> = {
     //   true
     // }
     const notification: Notification = {
-      userId: item.userId, // Como resolver isso aqui? passar o ItemTodo para o comment?
+      userId: item!.userId,
       type: "comment",
       userFromId: user!.id,
       userFromLogin: user!.login,
-      originId: item.id,
-      originTitle: item.title,
+      originId: item!.id,
+      originTitle: item!.title,
       ...newNotificationProps(),
     };
     await createNotification(notification);
