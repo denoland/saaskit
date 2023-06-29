@@ -1,4 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
+import { chunk } from "std/collections/chunk.ts";
+
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
 if (
@@ -28,20 +30,17 @@ async function getValues<T>(
   return values;
 }
 
-async function getMany<T>(
+/**
+ * Gets many values from KV. Uses batched requests to get values in chunks of 10.
+ */
+async function getManyValues<T>(
   keys: Deno.KvKey[],
-): Promise<Deno.KvEntryMaybe<T>[]> {
-  const res: Deno.KvEntryMaybe<T>[] = [];
-  for (const batch of batches(keys, 10)) {
-    res.push(...(await kv.getMany<T[]>(batch)));
+): Promise<(T | null)[]> {
+  const res: (T | null)[] = [];
+  for (const batch of chunk(keys, 10)) {
+    res.push(...(await kv.getMany<T[]>(batch)).map((entry) => entry?.value));
   }
   return res;
-}
-
-function* batches<T>(array: T[], size: number): Generator<T[], void> {
-  for (let i = 0; i < array.length; i += size) {
-    yield array.slice(i, i + size);
-  }
 }
 
 /** Gets all dates since a given number of milliseconds ago */
@@ -426,8 +425,8 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 export async function getManyUsers(ids: string[]) {
   const keys = ids.map((id) => ["users", id]);
-  const res = await getMany<User>(keys);
-  return res.map((entry) => entry.value!);
+  const res = await getManyValues<User>(keys);
+  return res.filter(Boolean) as User[];
 }
 
 export async function getAreVotedBySessionId(
@@ -459,6 +458,6 @@ export async function getManyMetrics(
   dates: Date[],
 ) {
   const keys = dates.map((date) => [metric, formatDate(date)]);
-  const res = await getMany<bigint>(keys);
-  return res.map(({ value }) => value?.valueOf() ?? 0n);
+  const res = await getManyValues<bigint>(keys);
+  return res.map((value) => value?.valueOf() ?? 0n);
 }
