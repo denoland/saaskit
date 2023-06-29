@@ -11,7 +11,6 @@ import {
   deleteVote,
   formatDate,
   getAllItems,
-  getAnalyticsMetricsSince,
   getCommentsByItem,
   getDatesSince,
   getItem,
@@ -216,7 +215,6 @@ Deno.test("[db] votes", async () => {
   assertRejects(async () => await deleteVote({ item, user }));
 });
 
-<<<<<<< HEAD
 Deno.test("[db] formatDate()", () => {
   assertEquals(formatDate(new Date("2023-01-01")), "2023-01-01");
   assertEquals(formatDate(new Date("2023-01-01T13:59:08.740Z")), "2023-01-01");
@@ -229,118 +227,4 @@ Deno.test("[db] getDatesSince()", () => {
     formatDate(new Date(Date.now() - DAY)),
     formatDate(new Date()),
   ]);
-=======
-Deno.test("[db] getAnalyticsMetricsSince", async () => {
-  const today = new Date();
-  const yesterday = new Date(+today - DAY);
-  const twoDaysAgo = new Date(+today - 2 * DAY);
-
-  const visitsCountToday = Number(
-    (await getVisitsCountByDay(today))?.valueOf() ?? 0n,
-  );
-  const visitsCountYesterday = Number(
-    (await getVisitsCountByDay(yesterday))?.valueOf() ?? 0n,
-  );
-  const visitsCountTwoDaysAgo = Number(
-    (await getVisitsCountByDay(twoDaysAgo))?.valueOf() ?? 0n,
-  );
-
-  assertEquals(await getAnalyticsMetricsSince("", 0), {
-    dates: [],
-    metricsValue: [],
-  });
-  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
-    dates: [formatDate(today)],
-    metricsValue: [visitsCountToday],
-  });
-
-  await incrVisitsCountByDay(today);
-  await incrVisitsCountByDay(today);
-
-  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY), {
-    dates: [formatDate(today)],
-    metricsValue: [visitsCountToday + 2],
-  });
-
-  await incrVisitsCountByDay(yesterday);
-
-  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 2), {
-    dates: [formatDate(yesterday), formatDate(today)],
-    metricsValue: [visitsCountYesterday + 1, visitsCountToday + 2],
-  });
-  assertEquals(await getAnalyticsMetricsSince("visits_count", DAY * 3), {
-    dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-    metricsValue: [
-      visitsCountTwoDaysAgo,
-      visitsCountYesterday + 1,
-      visitsCountToday + 2,
-    ],
-  });
-});
-
-Deno.test("[db] getManyAnalyticsMetricsSince", async () => {
-  const today = new Date();
-  const yesterday = new Date(+today - DAY);
-  const twoDaysAgo = new Date(+today - 2 * DAY);
-
-  const usersCountToday = Number(
-    (await getUsersCountByDay(today))?.valueOf() ?? 0n,
-  );
-  const usersCountYesterday = Number(
-    (await getUsersCountByDay(yesterday))?.valueOf() ?? 0n,
-  );
-  const usersCountTwoDaysAgo = Number(
-    (await getUsersCountByDay(twoDaysAgo))?.valueOf() ?? 0n,
-  );
-
-  const itemsCountToday = Number(
-    (await getItemsCountByDay(today))?.valueOf() ?? 0n,
-  );
-  const itemsCountYesterday = Number(
-    (await getItemsCountByDay(yesterday))?.valueOf() ?? 0n,
-  );
-  const itemsCountTwoDaysAgo = Number(
-    (await getItemsCountByDay(twoDaysAgo))?.valueOf() ?? 0n,
-  );
-
-  assertEquals(await getManyAnalyticsMetricsSince([], 0), []);
-  assertEquals(
-    await getManyAnalyticsMetricsSince(["users_count", "items_count"], 0),
-    [{
-      dates: [],
-      metricsValue: [],
-    }, {
-      dates: [],
-      metricsValue: [],
-    }],
-  );
-  assertEquals(
-    await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY),
-    [{
-      dates: [formatDate(today)],
-      metricsValue: [usersCountToday],
-    }, {
-      dates: [formatDate(today)],
-      metricsValue: [itemsCountToday],
-    }],
-  );
-  assertEquals(
-    await getManyAnalyticsMetricsSince(["users_count", "items_count"], DAY * 3),
-    [{
-      dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-      metricsValue: [
-        usersCountTwoDaysAgo,
-        usersCountYesterday,
-        usersCountToday,
-      ],
-    }, {
-      dates: [formatDate(twoDaysAgo), formatDate(yesterday), formatDate(today)],
-      metricsValue: [
-        itemsCountTwoDaysAgo,
-        itemsCountYesterday,
-        itemsCountToday,
-      ],
-    }],
-  );
->>>>>>> 6280473 (chore: tweak tests)
 });
