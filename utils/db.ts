@@ -36,11 +36,13 @@ async function getValues<T>(
 async function getManyValues<T>(
   keys: Deno.KvKey[],
 ): Promise<(T | null)[]> {
-  const res: (T | null)[] = [];
+  const promises = [];
   for (const batch of chunk(keys, 10)) {
-    res.push(...(await kv.getMany<T[]>(batch)).map((entry) => entry?.value));
+    promises.push(kv.getMany<T[]>(batch));
   }
-  return res;
+  return (await Promise.all(promises))
+    .flat()
+    .map((entry) => entry?.value);
 }
 
 /** Gets all dates since a given number of milliseconds ago */
