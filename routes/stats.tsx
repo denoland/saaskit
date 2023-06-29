@@ -19,7 +19,7 @@ interface StatsPageData extends State {
 export const handler: Handlers<StatsPageData, State> = {
   async GET(_req, ctx) {
     const msAgo = 10 * DAY;
-    const dates = getDatesSince(msAgo);
+    const dates = getDatesSince(msAgo).map((date) => new Date(date));
 
     const [
       visitsCounts,

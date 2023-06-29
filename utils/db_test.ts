@@ -222,9 +222,9 @@ Deno.test("[db] formatDate()", () => {
 
 Deno.test("[db] getDatesSince()", () => {
   assertEquals(getDatesSince(0), []);
-  assertEquals(getDatesSince(DAY), [new Date()]);
+  assertEquals(getDatesSince(DAY), [formatDate(new Date())]);
   assertEquals(getDatesSince(DAY * 2), [
-    new Date(Date.now() - DAY),
-    new Date(),
+    formatDate(new Date(Date.now() - DAY)),
+    formatDate(new Date()),
   ]);
 });

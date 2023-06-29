@@ -437,7 +437,7 @@ export function getDatesSince(msAgo: number) {
 
   while (+start < now) {
     start.setDate(start.getDate() + 1);
-    dates.push(new Date(start));
+    dates.push(formatDate(new Date(start)));
   }
 
   return dates;
