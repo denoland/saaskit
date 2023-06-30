@@ -282,7 +282,7 @@ Deno.test("[db] (get/create/delete)Notification()", async () => {
 });
 
 //ok
-Deno.test("[db] getNotificaitonsByUser()", async () => {
+Deno.test("[db] getNotificationsByUser()", async () => {
   const userId = crypto.randomUUID();
   const notification1 = genNewNotification({ userId });
   const notification2 = genNewNotification({ userId });

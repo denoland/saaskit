@@ -202,7 +202,7 @@ export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
  *   userId: "example-user-id",
  *   type: "example-type",
  *   userFromId: "example-user-from-id"
- *   userFromLogin: "exemple-user-from-login"
+ *   userFromLogin: "example-user-from-login"
  *   originId: "example-origin-id"
  *   originTitle: "example-origin-title"
  *   ...newNotificationProps(),
