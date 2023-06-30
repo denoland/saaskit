@@ -265,7 +265,7 @@ export async function getNotification(id: string) {
 export async function getNotificationsByUser(userId: string) {
   return await getValues<Notification>({
     prefix: ["notifications_by_user", userId],
-  });
+  }, { consistency: "eventual" });
 }
 
 export async function getNotificationsCountByUser(userId: string) {
