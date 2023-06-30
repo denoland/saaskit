@@ -2,7 +2,9 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { walk } from "std/fs/walk.ts";
 import { getSessionId } from "kv_oauth";
-import { setRedirectUrlCookie } from "@/utils/redirect.ts";
+import { redirect, setRedirectUrlCookie } from "@/utils/redirect.ts";
+import { Status } from "std/http/http_status.ts";
+import { incrVisitsCountByDay } from "@/utils/db.ts";
 
 export interface State {
   sessionId?: string;
@@ -18,11 +20,18 @@ export async function handler(
   req: Request,
   ctx: MiddlewareHandlerContext<State>,
 ) {
-  const { pathname } = new URL(req.url);
+  const { pathname, hostname } = new URL(req.url);
+
+  if (hostname === "saaskit.deno.dev") {
+    return redirect("https://hunt.deno.land", Status.Found);
+  }
+
   // Don't process session-related data for keepalive and static requests
   if (["_frsh", ...staticFileNames].some((part) => pathname.includes(part))) {
     return await ctx.next();
   }
+
+  await incrVisitsCountByDay(new Date());
 
   ctx.state.sessionId = await getSessionId(req);
 

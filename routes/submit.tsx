@@ -6,7 +6,6 @@ import type { State } from "@/routes/_middleware.ts";
 import {
   createItem,
   getUserBySession,
-  incrementAnalyticsMetricPerDay,
   type Item,
   newItemProps,
 } from "@/utils/db.ts";
@@ -51,7 +50,6 @@ export const handler: Handlers<State, State> = {
       ...newItemProps(),
     };
     await createItem(item);
-    await incrementAnalyticsMetricPerDay("items_count", new Date());
 
     return redirect(`/item/${item!.id}`);
   },
@@ -61,14 +59,14 @@ function Form() {
   return (
     <form class="space-y-2" method="post">
       <input
-        class={INPUT_STYLES}
+        class={`${INPUT_STYLES} w-full`}
         type="text"
         name="title"
         required
         placeholder="Title"
       />
       <input
-        class={INPUT_STYLES}
+        class={`${INPUT_STYLES} w-full`}
         type="url"
         name="url"
         required
