@@ -96,7 +96,7 @@ export default function Layout(props: LayoutProps) {
 
   if (props.session && props.notificationsCount! > 0) {
     headerNavItems.push({
-      href: "/notifications",
+      href: "/account/notifications",
       inner: (
         <span class={notificationsStyle}>
           {props.notificationsCount}
