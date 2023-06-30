@@ -73,11 +73,16 @@ interface LayoutProps {
   notificationsCount?: number;
 }
 
+interface NavItem {
+  href: string;
+  inner: string | JSX.Element;
+}
+
 const notificationsStyle =
   "px-2 py-1 bg-red-600 text-white text-xs rounded-full border-1 border-red-600 transition duration-300 disabled:(opacity-50 cursor-not-allowed) hover:(bg-transparent text-red-600)";
 
 export default function Layout(props: LayoutProps) {
-  const headerNavItems = [
+  const headerNavItems: NavItem[] = [
     props.session
       ? {
         href: "/account",
@@ -87,21 +92,23 @@ export default function Layout(props: LayoutProps) {
         href: "/signin",
         inner: "Sign in",
       },
-    props.session && props.notificationsCount! > 0
-      ? {
-        href: "/notifications",
-        inner: (
-          <span class={notificationsStyle}>
-            {props.notificationsCount}
-          </span>
-        ),
-      }
-      : { href: "/", inner: "" },
-    {
-      href: "/submit",
-      inner: <span class={BUTTON_STYLES}>Submit</span>,
-    },
   ];
+
+  if (props.session && props.notificationsCount! > 0) {
+    headerNavItems.push({
+      href: "/notifications",
+      inner: (
+        <span class={notificationsStyle}>
+          {props.notificationsCount}
+        </span>
+      ),
+    });
+  }
+
+  headerNavItems.push({
+    href: "/submit",
+    inner: <span class={BUTTON_STYLES}>Submit</span>,
+  });
 
   if (stripe !== undefined) {
     headerNavItems.unshift({
@@ -110,7 +117,7 @@ export default function Layout(props: LayoutProps) {
     });
   }
 
-  const footerNavItems = [
+  const footerNavItems: NavItem[] = [
     {
       href: "/stats",
       inner: "Stats",
