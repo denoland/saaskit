@@ -274,8 +274,7 @@ export async function getNotificationsByUser(
 export async function ifUserHasNotifications(userId: string) {
   const notificationsCountByUser =
     (await getNotificationsByUser(userId, { consistency: "eventual" })).length;
-  const hasNotifications = notificationsCountByUser > 0 ? true : false;
-  return hasNotifications;
+  return notificationsCountByUser > 0;
 }
 
 // Comment
