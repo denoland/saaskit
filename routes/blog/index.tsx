@@ -3,7 +3,6 @@ import { Handlers } from "$fresh/server.ts";
 import { PageProps } from "$fresh/server.ts";
 import { getPosts, Post } from "@/utils/posts.ts";
 import Head from "@/components/Head.tsx";
-import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 
 interface BlogPageData extends State {
@@ -47,7 +46,7 @@ export default function BlogPage(props: PageProps<BlogPageData>) {
         description="This is the blog for Deno SaaSKit"
         href={props.url.href}
       />
-      <main class={`${SITE_WIDTH_STYLES} px-4 pt-16 flex-1`}>
+      <main class="p-4 flex-1">
         <h1 class="text-5xl font-bold">Blog</h1>
         <div class="mt-8">
           {props.data.posts.map((post) => <PostCard {...post} />)}

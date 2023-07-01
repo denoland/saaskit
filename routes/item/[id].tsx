@@ -4,11 +4,7 @@ import type { State } from "@/routes/_middleware.ts";
 import Head from "@/components/Head.tsx";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
-import {
-  BUTTON_STYLES,
-  INPUT_STYLES,
-  SITE_WIDTH_STYLES,
-} from "@/utils/constants.ts";
+import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import {
   type Comment,
@@ -133,7 +129,7 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
     <>
       <Head title={props.data.item.title} href={props.url.href} />
-      <div class={`${SITE_WIDTH_STYLES} flex-1 px-4 space-y-8`}>
+      <main class="flex-1 p-4 space-y-8">
         <ItemSummary
           item={props.data.item}
           isVoted={props.data.isVoted}
@@ -154,7 +150,7 @@ export default function ItemPage(props: PageProps<ItemPageData>) {
             lastPage={props.data.lastPage}
           />
         )}
-      </div>
+      </main>
     </>
   );
 }

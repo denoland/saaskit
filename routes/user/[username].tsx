@@ -3,7 +3,6 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import { ComponentChild } from "preact";
 import type { State } from "@/routes/_middleware.ts";
-import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import PageSelector from "@/components/PageSelector.tsx";
@@ -100,7 +99,7 @@ export default function UserPage(props: PageProps<UserData>) {
   return (
     <>
       <Head title={props.data.user.login} href={props.url.href} />
-      <div class={`${SITE_WIDTH_STYLES} flex-1 px-4`}>
+      <div class="flex-1 p-4">
         <Row
           title={props.data.user.login}
           text={pluralize(props.data.itemsCount, "submission")}

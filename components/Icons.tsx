@@ -1,8 +1,10 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
+import type { JSX } from "preact";
 
-export function GitHub(props: { class?: string }) {
+export function GitHub(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
+      {...props}
       class={`h-6 w-6 ${props.class ?? ""}`}
       fill="currentColor"
       viewBox="0 0 24 24"
@@ -16,9 +18,10 @@ export function GitHub(props: { class?: string }) {
   );
 }
 
-export function Discord(props: { class?: string }) {
+export function Discord(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
+      {...props}
       class={`h-6 w-6 ${props.class ?? ""}`}
       fill="currentColor"
       viewBox="0 0 24 24"

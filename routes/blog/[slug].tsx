@@ -3,7 +3,6 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { CSS, render } from "$gfm";
 import { getPost, Post } from "@/utils/posts.ts";
 import Head from "@/components/Head.tsx";
-import { SITE_WIDTH_STYLES } from "@/utils/constants.ts";
 import type { State } from "@/routes/_middleware.ts";
 
 interface BlogPostPageData extends State {
@@ -30,7 +29,7 @@ export default function PostPage(props: PageProps<BlogPostPageData>) {
       <Head title={post.title} description={post.summary} href={props.url.href}>
         <style dangerouslySetInnerHTML={{ __html: CSS }} />
       </Head>
-      <main class={`${SITE_WIDTH_STYLES} px-4 pt-16 flex-1`}>
+      <main class="p-4 flex-1">
         <h1 class="text-5xl font-bold">{post.title}</h1>
         {date && (
           <time class="text-gray-500">
