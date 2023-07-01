@@ -254,8 +254,18 @@ Deno.test("[db] compareScore()", () => {
     ...newItemProps(),
     score: 2,
   };
+  const item3: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 5,
+  };
 
-  assertEquals(compareScore(item1, item2), 1);
+  const aa = [item2, item3, item1];
+  const sorted = aa.toSorted(compareScore);
+
+  assertArrayIncludes(sorted, [item1, item2, item3]);
 });
 
 Deno.test("[db] getAreVotedBySessionId()", async () => {
