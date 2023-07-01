@@ -94,12 +94,18 @@ export default function Layout(props: LayoutProps) {
       },
   ];
 
-  if (props.session && props.notificationsCount! > 0) {
+  if (props.session) {
     headerNavItems.push({
       href: "/account/notifications",
       inner: (
-        <span class={notificationsStyle}>
-          {props.notificationsCount}
+        <span>
+          {props.notificationsCount! > 0
+            ? (
+              <>
+                Notifications <span class="text-blue-500">•</span>
+              </>
+            )
+            : "Notifications"}
         </span>
       ),
     });
