@@ -7,7 +7,7 @@ export default function App({ Component, data }: AppProps) {
     <div>
       <Layout
         session={data?.sessionId}
-        notificationsCount={data?.notificationsCount}
+        hasNotifications={data?.hasNotifications}
       >
         <Component />
       </Layout>

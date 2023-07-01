@@ -271,10 +271,11 @@ export async function getNotificationsByUser(
   }, options);
 }
 
-export async function getNotificationsCountByUser(userId: string) {
+export async function ifUserHasNotifications(userId: string) {
   const notificationsCountByUser =
     (await getNotificationsByUser(userId, { consistency: "eventual" })).length;
-  return notificationsCountByUser;
+  const hasNotifications = notificationsCountByUser > 0 ? true : false;
+  return hasNotifications;
 }
 
 // Comment

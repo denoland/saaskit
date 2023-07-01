@@ -70,7 +70,7 @@ function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
 interface LayoutProps {
   children: ComponentChildren;
   session?: string;
-  notificationsCount?: number;
+  hasNotifications?: boolean;
 }
 
 interface NavItem {
@@ -99,7 +99,7 @@ export default function Layout(props: LayoutProps) {
       href: "/account/notifications",
       inner: (
         <span>
-          {props.notificationsCount! > 0
+          {props.hasNotifications!
             ? (
               <>
                 Notifications <span class="text-blue-500">•</span>

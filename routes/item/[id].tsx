@@ -112,7 +112,7 @@ export const handler: Handlers<ItemPageData, State> = {
     };
     await createNotification(notification);
 
-    return redirect(`/item/${ctx.params.id}`);
+    return redirect(`/`);
   },
 };
 

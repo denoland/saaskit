@@ -22,12 +22,12 @@ import {
   getManyUsers,
   getNotification,
   getNotificationsByUser,
-  getNotificationsCountByUser,
   getUser,
   getUserByLogin,
   getUserBySession,
   getUserByStripeCustomer,
   getVotedItemsByUser,
+  ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
   newCommentProps,
@@ -288,6 +288,7 @@ Deno.test("[db] getNotificationsByUser()", async () => {
   const notification2 = genNewNotification({ userId });
 
   assertEquals(await getNotificationsByUser(userId), []);
+  assertEquals(await ifUserHasNotifications(userId), false);
 
   await createNotification(notification1);
   await createNotification(notification2);
@@ -295,5 +296,5 @@ Deno.test("[db] getNotificationsByUser()", async () => {
     notification1,
     notification2,
   ]);
-  assertEquals(await getNotificationsCountByUser(userId), 2);
+  assertEquals(await ifUserHasNotifications(userId), true);
 });
