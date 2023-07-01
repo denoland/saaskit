@@ -262,15 +262,18 @@ export async function getNotification(id: string) {
   return await getValue<Notification>(["notifications", id]);
 }
 
-export async function getNotificationsByUser(userId: string) {
+export async function getNotificationsByUser(
+  userId: string,
+  options?: Deno.KvListOptions,
+) {
   return await getValues<Notification>({
     prefix: ["notifications_by_user", userId],
-  }, { consistency: "eventual" });
+  }, options);
 }
 
 export async function getNotificationsCountByUser(userId: string) {
   const notificationsCountByUser =
-    (await getNotificationsByUser(userId)).length;
+    (await getNotificationsByUser(userId, { consistency: "eventual" })).length;
   return notificationsCountByUser;
 }
 
