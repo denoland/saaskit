@@ -1,7 +1,4 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-//
-// Default types for Stripe don't yet work: https://github.com/stripe-samples/stripe-node-deno-samples/issues/2
-// @deno-types="npm:stripe"
 import Stripe from "stripe";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
