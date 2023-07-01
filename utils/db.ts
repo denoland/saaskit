@@ -282,10 +282,10 @@ export async function deleteVote(vote: Vote) {
   const [votedItemsByUserRes, votedUsersByItemRes] = await kv.getMany([
     votedItemsByUserKey,
     votedUsersByItemKey,
-  ])
+  ]);
 
   if (!votedItemsByUserRes.value || !votedUsersByItemRes.value) {
-    throw new Error(`Failed to delete vote: ${vote}`)
+    throw new Error(`Failed to delete vote: ${vote}`);
   }
 
   const itemKey = ["items", vote.item.id];
