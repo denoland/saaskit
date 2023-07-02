@@ -94,22 +94,20 @@ export default function Layout(props: LayoutProps) {
       },
   ];
 
-  if (props.session) {
-    headerNavItems.push({
-      href: "/account/notifications",
-      inner: (
-        <span>
-          {props.hasNotifications!
-            ? (
-              <>
-                Notifications <span class="text-blue-500">•</span>
-              </>
-            )
-            : "Notifications"}
-        </span>
-      ),
-    });
-  }
+  headerNavItems.push({
+    href: "/account/notifications",
+    inner: (
+      <span>
+        {props.hasNotifications!
+          ? (
+            <>
+              Notifications <span class="text-blue-500">•</span>
+            </>
+          )
+          : "Notifications"}
+      </span>
+    ),
+  });
 
   headerNavItems.push({
     href: "/submit",
