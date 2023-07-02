@@ -6,6 +6,7 @@ import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import { Chart } from "fresh_charts/mod.ts";
+import LineChart from "@/islands/LineChart.tsx";
 
 interface StatsPageData extends State {
   dates: Date[];
@@ -42,53 +43,6 @@ export const handler: Handlers<StatsPageData, State> = {
     });
   },
 };
-
-function LineChart(
-  props: { title: string; x: string[]; y: bigint[]; color: string },
-) {
-  const data = props.y.map((value) => Number(value));
-  const total = data.reduce((value, currentValue) => currentValue + value, 0);
-
-  return (
-    <div class="py-4 resize lg:chart">
-      <div class="py-4 text-center">
-        <h3>{props.title}</h3>
-        <p class="font-bold">{total}</p>
-      </div>
-      <div class="overflow-auto">
-        <Chart
-          svgClass="m-auto"
-          type="line"
-          options={{
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-              },
-              y: {
-                beginAtZero: true,
-                grid: { display: false },
-                ticks: { stepSize: 1 },
-              },
-            },
-          }}
-          data={{
-            labels: props.x,
-            datasets: [{
-              data: data,
-              borderColor: props.color,
-              pointRadius: 0,
-              cubicInterpolationMode: "monotone",
-            }],
-          }}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function StatsPage(props: PageProps<StatsPageData>) {
   const charts = [
@@ -131,7 +85,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
               color={chart.color}
               title={chart.title}
               x={x}
-              y={chart.values}
+              y={chart.values.map((value => Number(value)))}
             />
           ))}
         </div>

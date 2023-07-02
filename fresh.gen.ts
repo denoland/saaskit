@@ -24,8 +24,9 @@ import * as $18 from "./routes/signout.ts";
 import * as $19 from "./routes/stats.tsx";
 import * as $20 from "./routes/submit.tsx";
 import * as $21 from "./routes/user/[username].tsx";
-import * as $$0 from "./islands/PageInput.tsx";
-import * as $$1 from "./islands/VoteButton.tsx";
+import * as $$0 from "./islands/LineChart.tsx";
+import * as $$1 from "./islands/PageInput.tsx";
+import * as $$2 from "./islands/VoteButton.tsx";
 
 const manifest = {
   routes: {
@@ -53,8 +54,9 @@ const manifest = {
     "./routes/user/[username].tsx": $21,
   },
   islands: {
-    "./islands/PageInput.tsx": $$0,
-    "./islands/VoteButton.tsx": $$1,
+    "./islands/LineChart.tsx": $$0,
+    "./islands/PageInput.tsx": $$1,
+    "./islands/VoteButton.tsx": $$2,
   },
   baseUrl: import.meta.url,
 };
