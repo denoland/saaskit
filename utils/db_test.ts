@@ -282,13 +282,13 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
 
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getItem(item.id), null);
-  assertArrayIncludes(await getAreVotedBySessionId([item], user.sessionId), []);
-  assertArrayIncludes(await getAreVotedBySessionId([item], undefined), []);
-  assertArrayIncludes(
+  assertEquals(await getAreVotedBySessionId([item], user.sessionId), []);
+  assertEquals(await getAreVotedBySessionId([item], undefined), []);
+  assertEquals(
     await getAreVotedBySessionId([item], "not-a-session"),
     [],
   );
-  assertArrayIncludes(
+  assertEquals(
     await getAreVotedBySessionId([item], crypto.randomUUID()),
     [],
   );
@@ -301,7 +301,7 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
   assertEquals(await getItem(item.id), item);
   assertEquals(await getUserBySession(user.sessionId), user);
 
-  assertArrayIncludes(await getAreVotedBySessionId([item], user.sessionId), [
+  assertEquals(await getAreVotedBySessionId([item], user.sessionId), [
     true,
   ]);
 });
