@@ -31,7 +31,7 @@ export const handler: Handlers<NotificationState, AccountState> = {
   async POST(req, ctx) {
     const form = await req.formData();
     const itemId = form.get("itemId")!;
-    const notificationId = form.get("notifId");
+    const notificationId = form.get("notificationId");
 
     if (typeof itemId !== "string" || typeof notificationId !== "string") {
       return new Response(null, { status: 400 });
@@ -57,7 +57,11 @@ function Row(props: RowProps) {
           name="itemId"
           value={props.notification.originId}
         />
-        <input type="hidden" name="notifId" value={props.notification.id} />
+        <input
+          type="hidden"
+          name="notificationId"
+          value={props.notification.id}
+        />
         <button class="text-left" type="submit">
           <strong>New comment!</strong>
           <span class="text-gray-500 text-sm">
