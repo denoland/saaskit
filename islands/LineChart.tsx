@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 /// <reference types="https://raw.githubusercontent.com/apexcharts/apexcharts.js/main/types/apexcharts.d.ts" />
 import { useEffect, useRef } from "preact/hooks";
 
