@@ -85,7 +85,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
               color={chart.color}
               title={chart.title}
               x={x}
-              y={chart.values.map((value => Number(value)))}
+              y={chart.values.map((value) => Number(value))}
             />
           ))}
         </div>
