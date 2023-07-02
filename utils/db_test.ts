@@ -277,13 +277,21 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
     score: 1,
   };
 
-  assertEquals(await getUserBySession("Not-a-Session"), null);
-
   const user = genNewUser();
   const vote = { item, user };
+
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getItem(item.id), null);
   assertArrayIncludes(await getAreVotedBySessionId([item], user.sessionId), []);
+  assertArrayIncludes(await getAreVotedBySessionId([item], undefined), []);
+  assertArrayIncludes(
+    await getAreVotedBySessionId([item], "not-a-session"),
+    [],
+  );
+  assertArrayIncludes(
+    await getAreVotedBySessionId([item], crypto.randomUUID()),
+    [],
+  );
 
   await createItem(item);
 
