@@ -7,7 +7,7 @@ import {
 } from "@/utils/constants.ts";
 import Logo from "./Logo.tsx";
 import { stripe } from "../utils/payments.ts";
-import { Discord, GitHub } from "./Icons.tsx";
+import { Bell, CircleFilled, Discord, GitHub } from "./Icons.tsx";
 
 interface NavProps extends JSX.HTMLAttributes<HTMLElement> {
   active?: string;
@@ -97,15 +97,14 @@ export default function Layout(props: LayoutProps) {
   headerNavItems.push({
     href: "/account/notifications",
     inner: (
-      <span>
+      <div class="relative">
+        <Bell class="w-6 h-6" />
         {props.hasNotifications!
           ? (
-            <>
-              Notifications <span class="text-blue-500">•</span>
-            </>
+            <CircleFilled class="absolute top-0.5 right-0.5 text-pink-700 w-2 h-2" />
           )
-          : "Notifications"}
-      </span>
+          : ""}
+      </div>
     ),
   });
 
