@@ -19,7 +19,7 @@ const CONN_INFO: ConnInfo = {
 Deno.test("[http]", async (test) => {
   const handler = await createHandler(manifest);
 
-  await test.step("[get] /", async () => {
+  await test.step("GET /", async () => {
     const response = await handler(new Request("http://localhost"), CONN_INFO);
 
     assert(response.ok);
@@ -31,7 +31,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 200);
   });
 
-  await test.step("[get] /account", async () => {
+  await test.step("GET /account", async () => {
     const response = await handler(
       new Request("http://localhost/account"),
       CONN_INFO,
@@ -46,7 +46,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 303);
   });
 
-  await test.step("[get] /callback", async () => {
+  await test.step("GET /callback", async () => {
     const response = await handler(
       new Request("http://localhost/callback"),
       CONN_INFO,
@@ -61,7 +61,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 500);
   });
 
-  await test.step("[get] /blog", async () => {
+  await test.step("GET /blog", async () => {
     const response = await handler(
       new Request("http://localhost/blog"),
       CONN_INFO,
@@ -76,7 +76,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 200);
   });
 
-  await test.step("[get] /pricing", async () => {
+  await test.step("GET /pricing", async () => {
     const response = await handler(
       new Request("http://localhost/pricing"),
       CONN_INFO,
@@ -91,7 +91,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 404);
   });
 
-  await test.step("[get] /signin", async () => {
+  await test.step("GET /signin", async () => {
     const response = await handler(
       new Request("http://localhost/signin"),
       CONN_INFO,
@@ -106,7 +106,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 302);
   });
 
-  await test.step("[get] /signout", async () => {
+  await test.step("GET /signout", async () => {
     const response = await handler(
       new Request("http://localhost/signout"),
       CONN_INFO,
@@ -118,7 +118,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 302);
   });
 
-  await test.step("[get] /stats", async () => {
+  await test.step("GET /stats", async () => {
     const response = await handler(
       new Request("http://localhost/stats"),
       CONN_INFO,
@@ -133,7 +133,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 200);
   });
 
-  await test.step("[get] /submit", async () => {
+  await test.step("GET /submit", async () => {
     const response = await handler(
       new Request("http://localhost/submit"),
       CONN_INFO,
@@ -148,7 +148,7 @@ Deno.test("[http]", async (test) => {
     assertEquals(response.status, 303);
   });
 
-  await test.step("[post] /submit", async () => {
+  await test.step("POST /submit", async () => {
     const response = await handler(
       new Request("http://localhost/submit", { method: "POST" }),
       CONN_INFO,
