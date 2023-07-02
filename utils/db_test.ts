@@ -252,10 +252,8 @@ function genNewNotification(
   return {
     userId: crypto.randomUUID(),
     type: crypto.randomUUID(),
-    userFromId: crypto.randomUUID(),
-    userFromLogin: crypto.randomUUID(),
-    originId: crypto.randomUUID(),
-    originTitle: crypto.randomUUID(),
+    text: crypto.randomUUID(),
+    originUrl: crypto.randomUUID(),
     ...newNotificationProps(),
     ...notification,
   };

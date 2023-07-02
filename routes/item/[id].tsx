@@ -104,10 +104,8 @@ export const handler: Handlers<ItemPageData, State> = {
     const notification: Notification = {
       userId: item!.userId,
       type: "comment",
-      userFromId: user!.id,
-      userFromLogin: user!.login,
-      originId: item!.id,
-      originTitle: item!.title,
+      text: `${user!.login} commented on your post: ${item!.title}`,
+      originUrl: `/item/${ctx.params.id}`,
       ...newNotificationProps(),
     };
     await createNotification(notification);

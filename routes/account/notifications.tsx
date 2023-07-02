@@ -30,17 +30,17 @@ export const handler: Handlers<NotificationState, AccountState> = {
   },
   async POST(req, ctx) {
     const form = await req.formData();
-    const itemId = form.get("itemId")!;
+    const originUrl = form.get("originUrl")!;
     const notificationId = form.get("notificationId");
 
-    if (typeof itemId !== "string" || typeof notificationId !== "string") {
+    if (typeof originUrl !== "string" || typeof notificationId !== "string") {
       return new Response(null, { status: 400 });
     }
 
     const notification = await getNotification(notificationId);
     await deleteNotification(notification!);
 
-    return redirect(`/item/${itemId}`);
+    return redirect(originUrl);
   },
 };
 
@@ -54,8 +54,8 @@ function Row(props: RowProps) {
       <form method="post">
         <input
           type="hidden"
-          name="itemId"
-          value={props.notification.originId}
+          name="originUrl"
+          value={props.notification.originUrl}
         />
         <input
           type="hidden"
@@ -68,8 +68,7 @@ function Row(props: RowProps) {
             {" " + timeAgo(new Date(props.notification.createdAt))} ago
           </span>
           <p>
-            {props.notification.userFromLogin} commented on your post:{" "}
-            {props.notification.originTitle}
+            {props.notification.text}
           </p>
         </button>
       </form>

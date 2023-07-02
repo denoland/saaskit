@@ -175,10 +175,8 @@ export async function getItemsSince(msAgo: number) {
 export interface Notification {
   userId: string;
   type: string;
-  userFromId: string;
-  userFromLogin: string;
-  originId: string;
-  originTitle: string;
+  text: string;
+  originUrl: string;
   // The below properties can be automatically generated upon notification creation
   id: string;
   createdAt: Date;
