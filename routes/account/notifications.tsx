@@ -31,14 +31,14 @@ export const handler: Handlers<NotificationState, AccountState> = {
   async POST(req, ctx) {
     const form = await req.formData();
     const itemId = form.get("itemId")!;
-    const notifId = form.get("notifId");
+    const notificationId = form.get("notifId");
 
-    if (typeof itemId !== "string" || typeof notifId !== "string") {
+    if (typeof itemId !== "string" || typeof notificationId !== "string") {
       return new Response(null, { status: 400 });
     }
 
-    const notif = await getNotification(notifId);
-    await deleteNotification(notif!);
+    const notification = await getNotification(notificationId);
+    await deleteNotification(notification!);
 
     return redirect(`/item/${itemId}`);
   },
@@ -81,9 +81,9 @@ export default function NotificationPage(props: PageProps<NotificationState>) {
         <h1 class="text-3xl font-bold py-4">Notification Center</h1>
         <ul>
           {props.data.notifications.length > 0
-            ? props.data.notifications.map((notif) => (
+            ? props.data.notifications.map((notification) => (
               <Row
-                notification={notif}
+                notification={notification}
               />
             ))
             : "No notifications yet"}

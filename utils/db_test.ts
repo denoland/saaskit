@@ -244,7 +244,6 @@ Deno.test("[db] getDatesSince()", () => {
   ]);
 });
 
-//ok
 function genNewNotification(
   notification?: Partial<Notification>,
 ): Notification {
@@ -260,14 +259,12 @@ function genNewNotification(
   };
 }
 
-//ok
 Deno.test("[db] newNotificationProps()", () => {
   const notificationProps = newNotificationProps();
   assertAlmostEquals(notificationProps.createdAt.getTime(), Date.now(), 1e-6);
   assertEquals(typeof notificationProps.id, "string");
 });
 
-//ok
 Deno.test("[db] (get/create/delete)Notification()", async () => {
   const notification = genNewNotification();
 
@@ -281,7 +278,6 @@ Deno.test("[db] (get/create/delete)Notification()", async () => {
   assertEquals(await getItem(notification.id), null);
 });
 
-//ok
 Deno.test("[db] getNotificationsByUser()", async () => {
   const userId = crypto.randomUUID();
   const notification1 = genNewNotification({ userId });
