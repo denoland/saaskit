@@ -3,7 +3,12 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import type { State } from "@/routes/_middleware.ts";
 import { BUTTON_STYLES } from "@/utils/constants.ts";
-import { StripProductWithPrice, formatAmountForDisplay, isProductWithPrice, stripe } from "@/utils/payments.ts";
+import {
+  formatAmountForDisplay,
+  isProductWithPrice,
+  stripe,
+  StripProductWithPrice,
+} from "@/utils/payments.ts";
 import Stripe from "stripe";
 import { ComponentChild } from "preact";
 import { getUserBySession, type User } from "@/utils/db.ts";
@@ -29,11 +34,13 @@ export const handler: Handlers<PricingPageData, State> = {
       expand: ["data.default_price"],
       active: true,
     });
-    
+
     const productsWithPrice = data.filter(isProductWithPrice);
-    
+
     if (productsWithPrice.length !== data.length) {
-      throw new Error("Not all products have a default price. Please run the `deno task init:stripe` as the README instructs.");
+      throw new Error(
+        "Not all products have a default price. Please run the `deno task init:stripe` as the README instructs.",
+      );
     }
 
     const products = productsWithPrice.sort(comparePrices);

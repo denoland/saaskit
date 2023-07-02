@@ -26,7 +26,7 @@ if (stripe) {
 
 /**
  * We assume that the product has a default price.
- * The offical types allow for the default_price to be `undefined | null | string`
+ * The official types allow for the default_price to be `undefined | null | string`
  */
 export type StripProductWithPrice = Stripe.Product & {
   default_price: Stripe.Price;
@@ -37,9 +37,8 @@ export function isProductWithPrice(
 ): product is StripProductWithPrice {
   return product.default_price !== undefined &&
     product.default_price !== null &&
-    typeof product.default_price !== "string"
+    typeof product.default_price !== "string";
 }
-
 
 export function formatAmountForDisplay(
   amount: number,
