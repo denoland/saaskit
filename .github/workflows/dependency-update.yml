@@ -1,0 +1,53 @@
+name: udd-update-dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Update dependencies
+        run: |
+          deno run -A https://deno.land/x/udd/main.ts deps.ts
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        id: pr
+        with:
+          commit-message: "Update dependencies"
+          title: Update dependencies
+          body: >
+            Dependencies updated by [udd](https://github.com/hayd/deno-udd).
+          branch: chore/deno-dependency-updates
+          author: GitHub <noreply@github.com>
+          delete-branch: true
+      - name: Retrieve commit sha
+        id: commit
+        run: |
+          echo "::set-output name=sha::$(git rev-parse HEAD)"
+      - name: Set commit status with pending
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: "Basic tests"
+          state: "pending"
+          sha: ${{ steps.commit.outputs.sha }}
+      - name: Basic tests
+        id: test
+        continue-on-error: true
+        run: |
+          deno task test
+      - name: Set commit status with outcome
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: "Basic tests"
+          description: "To run other CI actions close/reopen this PR"
+          state: ${{ steps.test.outcome }}
+          sha: ${{ steps.commit.outputs.sha }}
