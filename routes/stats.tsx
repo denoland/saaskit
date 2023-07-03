@@ -75,7 +75,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
   );
 
   return (
-    <main class="flex-1 p-4">
+    <main class="flex-1 p-4 grid gap-12 md:grid-cols-2">
       {charts.map(({ color, title, values }) => {
         const data = values.map((value) => Number(value));
         const total = data.reduce(
@@ -92,6 +92,9 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
               plugins: {
                 legend: { display: false },
               },
+              interaction: {
+                intersect: false,
+              },
               scales: {
                 x: {
                   grid: { display: false },
@@ -99,9 +102,11 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
                 y: {
                   beginAtZero: true,
                   grid: { display: false },
+                  max: Math.ceil(Math.max(...data) * 1.1),
                   ticks: { stepSize: 1 },
                 },
               },
+              maintainAspectRatio: false,
             }}
             data={{
               labels: x,

@@ -56,11 +56,13 @@ export default function LineChart(
 
   return (
     <div class="py-4">
-      <div class="py-4 text-center">
+      <div class="text-center">
         <h3>{title}</h3>
         <p class="font-bold">{total}</p>
       </div>
-      <canvas ref={canvasRef} {...canvas} />
+      <div class="aspect-[2/1] mx-auto relative w-full">
+        <canvas ref={canvasRef} {...canvas} />
+      </div>
     </div>
   );
 }
