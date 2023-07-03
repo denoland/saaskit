@@ -5,7 +5,6 @@ export function GitHub(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
       {...props}
-      class={`h-6 w-6 ${props.class ?? ""}`}
       fill="currentColor"
       viewBox="0 0 24 24"
     >
@@ -22,7 +21,6 @@ export function Discord(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
       {...props}
-      class={`h-6 w-6 ${props.class ?? ""}`}
       fill="currentColor"
       viewBox="0 0 24 24"
     >
@@ -36,11 +34,11 @@ export function Discord(props: JSX.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-export function Bell(props: { class?: string }) {
+export function Bell(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
-      class={props.class ?? ""}
       viewBox="0 0 24 24"
       stroke-width="2"
       stroke="currentColor"
@@ -55,11 +53,11 @@ export function Bell(props: { class?: string }) {
   );
 }
 
-export function CircleFilled(props: { class?: string }) {
+export function CircleFilled(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
-      class={props.class ?? ""}
       viewBox="0 0 24 24"
       stroke-width="2"
       stroke="currentColor"

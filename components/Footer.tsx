@@ -16,15 +16,21 @@ export default function Footer() {
       <nav class={NAV_STYLES}>
         <a href="/stats" class={LINK_STYLES}>Stats</a>
         <a href="/blog" class={LINK_STYLES}>Blog</a>
-        <a href="https://discord.gg/deno" target="_blank" class={LINK_STYLES}>
-          <Discord alt="Deno SaaSKit on Discord" />
+        <a
+          href="https://discord.gg/deno"
+          target="_blank"
+          alt="Deno SaaSKit on Discord"
+          class={LINK_STYLES}
+        >
+          <Discord class="h-6 w-6" />
         </a>
         <a
           href="https://github.com/denoland/saaskit"
           target="_blank"
+          alt="GitHub icon"
           class={LINK_STYLES}
         >
-          <GitHub alt="GitHub icon" />
+          <GitHub class="h-6 w-6" />
         </a>
         <a href="https://fresh.deno.dev">
           <img
