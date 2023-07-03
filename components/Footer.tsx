@@ -1,5 +1,10 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { NAV_STYLES, SITE_BAR_STYLES, SITE_NAME } from "@/utils/constants.ts";
+import {
+  LINK_STYLES,
+  NAV_STYLES,
+  SITE_BAR_STYLES,
+  SITE_NAME,
+} from "@/utils/constants.ts";
 import { Discord, GitHub } from "./Icons.tsx";
 
 export default function Footer() {
@@ -9,12 +14,16 @@ export default function Footer() {
     >
       <p>© {SITE_NAME}</p>
       <nav class={NAV_STYLES}>
-        <a href="/stats">Stats</a>
-        <a href="/blog">Blog</a>
-        <a href="https://discord.gg/deno" target="_blank">
+        <a href="/stats" class={LINK_STYLES}>Stats</a>
+        <a href="/blog" class={LINK_STYLES}>Blog</a>
+        <a href="https://discord.gg/deno" target="_blank" class={LINK_STYLES}>
           <Discord alt="Deno SaaSKit on Discord" />
         </a>
-        <a href="https://github.com/denoland/saaskit" target="_blank">
+        <a
+          href="https://github.com/denoland/saaskit"
+          target="_blank"
+          class={LINK_STYLES}
+        >
           <GitHub alt="GitHub icon" />
         </a>
         <a href="https://fresh.deno.dev">
