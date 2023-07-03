@@ -2,13 +2,7 @@
 import { SITE_DESCRIPTION, SITE_NAME } from "@/utils/constants.ts";
 
 export interface MetaProps {
-  /**
-   * @default {string} `SITE_NAME` in `@/utils/constants.ts`
-   */
   title?: string;
-  /**
-   * @default {string} `SITE_DESCRIPTION` in `@/utils/constants.ts`
-   */
   description?: string;
   imageUrl?: string;
   href?: string;
