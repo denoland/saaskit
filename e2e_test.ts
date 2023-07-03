@@ -93,7 +93,7 @@ Deno.test("[http]", async (test) => {
 
   await test.step("GET /signin", async () => {
     const response = await handler(
-      new Request("https://hunt.deno.land/signin"),
+      new Request("http://localhost/signin"),
       CONN_INFO,
     );
 
