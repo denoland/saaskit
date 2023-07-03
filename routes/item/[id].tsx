@@ -1,7 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import type { State } from "@/routes/_middleware.ts";
-import Head from "@/components/Head.tsx";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
 import { BUTTON_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
@@ -60,6 +59,8 @@ export const handler: Handlers<ItemPageData, State> = {
     );
 
     const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
+
+    ctx.state.title = item.title;
 
     return ctx.render({
       ...ctx.state,
@@ -127,30 +128,27 @@ function CommentSummary(
 
 export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
-    <>
-      <Head title={props.data.item.title} href={props.url.href} />
-      <main class="flex-1 p-4 space-y-8">
-        <ItemSummary
-          item={props.data.item}
-          isVoted={props.data.isVoted}
-          user={props.data.user}
-        />
-        <CommentInput />
-        <div>
-          {props.data.comments.map((comment, index) => (
-            <CommentSummary
-              user={props.data.commentsUsers[index]}
-              comment={comment}
-            />
-          ))}
-        </div>
-        {props.data.lastPage > 1 && (
-          <PageSelector
-            currentPage={calcPageNum(props.url)}
-            lastPage={props.data.lastPage}
+    <main class="flex-1 p-4 space-y-8">
+      <ItemSummary
+        item={props.data.item}
+        isVoted={props.data.isVoted}
+        user={props.data.user}
+      />
+      <CommentInput />
+      <div>
+        {props.data.comments.map((comment, index) => (
+          <CommentSummary
+            user={props.data.commentsUsers[index]}
+            comment={comment}
           />
-        )}
-      </main>
-    </>
+        ))}
+      </div>
+      {props.data.lastPage > 1 && (
+        <PageSelector
+          currentPage={calcPageNum(props.url)}
+          lastPage={props.data.lastPage}
+        />
+      )}
+    </main>
   );
 }

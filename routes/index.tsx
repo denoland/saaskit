@@ -2,7 +2,6 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { INPUT_STYLES } from "@/utils/constants.ts";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
-import Head from "@/components/Head.tsx";
 import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
@@ -71,25 +70,22 @@ function TimeSelector() {
 
 export default function HomePage(props: PageProps<HomePageData>) {
   return (
-    <>
-      <Head href={props.url.href} />
-      <main class="flex-1 p-4">
-        <TimeSelector />
-        {props.data.items.map((item, index) => (
-          <ItemSummary
-            item={item}
-            isVoted={props.data.areVoted[index]}
-            user={props.data.itemsUsers[index]}
-          />
-        ))}
-        {props.data.lastPage > 1 && (
-          <PageSelector
-            currentPage={calcPageNum(props.url)}
-            lastPage={props.data.lastPage}
-            timeSelector={calcTimeAgoFilter(props.url) ?? undefined}
-          />
-        )}
-      </main>
-    </>
+    <main class="flex-1 p-4">
+      <TimeSelector />
+      {props.data.items.map((item, index) => (
+        <ItemSummary
+          item={item}
+          isVoted={props.data.areVoted[index]}
+          user={props.data.itemsUsers[index]}
+        />
+      ))}
+      {props.data.lastPage > 1 && (
+        <PageSelector
+          currentPage={calcPageNum(props.url)}
+          lastPage={props.data.lastPage}
+          timeSelector={calcTimeAgoFilter(props.url) ?? undefined}
+        />
+      )}
+    </main>
   );
 }
