@@ -1,16 +1,20 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   type Comment,
+  compareScore,
   createComment,
   createItem,
+  createNotification,
   createUser,
   createVote,
   deleteComment,
   deleteItem,
+  deleteNotification,
   deleteUserBySession,
   deleteVote,
   formatDate,
   getAllItems,
+  getAreVotedBySessionId,
   getCommentsByItem,
   getDatesSince,
   getItem,
@@ -18,16 +22,21 @@ import {
   getItemsSince,
   getManyMetrics,
   getManyUsers,
+  getNotification,
+  getNotificationsByUser,
   getUser,
   getUserByLogin,
   getUserBySession,
   getUserByStripeCustomer,
   getVotedItemsByUser,
+  ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
   newCommentProps,
   newItemProps,
+  newNotificationProps,
   newUserProps,
+  Notification,
   updateUser,
   type User,
 } from "./db.ts";
@@ -234,5 +243,121 @@ Deno.test("[db] getDatesSince()", () => {
   assertEquals(getDatesSince(DAY * 2), [
     formatDate(new Date(Date.now() - DAY)),
     formatDate(new Date()),
+  ]);
+});
+
+function genNewNotification(
+  notification?: Partial<Notification>,
+): Notification {
+  return {
+    userId: crypto.randomUUID(),
+    type: crypto.randomUUID(),
+    text: crypto.randomUUID(),
+    originUrl: crypto.randomUUID(),
+    ...newNotificationProps(),
+    ...notification,
+  };
+}
+
+Deno.test("[db] newNotificationProps()", () => {
+  const notificationProps = newNotificationProps();
+  assertAlmostEquals(notificationProps.createdAt.getTime(), Date.now(), 1e-6);
+  assertEquals(typeof notificationProps.id, "string");
+});
+
+Deno.test("[db] (get/create/delete)Notification()", async () => {
+  const notification = genNewNotification();
+
+  assertEquals(await getNotification(notification.id), null);
+
+  await createNotification(notification);
+  await assertRejects(async () => await createNotification(notification));
+  assertEquals(await getNotification(notification.id), notification);
+
+  await deleteNotification(notification);
+  assertEquals(await getItem(notification.id), null);
+});
+
+Deno.test("[db] getNotificationsByUser()", async () => {
+  const userId = crypto.randomUUID();
+  const notification1 = genNewNotification({ userId });
+  const notification2 = genNewNotification({ userId });
+
+  assertEquals(await getNotificationsByUser(userId), []);
+  assertEquals(await ifUserHasNotifications(userId), false);
+
+  await createNotification(notification1);
+  await createNotification(notification2);
+  assertArrayIncludes(await getNotificationsByUser(userId), [
+    notification1,
+    notification2,
+  ]);
+  assertEquals(await ifUserHasNotifications(userId), true);
+});
+
+Deno.test("[db] compareScore()", () => {
+  const item1: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 1,
+  };
+  const item2: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 2,
+  };
+  const item3: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 5,
+  };
+
+  const aa = [item2, item3, item1];
+  const sorted = aa.toSorted(compareScore);
+
+  assertArrayIncludes(sorted, [item1, item2, item3]);
+});
+
+Deno.test("[db] getAreVotedBySessionId()", async () => {
+  const item: Item = {
+    userId: crypto.randomUUID(),
+    title: crypto.randomUUID(),
+    url: `http://${crypto.randomUUID()}.com`,
+    ...newItemProps(),
+    score: 1,
+  };
+
+  const user = genNewUser();
+  const vote = { item, user };
+
+  assertEquals(await getUserBySession(user.sessionId), null);
+  assertEquals(await getItem(item.id), null);
+  assertEquals(await getAreVotedBySessionId([item], user.sessionId), []);
+  assertEquals(await getAreVotedBySessionId([item], undefined), []);
+  assertEquals(
+    await getAreVotedBySessionId([item], "not-a-session"),
+    [],
+  );
+  assertEquals(
+    await getAreVotedBySessionId([item], crypto.randomUUID()),
+    [],
+  );
+
+  await createItem(item);
+
+  await createUser(user);
+  await createVote(vote);
+
+  assertEquals(await getItem(item.id), item);
+  assertEquals(await getUserBySession(user.sessionId), user);
+
+  assertEquals(await getAreVotedBySessionId([item], user.sessionId), [
+    true,
   ]);
 });
