@@ -76,15 +76,16 @@ function prettyPrice(input: string) {
 function PricingCard(props: PricingCardProps) {
   return (
     <div
-      class={"flex flex-col flex-1 space-y-8 p-6 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r" +
-        (props.premium ? " border-pink-500 border" : "")}
+      class={`flex flex-col flex-1 space-y-8 p-6 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r ${
+        props.premium ? " border-pink-500 border" : ""
+      }`}
     >
       <div class="flex-1 space-y-4">
         <h3 class="text-xl font-bold text-center">
           {props.name}
         </h3>
         <p class="text-gray-500 flex gap-2">
-          <Check className={"w-6 h-6 text-pink-500 shrink-0"} />
+          <Check className="w-6 h-6 text-pink-500 shrink-0" />
           {props.description}
         </p>
       </div>
@@ -111,9 +112,7 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
   const [product] = props.data.products;
 
   return (
-    <main
-      class={`mx-auto max-w-4xl w-full flex-1 flex flex-col justify-center px-8`}
-    >
+    <main class="mx-auto max-w-4xl w-full flex-1 flex flex-col justify-center px-4">
       <div class="mb-8 text-center">
         <h1 class="text-3xl font-bold">Pricing</h1>
         <p class="text-lg text-gray-500">Choose the plan that suites you</p>
