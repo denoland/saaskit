@@ -11,6 +11,7 @@ import {
 import Stripe from "stripe";
 import { ComponentChild } from "preact";
 import { getUserBySession, type User } from "@/utils/db.ts";
+import { Check } from "@/components/Icons.tsx";
 
 interface PricingPageData extends State {
   products: Stripe.Product[];
@@ -59,21 +60,40 @@ interface PricingCardProps {
   description: string;
   pricePerInterval: string;
   children: ComponentChild;
+  premium?: boolean;
+}
+
+function prettyPrice(input: string) {
+  const [price, period] = input.split("/");
+  return (
+    <>
+      <span class="text-5xl font-bold">{price.replace(/\.00/, "")}</span>
+      {period && <span>/ {period}</span>}
+    </>
+  );
 }
 
 function PricingCard(props: PricingCardProps) {
   return (
-    <div class="flex-1 space-y-4 p-4 ring-1 ring-gray-300 rounded-xl text-center dark:bg-gray-700">
-      <div>
-        <h3 class="text-2xl font-bold">
+    <div
+      class={"flex flex-col flex-1 space-y-8 p-6 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r" +
+        (props.premium ? " border-pink-500 border" : "")}
+    >
+      <div class="flex-1 space-y-4">
+        <h3 class="text-xl font-bold text-center">
           {props.name}
         </h3>
-        <p>{props.description}</p>
+        <p class="text-gray-500 flex gap-2">
+          <Check className={"w-6 h-6 text-pink-500 shrink-0"} />
+          {props.description}
+        </p>
       </div>
-      <p class="text-xl">
-        {props.pricePerInterval}
+      <p class="text-center">
+        {prettyPrice(props.pricePerInterval)}
       </p>
-      {props.children}
+      <div class="text-center">
+        {props.children}
+      </div>
     </div>
   );
 }
@@ -96,7 +116,7 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
     >
       <div class="mb-8 text-center">
         <h1 class="text-3xl font-bold">Pricing</h1>
-        <p class="text-lg">Choose the plan that suites you</p>
+        <p class="text-lg text-gray-500">Choose the plan that suites you</p>
       </div>
       <div class="flex flex-col md:flex-row gap-4">
         <PricingCard
@@ -117,6 +137,7 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
           pricePerInterval={toPricePerInterval(
             product.default_price as Stripe.Price,
           )}
+          premium
         >
           {props.data.user?.isSubscribed
             ? (
