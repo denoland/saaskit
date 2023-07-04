@@ -2,7 +2,7 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { DAY } from "std/datetime/constants.ts";
 import type { State } from "./_middleware.ts";
-import LineChart from "@/islands/LineChart.tsx";
+import Chart from "@/islands/Chart.tsx";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 
 interface StatsPageData extends State {
@@ -84,40 +84,44 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
         );
 
         return (
-          <LineChart
-            title={title}
-            total={total}
-            type="line"
-            options={{
-              plugins: {
-                legend: { display: false },
-              },
-              interaction: {
-                intersect: false,
-              },
-              scales: {
-                x: {
-                  grid: { display: false },
+          <div class="py-4">
+            <div class="text-center">
+              <h3>{title}</h3>
+              <p class="font-bold">{total}</p>
+            </div>
+            <Chart
+              type="line"
+              options={{
+                plugins: {
+                  legend: { display: false },
                 },
-                y: {
-                  beginAtZero: true,
-                  grid: { display: false },
-                  max: Math.ceil(Math.max(...data) * 1.1),
-                  ticks: { stepSize: 1 },
+                interaction: {
+                  intersect: false,
                 },
-              },
-            }}
-            data={{
-              labels: x,
-              datasets: [{
-                label: title,
-                data,
-                borderColor: color,
-                pointRadius: 0,
-                cubicInterpolationMode: "monotone",
-              }],
-            }}
-          />
+                scales: {
+                  x: {
+                    grid: { display: false },
+                  },
+                  y: {
+                    beginAtZero: true,
+                    grid: { display: false },
+                    max: Math.ceil(Math.max(...data) * 1.1),
+                    ticks: { stepSize: 1 },
+                  },
+                },
+              }}
+              data={{
+                labels: x,
+                datasets: [{
+                  label: title,
+                  data,
+                  borderColor: color,
+                  pointRadius: 0,
+                  cubicInterpolationMode: "monotone",
+                }],
+              }}
+            />
+          </div>
         );
       })}
     </main>

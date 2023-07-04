@@ -20,8 +20,6 @@ type ChartProps<
   Label = unknown,
 > = ChartOptions<Type, Data, Label> & {
   canvas?: JSX.HTMLAttributes<HTMLCanvasElement>;
-  title: string;
-  total?: number;
 };
 
 function useChart<
@@ -65,8 +63,10 @@ function useResizeObserver<T extends HTMLElement | null>(
   }, [ref]);
 }
 
-export default function LineChart(
-  { canvas, title, total, ...options }: ChartProps<"line">,
+export default function Chart<
+  Type extends ChartType,
+>(
+  { canvas, ...options }: ChartProps<Type>,
 ) {
   const { canvasRef, chartRef, containerRef } = useChart(options);
 
@@ -83,20 +83,14 @@ export default function LineChart(
   }, []);
 
   return (
-    <div class="py-4">
-      <div class="text-center">
-        <h3>{title}</h3>
-        <p class="font-bold">{total}</p>
-      </div>
-      <div
-        class="aspect-[2/1] mx-auto relative max-w-[100vw]"
-        ref={containerRef}
-      >
-        <canvas
-          ref={canvasRef}
-          {...canvas}
-        />
-      </div>
+    <div
+      class="aspect-[2/1] mx-auto relative max-w-[100vw]"
+      ref={containerRef}
+    >
+      <canvas
+        {...canvas}
+        ref={canvasRef}
+      />
     </div>
   );
 }
