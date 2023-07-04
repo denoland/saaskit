@@ -90,11 +90,10 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
             type="line"
             options={{
               plugins: {
-                tooltip: {
-                  enabled: true,
-                  intersect: true,
-                },
                 legend: { display: false },
+              },
+              interaction: {
+                intersect: false,
               },
               scales: {
                 x: {

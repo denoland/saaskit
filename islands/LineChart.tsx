@@ -78,6 +78,10 @@ export default function LineChart(
     chartRef.current?.resize(entry.contentRect.width, entry.contentRect.height);
   });
 
+  useEffect(() => {
+    chartRef.current?.render()
+  }, [])
+
   return (
     <div class="py-4">
       <div class="text-center">
