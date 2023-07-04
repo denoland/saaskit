@@ -102,6 +102,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
                 y: {
                   beginAtZero: true,
                   grid: { display: false },
+                  max: Math.ceil(Math.max(...data) * 1.1),
                   ticks: { stepSize: 1 },
                 },
               },
