@@ -90,6 +90,9 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
               <p class="font-bold">{total}</p>
             </div>
             <Chart
+              container={{
+                class: "aspect-[2/1] mx-auto relative max-w-[100vw]",
+              }}
               type="line"
               options={{
                 plugins: {

@@ -20,6 +20,7 @@ type ChartProps<
   Label = unknown,
 > = ChartOptions<Type, Data, Label> & {
   canvas?: JSX.HTMLAttributes<HTMLCanvasElement>;
+  container?: JSX.HTMLAttributes<HTMLDivElement>;
 };
 
 function useChart<
@@ -66,7 +67,7 @@ function useResizeObserver<T extends HTMLElement | null>(
 export default function Chart<
   Type extends ChartType,
 >(
-  { canvas, ...options }: ChartProps<Type>,
+  { canvas, container, ...options }: ChartProps<Type>,
 ) {
   const { canvasRef, chartRef, containerRef } = useChart(options);
 
@@ -84,7 +85,7 @@ export default function Chart<
 
   return (
     <div
-      class="aspect-[2/1] mx-auto relative max-w-[100vw]"
+      {...container}
       ref={containerRef}
     >
       <canvas
