@@ -40,7 +40,7 @@ function useChart<
     if (chartRef.current) {
       chartRef.current.destroy();
     }
-    chartRef.current = new ChartJS(canvasRef.current, options);
+    chartRef.current = new ChartJS(canvasRef.current, {...options });
 
     return () => {
       chartRef.current?.destroy();
@@ -84,7 +84,7 @@ export default function LineChart(
         <h3>{title}</h3>
         <p class="font-bold">{total}</p>
       </div>
-      <div class="aspect-[2/1] mx-auto relative" ref={containerRef}>
+      <div class="aspect-[2/1] mx-auto relative max-w-[100vw]" ref={containerRef}>
         <canvas
           ref={canvasRef}
           {...canvas}
