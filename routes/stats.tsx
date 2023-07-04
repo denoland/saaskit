@@ -90,10 +90,11 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
             type="line"
             options={{
               plugins: {
+                tooltip: {
+                  enabled: true,
+                  intersect: true,
+                },
                 legend: { display: false },
-              },
-              interaction: {
-                intersect: false,
               },
               scales: {
                 x: {
@@ -102,11 +103,9 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
                 y: {
                   beginAtZero: true,
                   grid: { display: false },
-                  max: Math.ceil(Math.max(...data) * 1.1),
                   ticks: { stepSize: 1 },
                 },
               },
-              maintainAspectRatio: false,
             }}
             data={{
               labels: x,

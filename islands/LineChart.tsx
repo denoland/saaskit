@@ -5,7 +5,7 @@ import {
   type ChartType,
   type DefaultDataPoint,
 } from "chart.js";
-import { useEffect, useRef } from "preact/hooks";
+import { type MutableRef, useEffect, useRef } from "preact/hooks";
 import type { JSX } from "preact";
 
 type ChartOptions<
@@ -29,6 +29,7 @@ function useChart<
   Data = DefaultDataPoint<Type>,
   Label = unknown,
 >(options: ChartOptions<Type, Data, Label>) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chartRef = useRef<ChartJS<Type, Data, Label> | null>(null);
 
@@ -44,15 +45,38 @@ function useChart<
     return () => {
       chartRef.current?.destroy();
     };
-  }, [canvasRef, options]);
+  }, [options]);
 
-  return { canvasRef, chartRef };
+  return { canvasRef, chartRef, containerRef };
+}
+
+function useResizeObserver<T extends HTMLElement | null>(
+  ref: MutableRef<T>,
+  callback: ResizeObserverCallback,
+) {
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new ResizeObserver(callback);
+    observer.observe(ref.current as HTMLElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref]);
 }
 
 export default function LineChart(
   { canvas, title, total, ...options }: ChartProps<"line">,
 ) {
-  const { canvasRef } = useChart(options);
+  const { canvasRef, chartRef, containerRef } = useChart(options);
+
+  useResizeObserver(containerRef, (entries) => {
+    if (!Array.isArray(entries)) return;
+    const entry = entries?.[0];
+    if (!entry) return;
+
+    chartRef.current?.resize(entry.contentRect.width, entry.contentRect.height);
+  });
 
   return (
     <div class="py-4">
@@ -60,8 +84,11 @@ export default function LineChart(
         <h3>{title}</h3>
         <p class="font-bold">{total}</p>
       </div>
-      <div class="aspect-[2/1] mx-auto relative w-full">
-        <canvas ref={canvasRef} {...canvas} />
+      <div class="aspect-[2/1] mx-auto relative" ref={containerRef}>
+        <canvas
+          ref={canvasRef}
+          {...canvas}
+        />
       </div>
     </div>
   );
