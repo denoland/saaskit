@@ -7,10 +7,10 @@ import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 
 interface StatsPageData extends State {
   dates: Date[];
-  visitsCounts: bigint[];
-  usersCounts: bigint[];
-  itemsCounts: bigint[];
-  votesCounts: bigint[];
+  visitsCounts: number[];
+  usersCounts: number[];
+  itemsCounts: number[];
+  votesCounts: number[];
 }
 
 export const handler: Handlers<StatsPageData, State> = {
@@ -35,10 +35,10 @@ export const handler: Handlers<StatsPageData, State> = {
     return ctx.render({
       ...ctx.state,
       dates,
-      visitsCounts,
-      usersCounts,
-      itemsCounts,
-      votesCounts,
+      visitsCounts: visitsCounts.map(Number),
+      usersCounts: usersCounts.map(Number),
+      itemsCounts: itemsCounts.map(Number),
+      votesCounts: votesCounts.map(Number),
     });
   },
 };
@@ -67,6 +67,8 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
     },
   ];
 
+  const max = Math.max(...datasets[0].data);
+
   const labels = props.data.dates.map((date) =>
     new Date(date).toLocaleDateString("en-us", {
       month: "short",
@@ -91,6 +93,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
           },
           scales: {
             x: {
+              max,
               grid: { display: false },
             },
             y: {
@@ -103,7 +106,6 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
           labels,
           datasets: datasets.map((dataset) => ({
             ...dataset,
-            data: dataset.data.map((value) => Number(value)),
             pointRadius: 0,
             cubicInterpolationMode: "monotone",
           })),
