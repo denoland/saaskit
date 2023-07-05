@@ -81,6 +81,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
       <Chart
         type="line"
         options={{
+          maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
