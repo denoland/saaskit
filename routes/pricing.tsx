@@ -121,7 +121,7 @@ function PremiumPlanCard(
               defaultPrice?.currency,
             )}
           </span>
-          <span>/ {defaultPrice.recurring?.interval}</span>
+          <span>{" "}/ {defaultPrice.recurring?.interval}</span>
         </p>
         <p>
           <Check class={CHECK_STYLES} />
