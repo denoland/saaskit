@@ -77,7 +77,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
   );
 
   return (
-    <main class="flex-1 p-4 aspect-[2/1] mx-auto relative w-full">
+    <main class="flex-1 p-4 relative">
       <Chart
         type="line"
         options={{
