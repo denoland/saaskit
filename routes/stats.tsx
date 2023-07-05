@@ -96,7 +96,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
               y: {
                 beginAtZero: true,
                 grid: { display: false },
-                ticks: { stepSize: 1 },
+                ticks: { precision: 0 },
               },
             },
           }}
