@@ -55,7 +55,7 @@ export const handler: Handlers<PricingPageData, State> = {
 };
 
 const CARD_STYLES =
-  "flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
+  "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
 const CHECK_STYLES = "w-6 h-6 text-pink-500 shrink-0 inline-block mr-2";
 
 function FreePlanCard() {
@@ -104,7 +104,7 @@ function PremiumPlanCard(
 ) {
   const defaultPrice = props.product.default_price as Stripe.Price;
   return (
-    <div class={CARD_STYLES + " border-pink-500 border"}>
+    <div class={CARD_STYLES + " border-primary border"}>
       <div class="flex-1 space-y-4">
         <div>
           <h3 class="text-xl font-bold">
