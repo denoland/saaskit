@@ -10,9 +10,8 @@ async function createPremiumTierProduct(stripe: Stripe) {
    * However, these can be adjusted to fit your use case.
    */
   return await stripe.products.create({
-    name: "Premium tier",
-    description:
-      "Get the official Deno Hunt Premium User badge next to your display name 🦕",
+    name: "Premium",
+    description: "Unlock premium features like flair and more.",
     default_price_data: {
       unit_amount: 500,
       currency: "usd",
