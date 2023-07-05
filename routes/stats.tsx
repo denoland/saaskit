@@ -77,41 +77,39 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
   );
 
   return (
-    <main class="flex-1 p-4 relative">
-      <Chart
-        type="line"
-        options={{
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              text: "Daily counts",
+    <main class="flex-1 p-4 flex flex-col">
+      <h1 class="text-3xl font-bold">Stats</h1>
+      <div class="flex-1 relative">
+        <Chart
+          type="line"
+          options={{
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: "index",
             },
-          },
-          interaction: {
-            intersect: false,
-            mode: "index",
-          },
-          scales: {
-            x: {
-              max,
-              grid: { display: false },
+            scales: {
+              x: {
+                max,
+                grid: { display: false },
+              },
+              y: {
+                beginAtZero: true,
+                grid: { display: false },
+                ticks: { stepSize: 1 },
+              },
             },
-            y: {
-              beginAtZero: true,
-              grid: { display: false },
-            },
-          },
-        }}
-        data={{
-          labels,
-          datasets: datasets.map((dataset) => ({
-            ...dataset,
-            pointRadius: 0,
-            cubicInterpolationMode: "monotone",
-          })),
-        }}
-      />
+          }}
+          data={{
+            labels,
+            datasets: datasets.map((dataset) => ({
+              ...dataset,
+              pointRadius: 0,
+              cubicInterpolationMode: "monotone",
+            })),
+          }}
+        />
+      </div>
     </main>
   );
 }

@@ -20,7 +20,6 @@ type ChartProps<
   Label = unknown,
 > = ChartOptions<Type, Data, Label> & {
   canvas?: JSX.HTMLAttributes<HTMLCanvasElement>;
-  container?: JSX.HTMLAttributes<HTMLDivElement>;
 };
 
 function useChart<
