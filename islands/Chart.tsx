@@ -84,14 +84,9 @@ export default function Chart<
   }, []);
 
   return (
-    <div
-      {...container}
-      ref={containerRef}
-    >
-      <canvas
-        {...canvas}
-        ref={canvasRef}
-      />
-    </div>
+    <canvas
+      {...canvas}
+      ref={canvasRef}
+    />
   );
 }

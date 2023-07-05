@@ -44,30 +44,30 @@ export const handler: Handlers<StatsPageData, State> = {
 };
 
 export default function StatsPage(props: PageProps<StatsPageData>) {
-  const charts = [
+  const datasets = [
     {
-      title: "Site visits",
-      values: props.data.visitsCounts,
-      color: "#be185d",
+      label: "Site visits",
+      data: props.data.visitsCounts,
+      borderColor: "#be185d",
     },
     {
-      title: "Users created",
-      values: props.data.usersCounts,
-      color: "#e85d04",
+      label: "Users created",
+      data: props.data.usersCounts,
+      borderColor: "#e85d04",
     },
     {
-      title: "Items created",
-      values: props.data.itemsCounts,
-      color: "#219ebc",
+      label: "Items created",
+      data: props.data.itemsCounts,
+      borderColor: "#219ebc",
     },
     {
-      title: "Votes",
-      values: props.data.votesCounts,
-      color: "#4338ca",
+      label: "Votes",
+      data: props.data.votesCounts,
+      borderColor: "#4338ca",
     },
   ];
 
-  const x = props.data.dates.map((date) =>
+  const labels = props.data.dates.map((date) =>
     new Date(date).toLocaleDateString("en-us", {
       month: "short",
       day: "numeric",
@@ -75,58 +75,40 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
   );
 
   return (
-    <main class="flex-1 p-4 grid gap-12 md:grid-cols-2">
-      {charts.map(({ color, title, values }) => {
-        const data = values.map((value) => Number(value));
-        const total = data.reduce(
-          (value, currentValue) => currentValue + value,
-          0,
-        );
-
-        return (
-          <div class="py-4">
-            <div class="text-center">
-              <h3>{title}</h3>
-              <p class="font-bold">{total}</p>
-            </div>
-            <Chart
-              container={{
-                class: "aspect-[2/1] mx-auto relative max-w-[100vw]",
-              }}
-              type="line"
-              options={{
-                plugins: {
-                  legend: { display: false },
-                },
-                interaction: {
-                  intersect: false,
-                },
-                scales: {
-                  x: {
-                    grid: { display: false },
-                  },
-                  y: {
-                    beginAtZero: true,
-                    grid: { display: false },
-                    max: Math.ceil(Math.max(...data) * 1.1),
-                    ticks: { stepSize: 1 },
-                  },
-                },
-              }}
-              data={{
-                labels: x,
-                datasets: [{
-                  label: title,
-                  data,
-                  borderColor: color,
-                  pointRadius: 0,
-                  cubicInterpolationMode: "monotone",
-                }],
-              }}
-            />
-          </div>
-        );
-      })}
+    <main class="flex-1 p-4 aspect-[2/1] mx-auto relative w-full">
+      <Chart
+        type="line"
+        options={{
+          plugins: {
+            title: {
+              display: true,
+              text: "Daily counts",
+            },
+          },
+          interaction: {
+            intersect: false,
+            mode: "index",
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+            },
+            y: {
+              beginAtZero: true,
+              grid: { display: false },
+            },
+          },
+        }}
+        data={{
+          labels,
+          datasets: datasets.map((dataset) => ({
+            ...dataset,
+            data: dataset.data.map((value) => Number(value)),
+            pointRadius: 0,
+            cubicInterpolationMode: "monotone",
+          })),
+        }}
+      />
     </main>
   );
 }
