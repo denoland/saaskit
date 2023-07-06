@@ -43,7 +43,7 @@ async function sharedHandler(
       status = 201;
       await createVote(vote);
 
-      if (item!.userId != user!.id) {
+      if (item.userId !== user.id) {
         const notification: Notification = {
           userId: item!.userId,
           type: "vote",
