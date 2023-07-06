@@ -43,14 +43,16 @@ async function sharedHandler(
       status = 201;
       await createVote(vote);
 
-      const notification: Notification = {
-        userId: item!.userId,
-        type: "vote",
-        text: `${user!.login} upvoted your post: ${item!.title}`,
-        originUrl: `/item/${itemId}`,
-        ...newNotificationProps(),
-      };
-      await createNotification(notification);
+      if (item!.userId != user!.id) {
+        const notification: Notification = {
+          userId: item!.userId,
+          type: "vote",
+          text: `${user!.login} upvoted your post: ${item!.title}`,
+          originUrl: `/item/${itemId}`,
+          ...newNotificationProps(),
+        };
+        await createNotification(notification);
+      }
       break;
     }
     default:
