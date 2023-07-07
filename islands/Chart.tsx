@@ -1,10 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import {
-  Chart as ChartJS,
-  type ChartConfiguration,
-  type ChartType,
-  type DefaultDataPoint,
-} from "chart.js";
+import type {
+  Chart as ChartJSType,
+  ChartConfiguration,
+  ChartType,
+  DefaultDataPoint,
+} from "chart.js/dist/types/index.d.ts";
+import ChartJS from "chart.js/auto/+esm";
 import { useEffect, useRef } from "preact/hooks";
 import type { JSX } from "preact";
 
@@ -28,7 +29,7 @@ function useChart<
   Label = unknown,
 >(options: ChartOptions<Type, Data, Label>) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<ChartJS<Type, Data, Label> | null>(null);
+  const chartRef = useRef<ChartJSType<Type, Data, Label> | null>(null);
 
   useEffect(() => {
     if (canvasRef.current === null) {
@@ -37,7 +38,9 @@ function useChart<
     if (chartRef.current) {
       chartRef.current.destroy();
     }
-    chartRef.current = new ChartJS(canvasRef.current, { ...options });
+    chartRef.current = new ChartJS(canvasRef.current, {
+      ...options,
+    }) as unknown as ChartJSType<Type, Data, Label>;
 
     return () => {
       chartRef.current?.destroy();
