@@ -5,7 +5,7 @@ import type {
   ChartType,
   DefaultDataPoint,
 } from "chart.js";
-import { Chart as ChartJS, registerables } from "chart.js/+esm";
+import ChartJS from "chart.js/auto/+esm";
 import { useEffect, useRef } from "preact/hooks";
 import type { JSX } from "preact";
 
@@ -38,8 +38,6 @@ function useChart<
     if (chartRef.current) {
       chartRef.current.destroy();
     }
-    ChartJS.register(...registerables);
-
     chartRef.current = new ChartJS(canvasRef.current, {
       ...options,
     }) as unknown as ChartJSType<Type, Data, Label>;
