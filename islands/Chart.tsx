@@ -4,7 +4,7 @@ import type {
   ChartConfiguration,
   ChartType,
   DefaultDataPoint,
-} from "chart.js/dist/types/index.d.ts";
+} from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js/+esm";
 import { useEffect, useRef } from "preact/hooks";
 import type { JSX } from "preact";
