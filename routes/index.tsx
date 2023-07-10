@@ -6,12 +6,12 @@ import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
 import {
-  compareScore,
   getAllItems,
   getAreVotedBySessionId,
   getItemsSince,
   getManyUsers,
   type Item,
+  sortByRating,
   type User,
 } from "@/utils/db.ts";
 import { DAY, WEEK } from "std/datetime/constants.ts";
@@ -41,9 +41,10 @@ export const handler: Handlers<HomePageData, State> = {
       allItems = await getAllItems();
     }
 
-    const items = allItems
-      .toSorted(compareScore)
-      .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
+    const items = (await sortByRating(allItems)).slice(
+      (pageNum - 1) * PAGE_LENGTH,
+      pageNum * PAGE_LENGTH,
+    );
 
     const itemsUsers = await getManyUsers(items.map((item) => item.userId));
 

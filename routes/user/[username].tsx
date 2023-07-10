@@ -6,11 +6,11 @@ import ItemSummary from "@/components/ItemSummary.tsx";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import PageSelector from "@/components/PageSelector.tsx";
 import {
-  compareScore,
   getAreVotedBySessionId,
   getItemsByUser,
   getUserByLogin,
   type Item,
+  sortByRating,
   type User,
 } from "@/utils/db.ts";
 import { pluralize } from "@/utils/display.ts";
@@ -39,7 +39,7 @@ export const handler: Handlers<UserData, State> = {
     const allItems = await getItemsByUser(user.id);
     const itemsCount = allItems.length;
 
-    const items = allItems.sort(compareScore).slice(
+    const items = (await sortByRating(allItems)).slice(
       (pageNum - 1) * PAGE_LENGTH,
       pageNum * PAGE_LENGTH,
     );

@@ -1,5 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { chunk } from "std/collections/chunk.ts";
+import { calculateRating } from "@/utils/ratingAlgorithm.ts";
 
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
@@ -561,8 +562,30 @@ export async function getAreVotedBySessionId(
   return items.map((item) => votedItemIds.includes(item.id));
 }
 
-export function compareScore(a: Item, b: Item) {
-  return Number(b.score) - Number(a.score);
+export async function sortByRating(items: Item[]): Promise<Item[]> {
+  const values = items.map((
+    value,
+    index,
+  ) => ({
+    index,
+    item: value,
+    score: 0,
+  }));
+
+  for (const value of values) {
+    value.score = calculateRating(
+      value.item.score,
+      (await getCommentsByItem(value.item.id)).length,
+      value.item.createdAt,
+    );
+  }
+
+  values.sort((a, b) => Number(b.score) - Number(a.score));
+
+  const sortedIndices = values.map((value) => value.index);
+  const sortedArray = sortedIndices.map((index) => items[index]);
+
+  return sortedArray;
 }
 
 // Analytics
