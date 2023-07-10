@@ -34,7 +34,18 @@ export default function ItemSummary(props: ItemSummaryProps) {
             {new URL(props.item.url).host} ↗
           </a>
         </span>
-        <UserPostedAt user={props.user} createdAt={props.item.createdAt} />
+        <UserPostedAt
+          user={props.user}
+          createdAt={props.item.createdAt}
+        />
+        <span>
+          <a
+            class="hover:underline text-gray-500"
+            href={`/item/${props.item.id}`}
+          >
+            {props.item.commentsCount} comments
+          </a>
+        </span>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { chunk } from "std/collections/chunk.ts";
-import { calculateRating } from "@/utils/ratingAlgorithm.ts";
+import { DAY } from "std/datetime/constants.ts";
 
 const KV_PATH_KEY = "KV_PATH";
 let path = undefined;
@@ -74,12 +74,17 @@ export interface Item {
   id: string;
   createdAt: Date;
   score: number;
+  commentsCount: number;
 }
 
-export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
+export function newItemProps(): Pick<
+  Item,
+  "id" | "score" | "createdAt" | "commentsCount"
+> {
   return {
     id: crypto.randomUUID(),
     score: 0,
+    commentsCount: 0,
     createdAt: new Date(),
   };
 }
@@ -297,6 +302,45 @@ export function newCommentProps(): Pick<Comment, "id" | "createdAt"> {
 }
 
 export async function createComment(comment: Comment) {
+  const itemKey = ["items", comment.itemId];
+  const itemsByUserKey = ["items_by_user", comment.userId, comment.itemId];
+  const [itemRes, itemsByUserRes] = await kv.getMany<Item[]>([
+    itemKey,
+    itemsByUserKey,
+  ]);
+
+  if (itemRes.value === null || itemsByUserRes.value === null) {
+    throw new Error(`Item not found`);
+  }
+
+  const itemsByTimeKey = [
+    "items_by_time",
+    itemRes.value.createdAt.getTime(),
+    itemRes.value.id,
+  ];
+  const itemsByTimeRes = await kv.get<Item>(itemsByTimeKey);
+
+  if (itemsByTimeRes.value === null) throw new Error(`Item not found`);
+
+  const newItemRes = itemRes.value;
+  const newItemsByTimeRes = itemsByTimeRes.value;
+  const newItemsByUserRes = itemsByUserRes.value;
+
+  newItemRes.commentsCount++;
+  newItemsByTimeRes.commentsCount++;
+  newItemsByUserRes.commentsCount++;
+
+  const com = await kv.atomic()
+    .check(itemRes)
+    .check(itemsByTimeRes)
+    .check(itemsByUserRes)
+    .set(itemKey, newItemRes)
+    .set(itemsByTimeKey, newItemsByTimeRes)
+    .set(itemsByUserKey, newItemsByUserRes)
+    .commit();
+
+  if (!com.ok) throw new Error(`Failed to update Item`);
+
   const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
 
   const res = await kv.atomic()
@@ -562,30 +606,26 @@ export async function getAreVotedBySessionId(
   return items.map((item) => votedItemIds.includes(item.id));
 }
 
-export async function sortByRating(items: Item[]): Promise<Item[]> {
-  const values = items.map((
-    value,
-    index,
-  ) => ({
-    index,
-    item: value,
-    score: 0,
-  }));
+export function calcRate(
+  likes: number,
+  comments: number,
+  postDate: Date,
+): number {
+  const likesWeight = 0.1;
+  const commentsWeight = 0.5;
+  const recencyWeight = 0.9;
 
-  for (const value of values) {
-    value.score = calculateRating(
-      value.item.score,
-      (await getCommentsByItem(value.item.id)).length,
-      value.item.createdAt,
-    );
-  }
+  const likesScore = likes * likesWeight;
+  const commentsScore = comments * commentsWeight;
+  const recencyScore = recencyWeight /
+    (((Date.now() - postDate.getTime()) / DAY) + 1);
 
-  values.sort((a, b) => Number(b.score) - Number(a.score));
+  return likesScore + commentsScore + recencyScore;
+}
 
-  const sortedIndices = values.map((value) => value.index);
-  const sortedArray = sortedIndices.map((index) => items[index]);
-
-  return sortedArray;
+export function compareRank(a: Item, b: Item): number {
+  return calcRate(b.score, b.commentsCount, b.createdAt) -
+    calcRate(a.score, a.commentsCount, a.createdAt);
 }
 
 // Analytics

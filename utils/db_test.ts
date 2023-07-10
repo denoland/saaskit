@@ -1,6 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   type Comment,
+  compareRank,
   createComment,
   createItem,
   createNotification,
@@ -36,7 +37,6 @@ import {
   newNotificationProps,
   newUserProps,
   Notification,
-  sortByRating,
   updateUser,
   type User,
 } from "./db.ts";
@@ -295,7 +295,7 @@ Deno.test("[db] getNotificationsByUser()", async () => {
   assertEquals(await ifUserHasNotifications(userId), true);
 });
 
-Deno.test("[db] sortByRating()", async () => {
+Deno.test("[db] compareRank()", () => {
   const item1: Item = {
     userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
@@ -319,7 +319,7 @@ Deno.test("[db] sortByRating()", async () => {
   };
 
   const aa = [item2, item3, item1];
-  const sorted = await sortByRating(aa);
+  const sorted = aa.toSorted(compareRank);
 
   assertArrayIncludes(sorted, [item1, item2, item3]);
 });
