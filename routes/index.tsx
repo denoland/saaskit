@@ -6,7 +6,7 @@ import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
 import {
-  compareRank,
+  compareRating,
   getAllItems,
   getAreVotedBySessionId,
   getItemsSince,
@@ -42,7 +42,7 @@ export const handler: Handlers<HomePageData, State> = {
     }
 
     const items = allItems
-      .toSorted(compareRank)
+      .toSorted(compareRating)
       .slice(
         (pageNum - 1) * PAGE_LENGTH,
         pageNum * PAGE_LENGTH,

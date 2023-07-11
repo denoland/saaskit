@@ -309,8 +309,9 @@ export async function createComment(comment: Comment) {
     itemsByUserKey,
   ]);
 
-  if (itemRes.value === null || itemsByUserRes.value === null) {
-    throw new Error(`Item not found`);
+  if (itemRes.value === null) throw new Error(`Item not found ${itemRes}`);
+  if (itemsByUserRes.value === null) {
+    throw new Error(`Item not found ${itemsByUserRes}`);
   }
 
   const itemsByTimeKey = [
@@ -330,22 +331,17 @@ export async function createComment(comment: Comment) {
   newItemsByTimeRes.commentsCount++;
   newItemsByUserRes.commentsCount++;
 
-  const com = await kv.atomic()
-    .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
-    .set(itemKey, newItemRes)
-    .set(itemsByTimeKey, newItemsByTimeRes)
-    .set(itemsByUserKey, newItemsByUserRes)
-    .commit();
-
-  if (!com.ok) throw new Error(`Failed to update Item`);
-
   const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
 
   const res = await kv.atomic()
     .check({ key: commentsByItemKey, versionstamp: null })
+    .check(itemRes)
+    .check(itemsByTimeRes)
+    .check(itemsByUserRes)
     .set(commentsByItemKey, comment)
+    .set(itemKey, newItemRes)
+    .set(itemsByTimeKey, newItemsByTimeRes)
+    .set(itemsByUserKey, newItemsByUserRes)
     .commit();
 
   if (!res.ok) throw new Error(`Failed to create comment: ${comment}`);
@@ -606,26 +602,21 @@ export async function getAreVotedBySessionId(
   return items.map((item) => votedItemIds.includes(item.id));
 }
 
-export function calcRate(
-  likes: number,
-  comments: number,
-  postDate: Date,
-): number {
+export function calcRating(item: Item): number {
   const likesWeight = 0.1;
   const commentsWeight = 0.5;
   const recencyWeight = 0.9;
 
-  const likesScore = likes * likesWeight;
-  const commentsScore = comments * commentsWeight;
+  const likesScore = item.score * likesWeight;
+  const commentsScore = item.commentsCount * commentsWeight;
   const recencyScore = recencyWeight /
-    (((Date.now() - postDate.getTime()) / DAY) + 1);
+    (((Date.now() - item.createdAt.getTime()) / DAY) + 1);
 
   return likesScore + commentsScore + recencyScore;
 }
 
-export function compareRank(a: Item, b: Item): number {
-  return calcRate(b.score, b.commentsCount, b.createdAt) -
-    calcRate(a.score, a.commentsCount, a.createdAt);
+export function compareRating(a: Item, b: Item): number {
+  return calcRating(b) - calcRating(a);
 }
 
 // Analytics

@@ -6,7 +6,7 @@ import ItemSummary from "@/components/ItemSummary.tsx";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import PageSelector from "@/components/PageSelector.tsx";
 import {
-  compareRank,
+  compareRating,
   getAreVotedBySessionId,
   getItemsByUser,
   getUserByLogin,
@@ -40,7 +40,7 @@ export const handler: Handlers<UserData, State> = {
     const itemsCount = allItems.length;
 
     const items = allItems
-      .toSorted(compareRank)
+      .toSorted(compareRating)
       .slice(
         (pageNum - 1) * PAGE_LENGTH,
         pageNum * PAGE_LENGTH,

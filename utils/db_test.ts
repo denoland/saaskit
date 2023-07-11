@@ -1,7 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   type Comment,
-  compareRank,
+  compareRating,
   createComment,
   createItem,
   createNotification,
@@ -185,24 +185,34 @@ Deno.test("[db] newCommentProps()", () => {
 });
 
 Deno.test("[db] (create/delete)Comment() + getCommentsByItem()", async () => {
-  const itemId = crypto.randomUUID();
+  const user = genNewUser();
+  const item = genNewItem({ userId: user.id });
+
   const comment1 = genNewComment({
-    itemId,
+    itemId: item.id,
+    userId: user.id,
   });
   const comment2 = genNewComment({
-    itemId,
+    itemId: item.id,
+    userId: user.id,
   });
 
-  assertEquals(await getCommentsByItem(itemId), []);
+  await createUser(user);
+  await createItem(item);
+
+  assertEquals(await getCommentsByItem(item.id), []);
 
   await createComment(comment1);
   await createComment(comment2);
   await assertRejects(async () => await createComment(comment2));
-  assertArrayIncludes(await getCommentsByItem(itemId), [comment1, comment2]);
+  assertArrayIncludes(await getCommentsByItem(item.id), [comment1, comment2]);
 
   await deleteComment(comment1);
   await deleteComment(comment2);
-  assertEquals(await getCommentsByItem(itemId), []);
+  assertEquals(await getCommentsByItem(item.id), []);
+
+  await deleteItem(item);
+  await deleteUserBySession(user.sessionId);
 });
 
 Deno.test("[db] votes", async () => {
@@ -295,7 +305,7 @@ Deno.test("[db] getNotificationsByUser()", async () => {
   assertEquals(await ifUserHasNotifications(userId), true);
 });
 
-Deno.test("[db] compareRank()", () => {
+Deno.test("[db] compareRating()", () => {
   const item1: Item = {
     userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
@@ -319,7 +329,7 @@ Deno.test("[db] compareRank()", () => {
   };
 
   const aa = [item2, item3, item1];
-  const sorted = aa.toSorted(compareRank);
+  const sorted = aa.toSorted(compareRating);
 
   assertArrayIncludes(sorted, [item1, item2, item3]);
 });
