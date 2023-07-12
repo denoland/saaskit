@@ -6,16 +6,27 @@ import {
   SITE_NAME,
 } from "@/utils/constants.ts";
 import { Discord, GitHub } from "./Icons.tsx";
+import { getActiveLinkStyles } from "@/utils/display.ts";
 
-export default function Footer() {
+export default function Footer(props: { url: URL }) {
   return (
     <footer
       class={`${SITE_BAR_STYLES} flex-col md:flex-row mt-8`}
     >
       <p>© {SITE_NAME}</p>
       <nav class={NAV_STYLES}>
-        <a href="/stats" class={LINK_STYLES}>Stats</a>
-        <a href="/blog" class={LINK_STYLES}>Blog</a>
+        <a
+          href="/stats"
+          class={getActiveLinkStyles(props.url.pathname === "/stats")}
+        >
+          Stats
+        </a>
+        <a
+          href="/blog"
+          class={getActiveLinkStyles(props.url.pathname === "/blog")}
+        >
+          Blog
+        </a>
         <a
           href="https://discord.gg/deno"
           target="_blank"
