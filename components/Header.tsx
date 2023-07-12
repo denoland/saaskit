@@ -8,7 +8,7 @@ import {
 import Logo from "./Logo.tsx";
 import { stripe } from "@/utils/payments.ts";
 import { Bell, CircleFilled } from "./Icons.tsx";
-import { getActiveLinkStyles } from "@/utils/display.ts";
+import { getLinkStyles } from "@/utils/display.ts";
 
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
@@ -23,7 +23,7 @@ export default function Header(
           ? (
             <a
               href="/pricing"
-              class={getActiveLinkStyles(props.url.pathname === "/pricing")}
+              class={getLinkStyles(props.url.pathname === "/pricing")}
             >
               Pricing
             </a>
@@ -33,7 +33,7 @@ export default function Header(
           ? (
             <a
               href="/account"
-              class={getActiveLinkStyles(props.url.pathname === "/account")}
+              class={getLinkStyles(props.url.pathname === "/account")}
             >
               Account
             </a>
@@ -41,7 +41,7 @@ export default function Header(
           : <a href="/signin" class={LINK_STYLES}>Sign in</a>}
         <a
           href="/account/notifications"
-          class={getActiveLinkStyles(
+          class={getLinkStyles(
             props.url.pathname === "/account/notifications",
           ) + " relative"}
           aria-label="Notifications"

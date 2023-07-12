@@ -6,7 +6,7 @@ import {
   SITE_NAME,
 } from "@/utils/constants.ts";
 import { Discord, GitHub } from "./Icons.tsx";
-import { getActiveLinkStyles } from "@/utils/display.ts";
+import { getLinkStyles } from "@/utils/display.ts";
 
 export default function Footer(props: { url: URL }) {
   return (
@@ -17,13 +17,13 @@ export default function Footer(props: { url: URL }) {
       <nav class={NAV_STYLES}>
         <a
           href="/stats"
-          class={getActiveLinkStyles(props.url.pathname === "/stats")}
+          class={getLinkStyles(props.url.pathname === "/stats")}
         >
           Stats
         </a>
         <a
           href="/blog"
-          class={getActiveLinkStyles(props.url.pathname === "/blog")}
+          class={getLinkStyles(props.url.pathname === "/blog")}
         >
           Blog
         </a>

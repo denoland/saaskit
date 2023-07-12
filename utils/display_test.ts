@@ -1,7 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { pluralize, timeAgo } from "./display.ts";
+import { getLinkStyles, pluralize, timeAgo } from "./display.ts";
 import { DAY, HOUR, MINUTE, SECOND } from "std/datetime/constants.ts";
 import { assertEquals } from "std/testing/asserts.ts";
+import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 
 Deno.test("[display] pluralize()", () => {
   assertEquals(pluralize(0, "item"), "0 items");
@@ -21,4 +22,12 @@ Deno.test("[display] timeAgo()", () => {
   assertEquals(timeAgo(Date.now() - DAY), "1 day");
   assertEquals(timeAgo(Date.now() - DAY - HOUR * 12), "1 day");
   assertEquals(timeAgo(Date.now() - DAY * 5), "5 days");
+});
+
+Deno.test("[display] getLinkStyles()", () => {
+  assertEquals(getLinkStyles(false), LINK_STYLES);
+  assertEquals(
+    getLinkStyles(true),
+    LINK_STYLES + " " + ACTIVE_LINK_STYLES,
+  );
 });
