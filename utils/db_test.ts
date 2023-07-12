@@ -81,7 +81,7 @@ function genNewUser(): User {
 
 Deno.test("[db] newItemProps()", () => {
   const itemProps = newItemProps();
-  assert(itemProps.createdAt.getTime() > Date.now());
+  assert(itemProps.createdAt.getTime() <= Date.now());
   assertEquals(typeof itemProps.id, "string");
   assertEquals(itemProps.score, 0);
 });
@@ -180,7 +180,7 @@ Deno.test("[db] visit", async () => {
 
 Deno.test("[db] newCommentProps()", () => {
   const commentProps = newCommentProps();
-  assert(commentProps.createdAt.getTime() < Date.now());
+  assert(commentProps.createdAt.getTime() <= Date.now());
   assertEquals(typeof commentProps.id, "string");
 });
 
@@ -261,7 +261,7 @@ function genNewNotification(
 
 Deno.test("[db] newNotificationProps()", () => {
   const notificationProps = newNotificationProps();
-  assert(notificationProps.createdAt.getTime() < Date.now());
+  assert(notificationProps.createdAt.getTime() <= Date.now());
   assertEquals(typeof notificationProps.id, "string");
 });
 
