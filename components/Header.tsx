@@ -1,10 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import {
-  BUTTON_STYLES,
-  LINK_STYLES,
-  NAV_STYLES,
-  SITE_BAR_STYLES,
-} from "@/utils/constants.ts";
+import { LINK_STYLES, NAV_STYLES, SITE_BAR_STYLES } from "@/utils/constants.ts";
 import Logo from "./Logo.tsx";
 import { stripe } from "@/utils/payments.ts";
 import { Bell, CircleFilled } from "./Icons.tsx";
@@ -15,7 +10,7 @@ export default function Header(
   return (
     <header class={SITE_BAR_STYLES}>
       <a href="/">
-        <Logo height="48" />
+        <Logo />
       </a>
       <nav class={NAV_STYLES}>
         {stripe ? <a href="/pricing" class={LINK_STYLES}>Pricing</a> : null}

@@ -1,20 +1,14 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { JSX } from "preact";
 import { SITE_NAME } from "@/utils/constants.ts";
 
-export default function Logo(props: JSX.HTMLAttributes<HTMLImageElement>) {
-  const height = props.height ?? 96;
-  const width = height;
-
+export default function Logo() {
   return (
     <img
-      {...props}
-      height={height}
-      width={width}
+      height="48"
+      width="48"
       src="/logo.webp"
-      srcset="/logo-small.webp 96w"
-      alt={`${SITE_NAME} logo`}
-      class={`h-[${height}px] w-[${width}px] mx-auto ${props.class ?? ""}`}
+      alt={SITE_NAME + " logo"}
+      class="h-12 w-12"
     />
   );
 }
