@@ -78,7 +78,7 @@ export default function SubmitPage() {
           placeholder="URL"
         />
         <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
-          <button class="w-full text-white text-left rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black)">
+          <button class="w-full text-white text-left rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))">
             Submit
           </button>
         </div>
