@@ -60,7 +60,7 @@ export const handler: Handlers<HomePageData, State> = {
 function TimeSelector(props: { url: URL }) {
   const timeAgo = props.url.searchParams.get("time-ago");
   return (
-    <div class="flex justify-center my-4 gap-4">
+    <div class="flex justify-center my-4 gap-8">
       {/* These links do not preserve current URL queries. E.g. if ?page=2, that'll be removed once one of these links is clicked */}
       <a
         class={getLinkStyles(timeAgo === null || timeAgo === "week")}
