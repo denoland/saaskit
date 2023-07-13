@@ -5,8 +5,8 @@ import {
   LINK_STYLES,
   NAV_STYLES,
   SITE_BAR_STYLES,
+  SITE_NAME,
 } from "@/utils/constants.ts";
-import Logo from "./Logo.tsx";
 import { stripe } from "@/utils/payments.ts";
 import { Bell, CircleFilled } from "./Icons.tsx";
 import { getToggledStyles } from "@/utils/display.ts";
@@ -17,7 +17,13 @@ export default function Header(
   return (
     <header class={SITE_BAR_STYLES}>
       <a href="/">
-        <Logo height="48" />
+        <img
+          height="48"
+          width="48"
+          src="/logo.webp"
+          alt={SITE_NAME + " logo"}
+          class="h-12 w-12"
+        />
       </a>
       <nav class={NAV_STYLES}>
         {stripe
@@ -62,7 +68,14 @@ export default function Header(
             <CircleFilled class="absolute top-0.5 right-0.5 text-pink-700 w-2 h-2" />
           )}
         </a>
-        <a href="/submit" class={BUTTON_STYLES}>Submit</a>
+        <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
+          <a
+            href="/submit"
+            class="text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))"
+          >
+            Submit
+          </a>
+        </div>
       </nav>
     </header>
   );
