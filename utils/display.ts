@@ -1,6 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { difference } from "std/datetime/difference.ts";
-import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 
 export function pluralize(unit: number, label: string) {
   return unit === 1 ? `${unit} ${label}` : `${unit} ${label}s`;
@@ -20,15 +19,21 @@ export function timeAgo(time: number | Date) {
  *
  * @example
  * ```ts
- * import { getLinkStyles } from "@/utils/display.ts";
+ * import { getToggledStyles } from "@/utils/display.ts";
  *
- * const activeLinkStyles = getLinkStyles(true);
+ * // Returns "text-gray !text-black"
+ * const activeLinkStyles = getToggledStyles("text-gray", "!text-black", true);
  *
- * const inactiveLinkStyles = getLinkStyles(false);
+ * // Returns "text-gray"
+ * const inactiveLinkStyles = getToggledStyles("text-gray", "!text-black", false);
  * ```
  */
-export function getLinkStyles(expr: boolean) {
-  let styles = LINK_STYLES;
-  if (expr) styles += " " + ACTIVE_LINK_STYLES;
+export function getToggledStyles(
+  baseStyles: string,
+  toggledStyles: string,
+  cond: boolean,
+) {
+  let styles = baseStyles;
+  if (cond) styles += " " + toggledStyles;
   return styles;
 }

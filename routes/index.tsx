@@ -14,7 +14,8 @@ import {
   type User,
 } from "@/utils/db.ts";
 import { DAY, WEEK } from "std/datetime/constants.ts";
-import { getLinkStyles } from "@/utils/display.ts";
+import { getToggledStyles } from "@/utils/display.ts";
+import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 
 interface HomePageData extends State {
   itemsUsers: User[];
@@ -63,19 +64,31 @@ function TimeSelector(props: { url: URL }) {
     <div class="flex justify-center my-4 gap-8">
       {/* These links do not preserve current URL queries. E.g. if ?page=2, that'll be removed once one of these links is clicked */}
       <a
-        class={getLinkStyles(timeAgo === null || timeAgo === "week")}
+        class={getToggledStyles(
+          LINK_STYLES,
+          ACTIVE_LINK_STYLES,
+          timeAgo === null || timeAgo === "week",
+        )}
         href="/?time-ago=week"
       >
         Last Week
       </a>
       <a
-        class={getLinkStyles(timeAgo === "month")}
+        class={getToggledStyles(
+          LINK_STYLES,
+          ACTIVE_LINK_STYLES,
+          timeAgo === "month",
+        )}
         href="/?time-ago=month"
       >
         Last Month
       </a>
       <a
-        class={getLinkStyles(timeAgo === "all")}
+        class={getToggledStyles(
+          LINK_STYLES,
+          ACTIVE_LINK_STYLES,
+          timeAgo === "all",
+        )}
         href="/?time-ago=all"
       >
         All time

@@ -1,12 +1,13 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  ACTIVE_LINK_STYLES,
   LINK_STYLES,
   NAV_STYLES,
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
 import { Discord, GitHub } from "./Icons.tsx";
-import { getLinkStyles } from "@/utils/display.ts";
+import { getToggledStyles } from "@/utils/display.ts";
 
 export default function Footer(props: { url: URL }) {
   return (
@@ -17,13 +18,21 @@ export default function Footer(props: { url: URL }) {
       <nav class={NAV_STYLES}>
         <a
           href="/stats"
-          class={getLinkStyles(props.url.pathname === "/stats")}
+          class={getToggledStyles(
+            LINK_STYLES,
+            ACTIVE_LINK_STYLES,
+            props.url.pathname === "/stats",
+          )}
         >
           Stats
         </a>
         <a
           href="/blog"
-          class={getLinkStyles(props.url.pathname === "/blog")}
+          class={getToggledStyles(
+            LINK_STYLES,
+            ACTIVE_LINK_STYLES,
+            props.url.pathname === "/blog",
+          )}
         >
           Blog
         </a>

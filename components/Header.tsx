@@ -1,5 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  ACTIVE_LINK_STYLES,
   BUTTON_STYLES,
   LINK_STYLES,
   NAV_STYLES,
@@ -8,7 +9,7 @@ import {
 import Logo from "./Logo.tsx";
 import { stripe } from "@/utils/payments.ts";
 import { Bell, CircleFilled } from "./Icons.tsx";
-import { getLinkStyles } from "@/utils/display.ts";
+import { getToggledStyles } from "@/utils/display.ts";
 
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
@@ -23,7 +24,11 @@ export default function Header(
           ? (
             <a
               href="/pricing"
-              class={getLinkStyles(props.url.pathname === "/pricing")}
+              class={getToggledStyles(
+                LINK_STYLES,
+                ACTIVE_LINK_STYLES,
+                props.url.pathname === "/pricing",
+              )}
             >
               Pricing
             </a>
@@ -33,7 +38,11 @@ export default function Header(
           ? (
             <a
               href="/account"
-              class={getLinkStyles(props.url.pathname === "/account")}
+              class={getToggledStyles(
+                LINK_STYLES,
+                ACTIVE_LINK_STYLES,
+                props.url.pathname === "/account",
+              )}
             >
               Account
             </a>
@@ -41,7 +50,9 @@ export default function Header(
           : <a href="/signin" class={LINK_STYLES}>Sign in</a>}
         <a
           href="/account/notifications"
-          class={getLinkStyles(
+          class={getToggledStyles(
+            LINK_STYLES,
+            ACTIVE_LINK_STYLES,
             props.url.pathname === "/account/notifications",
           ) + " relative"}
           aria-label="Notifications"
