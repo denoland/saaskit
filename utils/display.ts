@@ -14,7 +14,7 @@ export function timeAgo(time: number | Date) {
 }
 
 /**
- * Dynamically generates link styles depending on whether the given expression is truthy.
+ * Dynamically generates styles depending on whether the given condition is truthy.
  * This is used to visually highlight a link if it matches the current page.
  *
  * @example
