@@ -1,14 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
   ACTIVE_LINK_STYLES,
-  BUTTON_STYLES,
   LINK_STYLES,
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
 import { stripe } from "@/utils/payments.ts";
 import { Bars, Bell, CircleFilled, Cross } from "./Icons.tsx";
-import { getToggledStyles } from "@/utils/display.ts";
 import { cx } from "@twind/core";
 
 export default function Header(
@@ -69,11 +67,9 @@ export default function Header(
             <a
               href="/pricing"
               class={cx(
-                getToggledStyles(
-                  LINK_STYLES,
-                  ACTIVE_LINK_STYLES,
-                  props.url.pathname === "/pricing",
-                ),
+                props.url.pathname === "/pricing"
+                  ? ACTIVE_LINK_STYLES
+                  : LINK_STYLES,
                 NAV_ITEM,
               )}
             >
@@ -87,14 +83,11 @@ export default function Header(
         <a
           href="/account/notifications"
           class={cx(
-            getToggledStyles(
-              LINK_STYLES,
-              ACTIVE_LINK_STYLES,
-              props.url.pathname === "/account/notifications",
-            ),
+            props.url.pathname === "/account/notifications"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
             NAV_ITEM,
-            "flex gap-2 items-center",
-            "relative",
+            "relative flex gap-2 items-center",
           )}
           aria-label="Notifications"
         >
@@ -108,13 +101,18 @@ export default function Header(
         </a>
         <a
           href="/submit"
-          class={cx(
-            NAV_ITEM,
-            "sm:(text-center rounded-lg bg-gradient-to-tr from-secondary to-primary p-px text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white)))",
-          )}
+          class={cx(NAV_ITEM, "sm:hidden")}
         >
-          Submit{"  "}<span class="inline sm:hidden">a link</span>
+          Submit a project
         </a>
+        <div class="hidden sm:block rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
+          <a
+            href="/submit"
+            class="text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))"
+          >
+            Submit
+          </a>
+        </div>
       </nav>
     </header>
   );
