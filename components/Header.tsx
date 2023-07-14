@@ -10,7 +10,7 @@ import {
 import { stripe } from "@/utils/payments.ts";
 import { Bars, Bell, CircleFilled, Cross } from "./Icons.tsx";
 import { getToggledStyles } from "@/utils/display.ts";
-import { cx } from "@/utils/tailwind_utils.ts";
+import { cx } from "@twind/core";
 
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
