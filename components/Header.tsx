@@ -3,7 +3,6 @@ import {
   ACTIVE_LINK_STYLES,
   BUTTON_STYLES,
   LINK_STYLES,
-  NAV_STYLES,
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
@@ -63,7 +62,7 @@ export default function Header(
         `}
       </script>
       <nav
-        class={"hidden sm:flex gap-x-4 sm:items-center flex-col sm:flex-row divide-y divide-solid sm:divide-y-0"}
+        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"}
       >
         {stripe
           ? (
