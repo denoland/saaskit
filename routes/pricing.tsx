@@ -56,16 +56,16 @@ export const handler: Handlers<PricingPageData, State> = {
 
 const CARD_STYLES =
   "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
-const CHECK_STYLES = "w-6 h-6 text-pink-500 shrink-0 inline-block mr-2";
+const CHECK_STYLES = "w-6 h-6 text-primary shrink-0 inline-block mr-2";
 
 function FreePlanCard() {
   return (
     <div class={CARD_STYLES}>
       <div class="flex-1 space-y-4">
         <div>
-          <h3 class="text-xl font-bold">
+          <h2 class="text-xl font-bold">
             Free
-          </h3>
+          </h2>
           <p class="text-gray-500">
             Discover and share your favorite Deno projects.
           </p>
@@ -107,9 +107,9 @@ function PremiumPlanCard(
     <div class={CARD_STYLES + " border-primary border"}>
       <div class="flex-1 space-y-4">
         <div>
-          <h3 class="text-xl font-bold">
+          <h2 class="text-xl font-bold">
             {props.product.name}
-          </h3>
+          </h2>
           <p class="text-gray-500">
             {props.product.description}
           </p>
@@ -165,9 +165,9 @@ function EnterprisePricingCard() {
     <div class={CARD_STYLES}>
       <div class="flex-1 space-y-4">
         <div>
-          <h3 class="text-xl font-bold">
+          <h2 class="text-xl font-bold">
             Enterprise
-          </h3>
+          </h2>
           <p class="text-gray-500">
             Make the Deno Hunt experience yours.
           </p>
@@ -211,7 +211,7 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
     <main class="mx-auto max-w-5xl w-full flex-1 flex flex-col justify-center px-4">
       <div class="mb-8 text-center">
         <h1 class="text-3xl font-bold">Pricing</h1>
-        <p class="text-lg text-gray-500">Choose the plan that suites you</p>
+        <p class="text-gray-500">Choose the plan that suites you</p>
       </div>
       <div class="flex flex-col md:flex-row gap-4">
         <FreePlanCard />

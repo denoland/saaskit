@@ -18,14 +18,15 @@ export default function App(props: AppProps) {
           href={props.url.href}
         />
       </Head>
-      <div class="dark:bg-gray-900">
+      <div class="dark:bg-gray-900 text-lg">
         <div class="flex flex-col min-h-screen mx-auto max-w-7xl w-full dark:text-white">
           <Header
+            url={props.url}
             sessionId={props.data?.sessionId}
             hasNotifications={props.data?.hasNotifications}
           />
           <props.Component />
-          <Footer />
+          <Footer url={props.url} />
         </div>
       </div>
     </>

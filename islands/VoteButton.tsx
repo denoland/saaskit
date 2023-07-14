@@ -30,14 +30,14 @@ export default function VoteButton(props: VoteButtonProps) {
   }
 
   return (
-    <div
-      class={(isVoted.value ? "text-pink-700" : "text-inherit") +
+    <button
+      class={(isVoted.value ? "text-primary" : "text-inherit") +
         " pr-2 text-center"}
       onClick={onClick}
     >
       ▲
       <br />
       {score.value}
-    </div>
+    </button>
   );
 }
