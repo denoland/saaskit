@@ -17,7 +17,12 @@ export default function Header(
 ) {
   const NAV_ITEM = "text-gray-500 px-3 py-4 sm:py-2";
   return (
-    <header class={"flex justify-between p-4 gap-4 flex-col sm:flex-row"}>
+    <header
+      class={cx(
+        SITE_BAR_STYLES,
+        "flex-col sm:flex-row",
+      )}
+    >
       <input
         type="checkbox"
         id="nav-toggle"
