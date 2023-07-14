@@ -27,7 +27,7 @@ export default {
         },
         // deno-lint-ignore no-explicit-any
       }) as Preset<any>,
-      ext(),
+      ext() as Preset,
     ],
   }),
 } as Options;

@@ -37,7 +37,7 @@ function MenuItem(props: MenuItemProps) {
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
 ) {
-  const menuItems: MenuItemProps[] = [
+  const menuItems: (MenuItemProps | undefined)[] = [
     stripe && { name: "Pricing", href: "/pricing" },
     props.sessionId
       ? { name: "Account", href: "/account" }
@@ -112,13 +112,16 @@ export default function Header(
         class={"hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"}
       >
         {menuItems.map((item) => (
-          <MenuItem
-            name={item.name}
-            href={item.href}
-            active={item.href === props.url.pathname}
-            class={item.class}
-            ariaLabel={item.ariaLabel}
-          />
+          item &&
+          (
+            <MenuItem
+              name={item.name}
+              href={item.href}
+              active={item.href === props.url.pathname}
+              class={item.class}
+              ariaLabel={item.ariaLabel}
+            />
+          )
         ))}
 
         <div class="hidden sm:block rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
