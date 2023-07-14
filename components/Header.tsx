@@ -55,7 +55,7 @@ export default function Header(
               event.preventDefault();
             }
           });
-          `}
+        `}
       </script>
       <nav
         class={"hidden sm:flex gap-x-4 sm:items-center flex-col sm:flex-row divide-y divide-solid sm:divide-y-0"}
