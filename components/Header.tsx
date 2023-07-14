@@ -78,7 +78,19 @@ export default function Header(
           )
           : null}
         {props.sessionId
-          ? <a href="/account" class={cx(LINK_STYLES, NAV_ITEM)}>Account</a>
+          ? (
+            <a
+              href="/account"
+              class={cx(
+                props.url.pathname === "/account"
+                  ? ACTIVE_LINK_STYLES
+                  : LINK_STYLES,
+                NAV_ITEM,
+              )}
+            >
+              Account
+            </a>
+          )
           : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>}
         <a
           href="/account/notifications"
