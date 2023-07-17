@@ -109,7 +109,7 @@ export default function Header(
         `}
       </script>
       <nav
-        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"}
+        class="hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"
       >
         {menuItems.map((item) => (
           item &&
