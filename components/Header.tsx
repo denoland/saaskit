@@ -8,60 +8,11 @@ import {
 import { stripe } from "@/utils/payments.ts";
 import { Bars, Bell, CircleFilled, Cross } from "./Icons.tsx";
 import { cx } from "@twind/core";
-import type { JSX } from "preact";
-
-interface MenuItemProps {
-  name: string | JSX.Element;
-  href: string;
-  active?: boolean;
-  class?: string;
-  ariaLabel?: string;
-}
-
-function MenuItem(props: MenuItemProps) {
-  return (
-    <a
-      href={props.href}
-      class={cx(
-        props.active ? ACTIVE_LINK_STYLES : LINK_STYLES,
-        "relative text-gray-500 px-3 py-4 sm:py-2",
-        props.class,
-      )}
-      aria-label={props.ariaLabel}
-    >
-      {props.name}
-    </a>
-  );
-}
 
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
 ) {
-  const menuItems: (MenuItemProps | undefined)[] = [
-    stripe && { name: "Pricing", href: "/pricing" },
-    props.sessionId
-      ? { name: "Account", href: "/account" }
-      : { name: "Sign in", href: "/signin" },
-    {
-      name: (
-        <>
-          <div class="relative">
-            <Bell class="hidden sm:block w-6 h-6" />
-            <span class="sm:hidden">
-              Notifications
-            </span>
-            {props.hasNotifications && (
-              <CircleFilled class="absolute -top-0.5 -right-0.5 text-primary w-2 h-2" />
-            )}
-          </div>
-        </>
-      ),
-      href: "/account/notifications",
-      ariaLabel: "Notifications",
-    },
-    { name: "Submit a project", href: "/submit", class: "sm:hidden" },
-  ];
-
+  const NAV_ITEM = "text-gray-500 px-3 py-4 sm:py-2";
   return (
     <header
       class={cx(
@@ -109,21 +60,63 @@ export default function Header(
         `}
       </script>
       <nav
-        class="hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"
+        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"}
       >
-        {menuItems.map((item) => (
-          item &&
-          (
-            <MenuItem
-              name={item.name}
-              href={item.href}
-              active={item.href === props.url.pathname}
-              class={item.class}
-              ariaLabel={item.ariaLabel}
-            />
+        {stripe
+          ? (
+            <a
+              href="/pricing"
+              class={cx(
+                props.url.pathname === "/pricing"
+                  ? ACTIVE_LINK_STYLES
+                  : LINK_STYLES,
+                NAV_ITEM,
+              )}
+            >
+              Pricing
+            </a>
           )
-        ))}
-
+          : null}
+        {props.sessionId
+          ? (
+            <a
+              href="/account"
+              class={cx(
+                props.url.pathname === "/account"
+                  ? ACTIVE_LINK_STYLES
+                  : LINK_STYLES,
+                NAV_ITEM,
+              )}
+            >
+              Account
+            </a>
+          )
+          : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>}
+        <a
+          href="/account/notifications"
+          class={cx(
+            props.url.pathname === "/account/notifications"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
+            NAV_ITEM,
+            "relative flex gap-2 items-center",
+          )}
+          aria-label="Notifications"
+        >
+          <Bell class="hidden sm:block w-6 h-6" />
+          <div class="sm:hidden">
+            Notifications
+          </div>
+          {props.hasNotifications && (
+            <CircleFilled class="absolute top-0.5 right-0.5 text-primary w-2 h-2" />
+          )}
+        </a>
+        <a
+          href="/submit"
+          class={cx(NAV_ITEM, "sm:hidden")}
+        >
+          Submit a project
+        </a>
         <div class="hidden sm:block rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
           <a
             href="/submit"
