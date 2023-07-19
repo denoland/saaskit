@@ -1,21 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { Handlers } from "$fresh/server.ts";
-import { PageProps } from "$fresh/server.ts";
+import { RouteContext } from "$fresh/server.ts";
 import { getPosts, Post } from "@/utils/posts.ts";
 import type { State } from "@/routes/_middleware.ts";
 import Head from "@/components/Head.tsx";
-
-interface BlogPageData extends State {
-  posts: Post[];
-}
-
-export const handler: Handlers<BlogPageData, State> = {
-  async GET(_req, ctx) {
-    const posts = await getPosts();
-
-    return ctx.render({ ...ctx.state, posts });
-  },
-};
 
 function PostCard(props: Post) {
   return (
@@ -39,14 +26,19 @@ function PostCard(props: Post) {
   );
 }
 
-export default function BlogPage(props: PageProps<BlogPageData>) {
+export default async function BlogPage(
+  _req: Request,
+  ctx: RouteContext<unknown, State>,
+) {
+  const posts = await getPosts();
+
   return (
     <>
-      <Head title="Blog" href={props.url.href} />
+      <Head title="Blog" href={ctx.url.href} />
       <main class="p-4 flex-1">
         <h1 class="text-5xl font-bold">Blog</h1>
         <div class="mt-8">
-          {props.data.posts.map((post) => <PostCard {...post} />)}
+          {posts.map((post) => <PostCard {...post} />)}
         </div>
       </main>
     </>

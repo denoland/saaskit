@@ -1,16 +1,10 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { RouteContext } from "$fresh/server.ts";
 import type { AccountState } from "./_middleware.ts";
 import { BUTTON_STYLES } from "@/utils/constants.ts";
 import { ComponentChild } from "preact";
 import { stripe } from "@/utils/payments.ts";
 import Head from "@/components/Head.tsx";
-
-export const handler: Handlers<AccountState, AccountState> = {
-  GET(_request, ctx) {
-    return ctx.render(ctx.state);
-  },
-};
 
 interface RowProps {
   title: string;
@@ -34,15 +28,21 @@ function Row(props: RowProps) {
   );
 }
 
-export default function AccountPage(props: PageProps<AccountState>) {
-  const action = props.data.user.isSubscribed ? "Manage" : "Upgrade";
+/** @todo Remove ignore if route components introduce support for sync route components. */
+// deno-lint-ignore require-await
+export default async function AccountPage(
+  _req: Request,
+  ctx: RouteContext<unknown, AccountState>,
+) {
+  const { user } = ctx.state;
+  const action = user.isSubscribed ? "Manage" : "Upgrade";
 
   return (
     <>
-      <Head title="Account" href={props.url.href} />
+      <Head title="Account" href={ctx.url.href} />
       <main class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center">
         <img
-          src={props.data.user?.avatarUrl}
+          src={user?.avatarUrl}
           alt="User Avatar"
           crossOrigin="anonymous"
           class="max-w-[50%] self-center rounded-full aspect-square mb-4 md:mb-6"
@@ -50,11 +50,11 @@ export default function AccountPage(props: PageProps<AccountState>) {
         <ul>
           <Row
             title="Username"
-            text={props.data.user.login}
+            text={user.login}
           />
           <Row
             title="Subscription"
-            text={props.data.user.isSubscribed ? "Premium 🦕" : "Free"}
+            text={user.isSubscribed ? "Premium 🦕" : "Free"}
           >
             {stripe && (
               <a

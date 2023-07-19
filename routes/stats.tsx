@@ -1,74 +1,56 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { RouteContext } from "$fresh/server.ts";
 import { DAY } from "std/datetime/constants.ts";
 import type { State } from "./_middleware.ts";
 import Chart from "@/islands/Chart.tsx";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import Head from "@/components/Head.tsx";
 
-interface StatsPageData extends State {
-  dates: Date[];
-  visitsCounts: number[];
-  usersCounts: number[];
-  itemsCounts: number[];
-  votesCounts: number[];
-}
+export default async function StatsPage(
+  _req: Request,
+  ctx: RouteContext<unknown, State>,
+) {
+  const msAgo = 30 * DAY;
+  const dates = getDatesSince(msAgo).map((date) => new Date(date));
 
-export const handler: Handlers<StatsPageData, State> = {
-  async GET(_req, ctx) {
-    const msAgo = 30 * DAY;
-    const dates = getDatesSince(msAgo).map((date) => new Date(date));
+  const [
+    visitsCounts,
+    usersCounts,
+    itemsCounts,
+    votesCounts,
+  ] = await Promise.all([
+    getManyMetrics("visits_count", dates),
+    getManyMetrics("users_count", dates),
+    getManyMetrics("items_count", dates),
+    getManyMetrics("votes_count", dates),
+  ]);
 
-    const [
-      visitsCounts,
-      usersCounts,
-      itemsCounts,
-      votesCounts,
-    ] = await Promise.all([
-      getManyMetrics("visits_count", dates),
-      getManyMetrics("users_count", dates),
-      getManyMetrics("items_count", dates),
-      getManyMetrics("votes_count", dates),
-    ]);
-
-    return ctx.render({
-      ...ctx.state,
-      dates,
-      visitsCounts: visitsCounts.map(Number),
-      usersCounts: usersCounts.map(Number),
-      itemsCounts: itemsCounts.map(Number),
-      votesCounts: votesCounts.map(Number),
-    });
-  },
-};
-
-export default function StatsPage(props: PageProps<StatsPageData>) {
   const datasets = [
     {
       label: "Site visits",
-      data: props.data.visitsCounts,
+      data: visitsCounts.map((count) => Number(count)),
       borderColor: "#be185d",
     },
     {
       label: "Users created",
-      data: props.data.usersCounts,
+      data: usersCounts.map((count) => Number(count)),
       borderColor: "#e85d04",
     },
     {
       label: "Items created",
-      data: props.data.itemsCounts,
+      data: itemsCounts.map((count) => Number(count)),
       borderColor: "#219ebc",
     },
     {
       label: "Votes",
-      data: props.data.votesCounts,
+      data: votesCounts.map((count) => Number(count)),
       borderColor: "#4338ca",
     },
   ];
 
-  const max = Math.max(...datasets[0].data);
+  const max = Math.max(...datasets.flatMap((dataset) => dataset.data));
 
-  const labels = props.data.dates.map((date) =>
+  const labels = dates.map((date) =>
     new Date(date).toLocaleDateString("en-us", {
       month: "short",
       day: "numeric",
@@ -77,7 +59,7 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
 
   return (
     <>
-      <Head title="Stats" href={props.url.href} />
+      <Head title="Stats" href={ctx.url.href} />
       <main class="flex-1 p-4 flex flex-col">
         <h1 class="text-3xl font-bold">Stats</h1>
         <div class="flex-1 relative">

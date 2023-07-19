@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { RouteContext } from "$fresh/server.ts";
 import { ComponentChild } from "preact";
 import type { State } from "@/routes/_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
@@ -10,67 +10,20 @@ import {
   getAreVotedBySessionId,
   getItemsByUser,
   getUserByLogin,
-  type Item,
-  type User,
 } from "@/utils/db.ts";
 import { pluralize } from "@/utils/display.ts";
 import { GitHub } from "@/components/Icons.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 
-export interface UserData extends State {
-  user: User;
-  items: Item[];
-  areVoted: boolean[];
-  lastPage: number;
-  itemsCount: number;
-}
-
-export const handler: Handlers<UserData, State> = {
-  async GET(req, ctx) {
-    const { username } = ctx.params;
-    const url = new URL(req.url);
-    const pageNum = calcPageNum(url);
-
-    const user = await getUserByLogin(username);
-    if (user === null) {
-      return ctx.renderNotFound();
-    }
-
-    const allItems = await getItemsByUser(user.id);
-    const itemsCount = allItems.length;
-
-    const items = allItems.sort(compareScore).slice(
-      (pageNum - 1) * PAGE_LENGTH,
-      pageNum * PAGE_LENGTH,
-    );
-
-    const areVoted = await getAreVotedBySessionId(
-      items,
-      ctx.state.sessionId,
-    );
-
-    const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
-
-    return ctx.render({
-      ...ctx.state,
-      user,
-      items,
-      areVoted,
-      lastPage,
-      itemsCount,
-    });
+function Row(
+  props: {
+    title: string;
+    text: string;
+    img?: string;
+    children?: ComponentChild;
   },
-};
-
-interface RowProps {
-  title: string;
-  children?: ComponentChild;
-  text: string;
-  img?: string;
-}
-
-function Row(props: RowProps) {
+) {
   return (
     <div class="flex flex-wrap py-8">
       {props.img && (
@@ -97,37 +50,64 @@ function Row(props: RowProps) {
   );
 }
 
-export default function UserPage(props: PageProps<UserData>) {
+export default async function UserPage(
+  req: Request,
+  ctx: RouteContext<unknown, State>,
+) {
+  const { username } = ctx.params;
+  const url = new URL(req.url);
+  const pageNum = calcPageNum(url);
+
+  const user = await getUserByLogin(username);
+  if (user === null) {
+    return ctx.renderNotFound();
+  }
+
+  const allItems = await getItemsByUser(user.id);
+  const itemsCount = allItems.length;
+
+  const items = allItems.sort(compareScore).slice(
+    (pageNum - 1) * PAGE_LENGTH,
+    pageNum * PAGE_LENGTH,
+  );
+
+  const areVoted = await getAreVotedBySessionId(
+    items,
+    ctx.state.sessionId,
+  );
+
+  const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
+
   return (
     <>
-      <Head title={props.data.user.login} href={props.url.href} />
+      <Head title={user.login} href={ctx.url.href} />
       <main class="flex-1 p-4">
         <Row
-          title={props.data.user.login}
-          text={pluralize(props.data.itemsCount, "submission")}
-          img={props.data.user.avatarUrl}
+          title={user.login}
+          text={pluralize(itemsCount, "submission")}
+          img={user.avatarUrl}
         >
           <a
-            href={`https://github.com/${props.data.user.login}`}
-            alt={`to ${props.data.user.login}'s GitHub profile`}
-            aria-label={`${props.data.user.login}'s GitHub profile`}
+            href={`https://github.com/${user.login}`}
+            alt={`to ${user.login}'s GitHub profile`}
+            aria-label={`${user.login}'s GitHub profile`}
             class={LINK_STYLES}
             target="_blank"
           >
             <GitHub class="text-sm w-6" />
           </a>
         </Row>
-        {props.data.items.map((item, index) => (
+        {items.map((item, index) => (
           <ItemSummary
             item={item}
-            isVoted={props.data.areVoted[index]}
-            user={props.data.user}
+            isVoted={areVoted[index]}
+            user={user}
           />
         ))}
-        {props.data.lastPage > 1 && (
+        {lastPage > 1 && (
           <PageSelector
-            currentPage={calcPageNum(props.url)}
-            lastPage={props.data.lastPage}
+            currentPage={calcPageNum(ctx.url)}
+            lastPage={lastPage}
           />
         )}
       </main>

@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { Handlers, RouteContext } from "$fresh/server.ts";
 import type { AccountState } from "./_middleware.ts";
 import {
   deleteNotification,
@@ -11,21 +11,15 @@ import { redirect } from "@/utils/redirect.ts";
 import { timeAgo } from "@/utils/display.ts";
 import Head from "@/components/Head.tsx";
 
-export interface NotificationState extends AccountState {
+interface NotificationState extends AccountState {
   notifications: Notification[];
 }
 
-export function compareCreatedAt(a: Notification, b: Notification) {
+function compareCreatedAt(a: Notification, b: Notification) {
   return Number(b.createdAt) - Number(a.createdAt);
 }
 
 export const handler: Handlers<NotificationState, AccountState> = {
-  async GET(_request, ctx) {
-    const notifications = (await getNotificationsByUser(ctx.state.user.id))!
-      .toSorted(compareCreatedAt);
-
-    return ctx.render({ ...ctx.state, notifications });
-  },
   async POST(req) {
     const form = await req.formData();
     const originUrl = form.get("originUrl")!;
@@ -42,11 +36,7 @@ export const handler: Handlers<NotificationState, AccountState> = {
   },
 };
 
-interface RowProps {
-  notification: Notification;
-}
-
-function Row(props: RowProps) {
+function Row(props: { notification: Notification }) {
   return (
     <li class="py-4">
       <form method="post">
@@ -74,19 +64,26 @@ function Row(props: RowProps) {
   );
 }
 
-export default function NotificationPage(props: PageProps<NotificationState>) {
+export default async function AccountNotificationPage(
+  _req: Request,
+  ctx: RouteContext<unknown, AccountState>,
+) {
+  const notifications = await getNotificationsByUser(ctx.state.user.id);
+
   return (
     <>
-      <Head title="Notifications" href={props.url.href} />
+      <Head title="Notifications" href={ctx.url.href} />
       <main class="flex-1 p-4">
         <h1 class="text-3xl font-bold py-4">Notification Center</h1>
         <ul>
-          {props.data.notifications.length > 0
-            ? props.data.notifications.map((notification) => (
-              <Row
-                notification={notification}
-              />
-            ))
+          {notifications.length > 0
+            ? notifications
+              .toSorted(compareCreatedAt)
+              .map((notification) => (
+                <Row
+                  notification={notification}
+                />
+              ))
             : "No notifications yet"}
         </ul>
       </main>

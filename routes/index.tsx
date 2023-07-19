@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { RouteContext } from "$fresh/server.ts";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import type { State } from "./_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
@@ -11,53 +11,15 @@ import {
   getItemsSince,
   getManyUsers,
   type Item,
-  type User,
 } from "@/utils/db.ts";
 import { DAY, WEEK } from "std/datetime/constants.ts";
 import { getToggledStyles } from "@/utils/display.ts";
 import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 
-interface HomePageData extends State {
-  itemsUsers: User[];
-  items: Item[];
-  lastPage: number;
-  areVoted: boolean[];
-}
-
 function calcTimeAgoFilter(url: URL) {
   return url.searchParams.get("time-ago");
 }
-
-export const handler: Handlers<HomePageData, State> = {
-  async GET(req, ctx) {
-    const url = new URL(req.url);
-    const pageNum = calcPageNum(url);
-    const timeAgo = calcTimeAgoFilter(url);
-    let allItems: Item[];
-    if (timeAgo === "week" || timeAgo === null) {
-      allItems = await getItemsSince(WEEK);
-    } else if (timeAgo === "month") {
-      allItems = await getItemsSince(30 * DAY);
-    } else {
-      allItems = await getAllItems();
-    }
-
-    const items = allItems
-      .toSorted(compareScore)
-      .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
-
-    const itemsUsers = await getManyUsers(items.map((item) => item.userId));
-
-    const areVoted = await getAreVotedBySessionId(
-      items,
-      ctx.state.sessionId,
-    );
-    const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
-
-    return ctx.render({ ...ctx.state, items, itemsUsers, areVoted, lastPage });
-  },
-};
 
 function TimeSelector(props: { url: URL }) {
   const timeAgo = props.url.searchParams.get("time-ago");
@@ -98,24 +60,50 @@ function TimeSelector(props: { url: URL }) {
   );
 }
 
-export default function HomePage(props: PageProps<HomePageData>) {
+export default async function HomePage(
+  _req: Request,
+  ctx: RouteContext<unknown, State>,
+) {
+  const pageNum = calcPageNum(ctx.url);
+  const timeAgo = calcTimeAgoFilter(ctx.url);
+  let allItems: Item[];
+  if (timeAgo === "week" || timeAgo === null) {
+    allItems = await getItemsSince(WEEK);
+  } else if (timeAgo === "month") {
+    allItems = await getItemsSince(30 * DAY);
+  } else {
+    allItems = await getAllItems();
+  }
+
+  const items = allItems
+    .toSorted(compareScore)
+    .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
+
+  const itemsUsers = await getManyUsers(items.map((item) => item.userId));
+
+  const areVoted = await getAreVotedBySessionId(
+    items,
+    ctx.state.sessionId,
+  );
+  const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
+
   return (
     <>
-      <Head href={props.url.href} />
+      <Head href={ctx.url.href} />
       <main class="flex-1 p-4">
-        <TimeSelector url={props.url} />
-        {props.data.items.map((item, index) => (
+        <TimeSelector url={ctx.url} />
+        {items.map((item, index) => (
           <ItemSummary
             item={item}
-            isVoted={props.data.areVoted[index]}
-            user={props.data.itemsUsers[index]}
+            isVoted={areVoted[index]}
+            user={itemsUsers[index]}
           />
         ))}
-        {props.data.lastPage > 1 && (
+        {lastPage > 1 && (
           <PageSelector
-            currentPage={calcPageNum(props.url)}
-            lastPage={props.data.lastPage}
-            timeSelector={calcTimeAgoFilter(props.url) ?? undefined}
+            currentPage={calcPageNum(ctx.url)}
+            lastPage={lastPage}
+            timeSelector={calcTimeAgoFilter(ctx.url) ?? undefined}
           />
         )}
       </main>
