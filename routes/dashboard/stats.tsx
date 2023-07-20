@@ -1,11 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { DAY } from "std/datetime/constants.ts";
-import type { State } from "./_middleware.ts";
+import type { DashState } from "./_middleware.ts";
 import Chart from "@/islands/Chart.tsx";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
+import Head from "@/components/Head.tsx";
 
-interface StatsPageData extends State {
+interface StatsPageData extends DashState {
   dates: Date[];
   visitsCounts: number[];
   usersCounts: number[];
@@ -13,10 +14,8 @@ interface StatsPageData extends State {
   votesCounts: number[];
 }
 
-export const handler: Handlers<StatsPageData, State> = {
+export const handler: Handlers<StatsPageData, DashState> = {
   async GET(_req, ctx) {
-    ctx.state.title = "Stats";
-
     const msAgo = 30 * DAY;
     const dates = getDatesSince(msAgo).map((date) => new Date(date));
 
@@ -77,39 +76,42 @@ export default function StatsPage(props: PageProps<StatsPageData>) {
   );
 
   return (
-    <main class="flex-1 p-4 flex flex-col">
-      <h1 class="text-3xl font-bold">Stats</h1>
-      <div class="flex-1 relative">
-        <Chart
-          type="line"
-          options={{
-            maintainAspectRatio: false,
-            interaction: {
-              intersect: false,
-              mode: "index",
-            },
-            scales: {
-              x: {
-                max,
-                grid: { display: false },
+    <>
+      <Head title="Stats" href={props.url.href} />
+      <main class="flex-1 p-4 flex flex-col">
+        <h1 class="text-3xl font-bold">Stats</h1>
+        <div class="flex-1 relative">
+          <Chart
+            type="line"
+            options={{
+              maintainAspectRatio: false,
+              interaction: {
+                intersect: false,
+                mode: "index",
               },
-              y: {
-                beginAtZero: true,
-                grid: { display: false },
-                ticks: { precision: 0 },
+              scales: {
+                x: {
+                  max,
+                  grid: { display: false },
+                },
+                y: {
+                  beginAtZero: true,
+                  grid: { display: false },
+                  ticks: { precision: 0 },
+                },
               },
-            },
-          }}
-          data={{
-            labels,
-            datasets: datasets.map((dataset) => ({
-              ...dataset,
-              pointRadius: 0,
-              cubicInterpolationMode: "monotone",
-            })),
-          }}
-        />
-      </div>
-    </main>
+            }}
+            data={{
+              labels,
+              datasets: datasets.map((dataset) => ({
+                ...dataset,
+                pointRadius: 0,
+                cubicInterpolationMode: "monotone",
+              })),
+            }}
+          />
+        </div>
+      </main>
+    </>
   );
 }

@@ -8,11 +8,13 @@ export default function UserPostedAt(
   return (
     <p class="text-gray-500">
       <img
-        //adding the extra parameter to resize the github avatar
+        // Resize the avatar image to be 36x36 px
+        // Although display size is 24x24, lighthouse complains about low resolution if the image is 24x24
         src={props.user.avatarUrl + "&s=36"}
         alt={props.user.login}
         crossOrigin="anonymous"
-        class="h-6 w-auto rounded-full aspect-square inline-block mr-1 align-bottom"
+        class="h-6 w-auto rounded-full inline-block mr-2"
+        loading="lazy"
       />
       <a class="hover:underline" href={`/user/${props.user.login}`}>
         {props.user.login}

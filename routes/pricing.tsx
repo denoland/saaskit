@@ -11,6 +11,7 @@ import {
 import Stripe from "stripe";
 import { getUserBySession, type User } from "@/utils/db.ts";
 import { Check } from "@/components/Icons.tsx";
+import Head from "@/components/Head.tsx";
 
 interface PricingPageData extends State {
   products: Stripe.Product[];
@@ -42,8 +43,6 @@ export const handler: Handlers<PricingPageData, State> = {
       );
     }
 
-    ctx.state.title = "Pricing";
-
     const products = productsWithPrice.sort(comparePrices);
 
     const user = ctx.state.sessionId
@@ -56,7 +55,7 @@ export const handler: Handlers<PricingPageData, State> = {
 
 const CARD_STYLES =
   "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
-const CHECK_STYLES = "w-6 h-6 text-pink-500 shrink-0 inline-block mr-2";
+const CHECK_STYLES = "w-6 h-6 text-primary shrink-0 inline-block mr-2";
 
 function FreePlanCard() {
   return (
@@ -208,19 +207,22 @@ export default function PricingPage(props: PageProps<PricingPageData>) {
   const [product] = props.data.products;
 
   return (
-    <main class="mx-auto max-w-5xl w-full flex-1 flex flex-col justify-center px-4">
-      <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold">Pricing</h1>
-        <p class="text-lg text-gray-500">Choose the plan that suites you</p>
-      </div>
-      <div class="flex flex-col md:flex-row gap-4">
-        <FreePlanCard />
-        <PremiumPlanCard
-          product={product}
-          isSubscribed={props.data.user?.isSubscribed}
-        />
-        <EnterprisePricingCard />
-      </div>
-    </main>
+    <>
+      <Head title="Pricing" href={props.url.href} />
+      <main class="mx-auto max-w-5xl w-full flex-1 flex flex-col justify-center px-4">
+        <div class="mb-8 text-center">
+          <h1 class="text-3xl font-bold">Pricing</h1>
+          <p class="text-gray-500">Choose the plan that suites you</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4">
+          <FreePlanCard />
+          <PremiumPlanCard
+            product={product}
+            isSubscribed={props.data.user?.isSubscribed}
+          />
+          <EnterprisePricingCard />
+        </div>
+      </main>
+    </>
   );
 }
