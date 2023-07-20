@@ -9,6 +9,7 @@ import {
   type Comment,
   createComment,
   createNotification,
+  deleteItem,
   getAreVotedBySessionId,
   getCommentsByItem,
   getItem,
@@ -24,6 +25,7 @@ import {
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { redirect, redirectToLogin } from "@/utils/redirect.ts";
 import Head from "@/components/Head.tsx";
+import { Trash } from "@/components/Icons.tsx";
 
 interface ItemPageData extends State {
   user: User;
@@ -78,19 +80,28 @@ export const handler: Handlers<ItemPageData, State> = {
       return redirectToLogin(req.url);
     }
 
-    const form = await req.formData();
-    const text = form.get("text");
-
-    if (typeof text !== "string") {
-      return new Response(null, { status: 400 });
-    }
-
     const itemId = ctx.params.id;
     const user = await getUserBySession(ctx.state.sessionId);
     const item = await getItem(itemId);
 
     if (item === null || user === null) {
       return new Response(null, { status: 404 });
+    }
+
+    const form = await req.formData();
+
+    if (form.get("origin") === "DeleteCommentButton") {
+      if (user.id !== item.userId) {
+        return new Response(null, { status: 403 });
+      }
+      await deleteItem(item);
+      return redirect("/");
+    }
+
+    const text = form.get("text");
+
+    if (typeof text !== "string") {
+      return new Response(null, { status: 400 });
     }
 
     const comment: Comment = {
@@ -144,16 +155,31 @@ function CommentSummary(
   );
 }
 
+function DeleteCommentButton() {
+  return (
+    <form method="post">
+      <input type="hidden" name="origin" value="DeleteCommentButton" />
+      <button type="submit">
+        <Trash />
+      </button>
+    </form>
+  );
+}
+
 export default function ItemPage(props: PageProps<ItemPageData>) {
+  const ownPost = props.data.user.sessionId === props.data.sessionId;
   return (
     <>
       <Head title={props.data.item.title} href={props.url.href} />
       <main class="flex-1 p-4 space-y-8">
-        <ItemSummary
-          item={props.data.item}
-          isVoted={props.data.isVoted}
-          user={props.data.user}
-        />
+        <div class="flex justify-between items-center">
+          <ItemSummary
+            item={props.data.item}
+            isVoted={props.data.isVoted}
+            user={props.data.user}
+          />
+          {ownPost && <DeleteCommentButton />}
+        </div>
         <CommentInput />
         <div>
           {props.data.comments.map((comment, index) => (
