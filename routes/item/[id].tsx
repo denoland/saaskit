@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, RouteContext } from "$fresh/server.ts";
+import type { Handlers, PageProps } from "$fresh/server.ts";
 import type { State } from "@/routes/_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import PageSelector from "@/components/PageSelector.tsx";
@@ -35,6 +35,44 @@ interface ItemPageData extends State {
 }
 
 export const handler: Handlers<ItemPageData, State> = {
+  async GET(req, ctx) {
+    const { id } = ctx.params;
+
+    const url = new URL(req.url);
+    const pageNum = calcPageNum(url);
+
+    const item = await getItem(id);
+    if (item === null) {
+      return ctx.renderNotFound();
+    }
+
+    const allComments = await getCommentsByItem(id);
+    const comments = allComments
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
+
+    const commentsUsers = await getManyUsers(
+      comments.map((comment) => comment.userId),
+    );
+    const user = await getUser(item.userId);
+
+    const [isVoted] = await getAreVotedBySessionId(
+      [item],
+      ctx.state.sessionId,
+    );
+
+    const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
+
+    return ctx.render({
+      ...ctx.state,
+      item,
+      comments,
+      user: user!,
+      commentsUsers,
+      isVoted,
+      lastPage,
+    });
+  },
   async POST(req, ctx) {
     if (!ctx.state.sessionId) {
       return redirectToLogin(req.url);
@@ -106,59 +144,29 @@ function CommentSummary(
   );
 }
 
-export default async function ItemPage(
-  req: Request,
-  ctx: RouteContext<unknown, State>,
-) {
-  const { id } = ctx.params;
-
-  const url = new URL(req.url);
-  const pageNum = calcPageNum(url);
-
-  const item = await getItem(id);
-  if (item === null) {
-    return ctx.renderNotFound();
-  }
-
-  const allComments = await getCommentsByItem(id);
-  const comments = allComments
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
-
-  const commentsUsers = await getManyUsers(
-    comments.map((comment) => comment.userId),
-  );
-  const user = await getUser(item.userId);
-
-  const [isVoted] = await getAreVotedBySessionId(
-    [item],
-    ctx.state.sessionId,
-  );
-
-  const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
-
+export default function ItemPage(props: PageProps<ItemPageData>) {
   return (
     <>
-      <Head title={item.title} href={ctx.url.href} />
+      <Head title={props.data.item.title} href={props.url.href} />
       <main class="flex-1 p-4 space-y-8">
         <ItemSummary
-          item={item}
-          isVoted={isVoted}
-          user={user!}
+          item={props.data.item}
+          isVoted={props.data.isVoted}
+          user={props.data.user}
         />
         <CommentInput />
         <div>
-          {comments.map((comment, index) => (
+          {props.data.comments.map((comment, index) => (
             <CommentSummary
-              user={commentsUsers[index]}
+              user={props.data.commentsUsers[index]}
               comment={comment}
             />
           ))}
         </div>
-        {lastPage > 1 && (
+        {props.data.lastPage > 1 && (
           <PageSelector
-            currentPage={calcPageNum(ctx.url)}
-            lastPage={lastPage}
+            currentPage={calcPageNum(props.url)}
+            lastPage={props.data.lastPage}
           />
         )}
       </main>

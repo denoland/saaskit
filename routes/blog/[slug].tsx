@@ -1,17 +1,25 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { RouteContext } from "$fresh/server.ts";
+import { Handlers, PageProps } from "$fresh/server.ts";
 import { CSS, render } from "$gfm";
-import { getPost } from "@/utils/posts.ts";
+import { getPost, Post } from "@/utils/posts.ts";
 import type { State } from "@/routes/_middleware.ts";
 import Head from "@/components/Head.tsx";
 
-export default async function PostPage(
-  _req: Request,
-  ctx: RouteContext<unknown, State>,
-) {
-  const post = await getPost(ctx.params.slug);
-  if (post === null) return ctx.renderNotFound();
+interface BlogPostPageData extends State {
+  post: Post;
+}
 
+export const handler: Handlers<BlogPostPageData, State> = {
+  async GET(_req, ctx) {
+    const post = await getPost(ctx.params.slug);
+    if (post === null) return ctx.renderNotFound();
+
+    return ctx.render({ ...ctx.state, post });
+  },
+};
+
+export default function PostPage(props: PageProps<BlogPostPageData>) {
+  const { post } = props.data;
   const date = post.publishedAt.toString() !== "Invalid Date" &&
     new Date(post.publishedAt).toLocaleDateString("en-US", {
       dateStyle: "long",
@@ -19,7 +27,7 @@ export default async function PostPage(
 
   return (
     <>
-      <Head title={post.title} href={ctx.url.href}>
+      <Head title={post.title} href={props.url.href}>
         <style dangerouslySetInnerHTML={{ __html: CSS }} />
       </Head>
       <main class="p-4 flex-1">
