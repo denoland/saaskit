@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { State } from "@/routes/_middleware.ts";
+import type { State } from "@/routes/_middleware.ts";
 import type { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { getUserBySession, User } from "@/utils/db.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
