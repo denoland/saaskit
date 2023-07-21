@@ -1,6 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { Handlers, PageProps } from "$fresh/server.ts";
-import { ComponentChild } from "preact";
 import type { State } from "@/routes/_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
@@ -17,6 +16,7 @@ import { pluralize } from "@/utils/display.ts";
 import { GitHub } from "@/components/Icons.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
+import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 
 export interface UserData extends State {
   user: User;
@@ -28,11 +28,10 @@ export interface UserData extends State {
 
 export const handler: Handlers<UserData, State> = {
   async GET(req, ctx) {
-    const { username } = ctx.params;
     const url = new URL(req.url);
     const pageNum = calcPageNum(url);
 
-    const user = await getUserByLogin(username);
+    const user = await getUserByLogin(ctx.params.login);
     if (user === null) {
       return ctx.renderNotFound();
     }
@@ -63,34 +62,33 @@ export const handler: Handlers<UserData, State> = {
   },
 };
 
-interface RowProps {
-  title: string;
-  children?: ComponentChild;
-  text: string;
-  img?: string;
-}
-
-function Row(props: RowProps) {
+function Profile(
+  props: { login: string; itemsCount: number; isSubscribed: boolean },
+) {
   return (
     <div class="flex flex-wrap py-8">
-      {props.img && (
-        <img
-          height="48"
-          width="48"
-          src={props.img}
-          alt="user avatar"
-          class="rounded-full"
-        />
-      )}
+      <GitHubAvatarImg login={props.login} size={48} />
       <div class="px-4">
-        <div class="flex flex-wrap justify-between">
+        <div class="flex gap-x-2">
           <span>
-            <strong>{props.title}</strong>
+            <strong>{props.login}</strong>
           </span>
-          {props.children && <span class="ml-2">{props.children}</span>}
+          {props.isSubscribed && (
+            <span title="Deno Hunt premium user">🦕{" "}</span>
+          )}
+          <span>
+            <a
+              href={`https://github.com/${props.login}`}
+              aria-label={`${props.login}'s GitHub profile`}
+              class={LINK_STYLES}
+              target="_blank"
+            >
+              <GitHub class="text-sm w-6" />
+            </a>
+          </span>
         </div>
         <p>
-          {props.text}
+          {pluralize(props.itemsCount, "submission")}
         </p>
       </div>
     </div>
@@ -102,21 +100,11 @@ export default function UserPage(props: PageProps<UserData>) {
     <>
       <Head title={props.data.user.login} href={props.url.href} />
       <main class="flex-1 p-4">
-        <Row
-          title={props.data.user.login}
-          text={pluralize(props.data.itemsCount, "submission")}
-          img={props.data.user.avatarUrl}
-        >
-          <a
-            href={`https://github.com/${props.data.user.login}`}
-            alt={`to ${props.data.user.login}'s GitHub profile`}
-            aria-label={`${props.data.user.login}'s GitHub profile`}
-            class={LINK_STYLES}
-            target="_blank"
-          >
-            <GitHub class="text-sm w-6" />
-          </a>
-        </Row>
+        <Profile
+          isSubscribed={props.data.user.isSubscribed}
+          login={props.data.user.login}
+          itemsCount={props.data.itemsCount}
+        />
         {props.data.items.map((item, index) => (
           <ItemSummary
             item={item}
