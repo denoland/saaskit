@@ -70,7 +70,7 @@ export default function SubmitPage(props: PageProps) {
             module!
           </p>
         </div>
-        <div class="flex flex-col md:flex-row gap-16 md:items-center">
+        <div class="flex flex-col md:flex-row gap-8 md:gap-16 md:items-center">
           <div class="flex-1 space-y-6">
             <p>
               <XCircle class="inline-block mr-2" />
