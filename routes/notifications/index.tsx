@@ -9,18 +9,18 @@ function compareCreatedAt(a: Notification, b: Notification) {
   return Number(b.createdAt) - Number(a.createdAt);
 }
 
-function Row(props: { notification: Notification }) {
+function Row(props: Notification) {
   return (
     <li class="py-4 space-y-1">
-      <a href={"/notifications/" + props.notification.id}>
+      <a href={"/notifications/" + props.id}>
         <span class="mr-4">
-          <strong>New {props.notification.type}!</strong>
+          <strong>New {props.type}!</strong>
         </span>
         <span class="text-gray-500">
-          {" " + timeAgo(props.notification.createdAt)} ago
+          {" " + timeAgo(props.createdAt)} ago
         </span>
         <br />
-        <span>{props.notification.text}</span>
+        <span>{props.text}</span>
       </a>
     </li>
   );
@@ -41,11 +41,7 @@ export default async function NotificationsPage(
           {notifications.length > 0
             ? notifications
               .toSorted(compareCreatedAt)
-              .map((notification) => (
-                <Row
-                  notification={notification}
-                />
-              ))
+              .map((notification) => <Row {...notification} />)
             : "No notifications yet"}
         </ul>
       </main>
