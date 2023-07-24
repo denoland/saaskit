@@ -32,22 +32,6 @@ export default async function NotificationsPage(
 ) {
   const notifications = await getNotificationsByUser(ctx.state.user.id);
 
-  notifications.push({
-    id: crypto.randomUUID(),
-    userId: crypto.randomUUID(),
-    type: "vote",
-    originUrl: "https://google.com",
-    text: "Why hello there",
-    createdAt: new Date(),
-  }, {
-    id: crypto.randomUUID(),
-    userId: crypto.randomUUID(),
-    type: "vote",
-    originUrl: "https://google.com",
-    text: "Why hello there",
-    createdAt: new Date(),
-  });
-
   return (
     <>
       <Head title="Notifications" href={ctx.url.href} />
