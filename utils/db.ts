@@ -245,31 +245,6 @@ export async function deleteNotification(notification: Notification) {
   }
 }
 
-/** @todo Delete this function removal of `notifications_by_time` key PR is merged. */
-export async function legacyDeleteNotification(notification: Notification) {
-  const notificationsKey = ["notifications", notification.id];
-  const notificationsByTimeKey = [
-    "notifications_by_time",
-    notification.createdAt.getTime(),
-    notification.id,
-  ];
-  const notificationsByUserKey = [
-    "notifications_by_user",
-    notification.userId,
-    notification.id,
-  ];
-
-  const res = await kv.atomic()
-    .delete(notificationsKey)
-    .delete(notificationsByTimeKey)
-    .delete(notificationsByUserKey)
-    .commit();
-
-  if (!res.ok) {
-    throw new Error(`Failed to delete notification: ${notification}`);
-  }
-}
-
 export async function getNotification(id: string) {
   return await getValue<Notification>(["notifications", id]);
 }
