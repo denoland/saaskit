@@ -11,6 +11,7 @@ import {
 import { redirect } from "@/utils/redirect.ts";
 import { redirectToLogin } from "@/utils/redirect.ts";
 import Head from "@/components/Head.tsx";
+import { CheckCircle, XCircle } from "@/components/Icons.tsx";
 
 export const handler: Handlers<State, State> = {
   GET(req, ctx) {
@@ -59,31 +60,60 @@ export default function SubmitPage(props: PageProps) {
   return (
     <>
       <Head title="Submit" href={props.url.href} />
-      <main class="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full space-y-8">
-        <h1 class="text-center text-2xl font-bold">
-          Share your project
-        </h1>
-        <form class="space-y-2" method="post">
-          <input
-            class={`${INPUT_STYLES} w-full`}
-            type="text"
-            name="title"
-            required
-            placeholder="Title"
-          />
-          <input
-            class={`${INPUT_STYLES} w-full`}
-            type="url"
-            name="url"
-            required
-            placeholder="URL"
-          />
-          <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
-            <button class="w-full text-white text-left rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))">
-              Submit
-            </button>
+      <main class="flex-1 flex flex-col justify-center mx-auto w-full space-y-8 p-4">
+        <div class="text-center">
+          <h1 class="text-center text-3xl font-bold">
+            Share your project
+          </h1>
+          <p class="text-gray-500">
+            Let the community know about your Deno-related blog post, video or
+            module!
+          </p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1 space-y-4">
+            <p>
+              <XCircle class="inline-block mr-2" />
+              <strong>Don't</strong> post duplicate content
+            </p>
+            <p>
+              <XCircle class="inline-block mr-2" />
+              <strong>Don't</strong> share dummy or test posts
+            </p>
+            <p>
+              <CheckCircle class="inline-block mr-2" />
+              <strong>Do</strong>{" "}
+              include a description with your title. E.g. “Deno Hunt: the best
+              place to share your Deno project”
+            </p>
+            <p>
+            </p>
           </div>
-        </form>
+          <form
+            class="space-y-2 flex-1 flex flex-col justify-center"
+            method="post"
+          >
+            <input
+              class={`${INPUT_STYLES} w-full`}
+              type="text"
+              name="title"
+              required
+              placeholder="Title"
+            />
+            <input
+              class={`${INPUT_STYLES} w-full`}
+              type="url"
+              name="url"
+              required
+              placeholder="URL"
+            />
+            <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
+              <button class="w-full text-white text-left rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
       </main>
     </>
   );
