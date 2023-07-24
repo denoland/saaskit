@@ -1,9 +1,9 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { RouteContext } from "$fresh/server.ts";
-import type { SignedInState } from "@/utils/middleware.ts";
 import { getNotificationsByUser, Notification } from "@/utils/db.ts";
 import { timeAgo } from "@/utils/display.ts";
 import Head from "@/components/Head.tsx";
+import { SignedInState } from "@/utils/middleware.ts";
 
 function compareCreatedAt(a: Notification, b: Notification) {
   return Number(b.createdAt) - Number(a.createdAt);
@@ -28,9 +28,12 @@ function Row(props: Notification) {
 
 export default async function NotificationsPage(
   _req: Request,
-  ctx: RouteContext<unknown, SignedInState>,
+  /** @todo Add state type variable once supported */
+  ctx: RouteContext,
 ) {
-  const notifications = await getNotificationsByUser(ctx.state.user.id);
+  const notifications = await getNotificationsByUser(
+    (ctx.state as unknown as SignedInState).user.id,
+  );
 
   return (
     <>
