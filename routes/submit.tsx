@@ -60,7 +60,7 @@ export default function SubmitPage(props: PageProps) {
   return (
     <>
       <Head title="Submit" href={props.url.href} />
-      <main class="flex-1 flex flex-col justify-center mx-auto w-full space-y-8 p-4">
+      <main class="flex-1 flex flex-col justify-center mx-auto w-full space-y-16 p-4 max-w-6xl">
         <div class="text-center">
           <h1 class="text-center text-3xl font-bold">
             Share your project
@@ -70,8 +70,8 @@ export default function SubmitPage(props: PageProps) {
             module!
           </p>
         </div>
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="flex-1 space-y-4">
+        <div class="flex flex-col md:flex-row gap-16 md:items-center">
+          <div class="flex-1 space-y-6">
             <p>
               <XCircle class="inline-block mr-2" />
               <strong>Don't</strong> post duplicate content
@@ -80,35 +80,55 @@ export default function SubmitPage(props: PageProps) {
               <XCircle class="inline-block mr-2" />
               <strong>Don't</strong> share dummy or test posts
             </p>
-            <p>
+            <div>
               <CheckCircle class="inline-block mr-2" />
-              <strong>Do</strong>{" "}
-              include a description with your title. E.g. “Deno Hunt: the best
-              place to share your Deno project”
-            </p>
+              <strong>Do</strong> include a description with your title.
+
+              <div class="text-sm text-gray-500">
+                E.g. “Deno Hunt: the best place to share your Deno project”
+              </div>
+            </div>
             <p>
             </p>
           </div>
           <form
-            class="space-y-2 flex-1 flex flex-col justify-center"
+            class="flex-1 flex flex-col justify-center"
             method="post"
           >
-            <input
-              class={`${INPUT_STYLES} w-full`}
-              type="text"
-              name="title"
-              required
-              placeholder="Title"
-            />
-            <input
-              class={`${INPUT_STYLES} w-full`}
-              type="url"
-              name="url"
-              required
-              placeholder="URL"
-            />
-            <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
-              <button class="w-full text-white text-left rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))">
+            <div class="mt-4">
+              <label
+                htmlFor="submit_title"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Title
+              </label>
+              <input
+                id="submit_title"
+                class={`${INPUT_STYLES} w-full mt-2`}
+                type="text"
+                name="title"
+                required
+                placeholder="Deno Hunt: the best place to share your Deno project"
+              />
+            </div>
+
+            <div class="mt-4">
+              <label
+                htmlFor="submit_title"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                URL
+              </label>
+              <input
+                class={`${INPUT_STYLES} w-full mt-2`}
+                type="url"
+                name="url"
+                required
+                placeholder="https://my-awesome-project.com"
+              />
+            </div>
+            <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px mt-8">
+              <button class="w-full text-white text-center rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))">
                 Submit
               </button>
             </div>
