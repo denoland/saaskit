@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { LINK_STYLES } from "@/utils/constants.ts";
 import { cx } from "@twind/core";
 
