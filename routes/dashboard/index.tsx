@@ -5,6 +5,7 @@ import Chart from "@/islands/Chart.tsx";
 import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import Head from "@/components/Head.tsx";
 import type { SignedInState } from "@/utils/middleware.ts";
+import TabsBar from "@/components/TabsBar.tsx";
 
 interface DashboardPageData extends SignedInState {
   dates: Date[];
@@ -79,7 +80,17 @@ export default function DashboardPage(props: PageProps<DashboardPageData>) {
     <>
       <Head title="Dashboard" href={props.url.href} />
       <main class="flex-1 p-4 flex flex-col">
-        <h1 class="text-3xl font-bold">Dashboard</h1>
+        <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+        <TabsBar
+          links={[{
+            path: "/dashboard",
+            innerText: "Stats",
+          }, {
+            path: "/dashboard/users",
+            innerText: "Users",
+          }]}
+          currentPath={props.url.pathname}
+        />
         <div class="flex-1 relative">
           <Chart
             type="line"
