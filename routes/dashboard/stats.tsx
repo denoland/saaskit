@@ -6,10 +6,7 @@ import { getDatesSince, getManyMetrics } from "@/utils/db.ts";
 import Head from "@/components/Head.tsx";
 import type { SignedInState } from "@/utils/middleware.ts";
 import TabsBar from "@/components/TabsBar.tsx";
-import {
-  HEADING_STYLES,
-  HEADING_WITH_MARGIN_STYLES,
-} from "@/utils/constants.ts";
+import { HEADING_WITH_MARGIN_STYLES } from "@/utils/constants.ts";
 
 interface DashboardPageData extends SignedInState {
   dates: Date[];

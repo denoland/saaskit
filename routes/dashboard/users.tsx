@@ -5,10 +5,7 @@ import type { State } from "@/routes/_middleware.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
-import {
-  HEADING_STYLES,
-  HEADING_WITH_MARGIN_STYLES,
-} from "@/utils/constants.ts";
+import { HEADING_WITH_MARGIN_STYLES } from "@/utils/constants.ts";
 
 interface UsersState extends State {
   users: User[];
