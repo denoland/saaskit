@@ -65,7 +65,7 @@ export default function UsersPage(props: PageProps<UsersState>) {
         <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
         <TabsBar
           links={[{
-            path: "/dashboard",
+            path: "/dashboard/stats",
             innerText: "Stats",
           }, {
             path: "/dashboard/users",
