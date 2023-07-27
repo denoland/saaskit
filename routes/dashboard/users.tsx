@@ -26,8 +26,7 @@ function UsersTable(props: { users: User[] }) {
       <table class="table-auto border-collapse w-full">
         <thead class="border-b border-gray-300">
           <tr>
-            <th scope="col" class={TH_STYLES}>Avatar</th>
-            <th scope="col" class={TH_STYLES}>Username</th>
+            <th scope="col" class={TH_STYLES}>User</th>
             <th scope="col" class={TH_STYLES}>Subscription</th>
             <th scope="col" class={TH_STYLES}>Revenue</th>
           </tr>
@@ -37,9 +36,10 @@ function UsersTable(props: { users: User[] }) {
             <tr class="hover:(bg-gray-50 dark:bg-gray-900) border-b border-gray-200">
               <td scope="col" class={TD_STYLES}>
                 <GitHubAvatarImg login={user.login} size={32} />
-              </td>
-              <td scope="col" class={TD_STYLES}>
-                <a class="hover:underline" href={"/user/" + user.login}>
+                <a
+                  class="hover:underline ml-4 align-middle"
+                  href={"/user/" + user.login}
+                >
                   {user.login}
                 </a>
               </td>
