@@ -43,9 +43,9 @@ async function sharedHandler(
       status = 201;
       await createVote(vote);
 
-      if (item.userId !== user.id) {
+      if (item.userLogin !== user.login) {
         const notification: Notification = {
-          userId: item.userId,
+          userLogin: item.userLogin,
           type: "vote",
           text: `${user.login} upvoted your post: ${item.title}`,
           originUrl: `/item/${itemId}`,

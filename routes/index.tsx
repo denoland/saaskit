@@ -9,7 +9,6 @@ import {
   getAllItems,
   getAreVotedBySessionId,
   getItemsSince,
-  getManyUsers,
   type Item,
   type User,
 } from "@/utils/db.ts";
@@ -19,7 +18,6 @@ import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 
 interface HomePageData extends State {
-  itemsUsers: User[];
   items: Item[];
   lastPage: number;
   areVoted: boolean[];
@@ -47,15 +45,13 @@ export const handler: Handlers<HomePageData, State> = {
       .toSorted(compareScore)
       .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
 
-    const itemsUsers = await getManyUsers(items.map((item) => item.userId));
-
     const areVoted = await getAreVotedBySessionId(
       items,
       ctx.state.sessionId,
     );
     const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
 
-    return ctx.render({ ...ctx.state, items, itemsUsers, areVoted, lastPage });
+    return ctx.render({ ...ctx.state, items, areVoted, lastPage });
   },
 };
 
@@ -108,7 +104,6 @@ export default function HomePage(props: PageProps<HomePageData>) {
           <ItemSummary
             item={item}
             isVoted={props.data.areVoted[index]}
-            user={props.data.itemsUsers[index]}
           />
         ))}
         {props.data.lastPage > 1 && (
