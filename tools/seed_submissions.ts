@@ -97,8 +97,8 @@ async function main(limit = 20) {
     await Promise.allSettled(batch.map(({ userLogin }) => {
       const user: User = {
         login: userLogin,
-        stripeCustomerId: crypto.randomUUID(), // unique per userId
-        sessionId: crypto.randomUUID(), // unique per userId
+        stripeCustomerId: crypto.randomUUID(), // unique per user
+        sessionId: crypto.randomUUID(), // unique per user
         ...newUserProps(),
       };
       return createUser(user); // ignore errors if dummy user already exists

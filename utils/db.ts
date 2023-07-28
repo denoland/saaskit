@@ -197,7 +197,7 @@ export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
  * import { newNotificationProps, createNotification } from "@/utils/db.ts";
  *
  * const notification: Notification = {
- *   userLogin: "example-user-id",
+ *   userLogin: "example-user-login",
  *   type: "example-type",
  *   text: "Hello, world!",
  *   originUrl: "https://hunt.deno.land"
@@ -414,6 +414,7 @@ export async function getVotedItemsByUser(userLogin: string) {
 
 // User
 export interface User {
+  // AKA username
   login: string;
   sessionId: string;
   stripeCustomerId?: string;
