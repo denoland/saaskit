@@ -104,7 +104,7 @@ export async function createItem(item: Item) {
   const itemsKey = ["items", item.id];
   const itemsByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
   const itemsByUserKey = ["items_by_user", item.userLogin, item.id];
-  const itemsCountKey = ["items_count", formatDate(new Date())];
+  const itemsCountKey = ["items_count", formatDate(item.createdAt)];
 
   const res = await kv.atomic()
     .check({ key: itemsKey, versionstamp: null })
