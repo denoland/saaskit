@@ -26,7 +26,7 @@ import {
   getUser,
   getUserBySession,
   getUserByStripeCustomer,
-  getVotedItemsByUser,
+  getVotesByUser,
   ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
@@ -34,6 +34,7 @@ import {
   newItemProps,
   newNotificationProps,
   newUserProps,
+  newVoteProps,
   Notification,
   updateUser,
   type User,
@@ -70,6 +71,16 @@ function genNewUser(): User {
     sessionId: crypto.randomUUID(),
     stripeCustomerId: crypto.randomUUID(),
     ...newUserProps(),
+  };
+}
+
+function genNewNotification(): Notification {
+  return {
+    userLogin: crypto.randomUUID(),
+    type: crypto.randomUUID(),
+    text: crypto.randomUUID(),
+    originUrl: crypto.randomUUID(),
+    ...newNotificationProps(),
   };
 }
 
@@ -193,22 +204,29 @@ Deno.test("[db] (create/delete)Comment() + getCommentsByItem()", async () => {
 });
 
 Deno.test("[db] votes", async () => {
-  const user = genNewUser();
   const item = genNewItem();
+  const user = genNewUser();
+  const vote = {
+    item,
+    userLogin: user.login,
+    ...newVoteProps(),
+  };
 
-  assertEquals(await getVotedItemsByUser(user.login), []);
-
-  const dates = [new Date()];
+  const dates = [vote.createdAt];
   assertEquals(await getManyMetrics("votes_count", dates), [0n]);
-  await createVote({ item, user });
+  assertEquals(await getVotesByUser(vote.userLogin), []);
+
+  await assertRejects(async () => await createVote(vote));
+  await createItem(item);
+  await createUser(user);
+  await createVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
-  assertEquals(await getVotedItemsByUser(user.login), [item]);
-  await deleteVote({ item, user });
-  assertEquals(await getVotedItemsByUser(user.login), []);
-  await createVote({ item, user });
-  assertRejects(async () => await createVote({ item, user }));
-  await deleteVote({ item, user });
-  assertRejects(async () => await deleteVote({ item, user }));
+  assertEquals(await getVotesByUser(vote.userLogin), [vote]);
+  await assertRejects(async () => await createVote(vote));
+
+  await deleteVote(vote);
+  assertEquals(await getManyMetrics("votes_count", dates), [1n]);
+  assertEquals(await getVotesByUser(vote.userLogin), []);
 });
 
 Deno.test("[db] getManyMetrics()", async () => {
@@ -233,19 +251,6 @@ Deno.test("[db] getDatesSince()", () => {
   ]);
 });
 
-function genNewNotification(
-  notification?: Partial<Notification>,
-): Notification {
-  return {
-    userLogin: crypto.randomUUID(),
-    type: crypto.randomUUID(),
-    text: crypto.randomUUID(),
-    originUrl: crypto.randomUUID(),
-    ...newNotificationProps(),
-    ...notification,
-  };
-}
-
 Deno.test("[db] newNotificationProps()", () => {
   const notificationProps = newNotificationProps();
   assert(notificationProps.createdAt.getTime() <= Date.now());
@@ -267,8 +272,8 @@ Deno.test("[db] (get/create/delete)Notification()", async () => {
 
 Deno.test("[db] getNotificationsByUser()", async () => {
   const userLogin = crypto.randomUUID();
-  const notification1 = genNewNotification({ userLogin });
-  const notification2 = genNewNotification({ userLogin });
+  const notification1 = { ...genNewNotification(), userLogin };
+  const notification2 = { ...genNewNotification(), userLogin };
 
   assertEquals(await getNotificationsByUser(userLogin), []);
   assertEquals(await ifUserHasNotifications(userLogin), false);
@@ -321,7 +326,7 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
   };
 
   const user = genNewUser();
-  const vote = { item, user };
+  const vote = { ...newVoteProps(), userLogin: user.login, item };
 
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getItem(item.id), null);
@@ -337,7 +342,6 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
   );
 
   await createItem(item);
-
   await createUser(user);
   await createVote(vote);
 

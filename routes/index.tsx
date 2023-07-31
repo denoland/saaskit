@@ -10,7 +10,6 @@ import {
   getAreVotedBySessionId,
   getItemsSince,
   type Item,
-  type User,
 } from "@/utils/db.ts";
 import { DAY, WEEK } from "std/datetime/constants.ts";
 import { getToggledStyles } from "@/utils/display.ts";
