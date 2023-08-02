@@ -92,8 +92,8 @@ export default function HomePage(props: PageProps<HomePageData>) {
         {props.data.items.length === 0 && (
           <>
             <div class="flex flex-col justify-center items-center gap-2">
-              <div class="flex justify-center gap-2 pt-16">
-                <Info class="w-6 h-6" />
+              <div class="flex flex-col items-center gap-2 pt-16">
+                <Info class="w-10 h-10 text-gray-400 dark:text-gray-600" />
                 <p class="text-center font-medium">No items found</p>
               </div>
 
