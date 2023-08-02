@@ -93,7 +93,7 @@ function TimeSelector(props: { url: URL }) {
   );
 }
 
-function SetupInstrucion() {
+function SetupInstruction() {
   return (
     <div class="bg-green-50 dark:(bg-gray-900 border border-green-800) rounded-xl max-w-screen-sm mx-auto my-8 px-6 py-5 space-y-3">
       <h1 class="text-2xl font-medium">Welcome to SaaSKit!</h1>
@@ -132,7 +132,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
     <>
       <Head href={props.url.href} />
       <main class="flex-1 p-4">
-        {props.data.needsSetup && <SetupInstrucion />}
+        {props.data.needsSetup && <SetupInstruction />}
 
         <TimeSelector url={props.url} />
         {props.data.items.length === 0 && (
