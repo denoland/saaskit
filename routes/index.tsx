@@ -94,7 +94,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
             <div class="flex flex-col justify-center items-center gap-2">
               <div class="flex justify-center gap-2 pt-16">
                 <Info class="w-6 h-6" />
-                <p class="text-center font-medium">No items found.</p>
+                <p class="text-center font-medium">No items found</p>
               </div>
 
               <a
