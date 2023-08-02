@@ -25,7 +25,7 @@ interface HomePageData extends State {
   areVoted: boolean[];
 }
 
-const needsSetup = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
+const NEEDS_SETUP = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
   Deno.env.get("GITHUB_CLIENT_SECRET") === undefined;
 
 function calcTimeAgoFilter(url: URL) {
@@ -131,8 +131,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
     <>
       <Head href={props.url.href} />
       <main class="flex-1 p-4">
-        {needsSetup && <SetupInstruction />}
-
+        {NEEDS_SETUP && <SetupInstruction />}
         <TimeSelector url={props.url} />
         {props.data.items.length === 0 && (
           <>
