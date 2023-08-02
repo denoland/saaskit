@@ -17,6 +17,7 @@ import { DAY, WEEK } from "std/datetime/constants.ts";
 import { getToggledStyles } from "@/utils/display.ts";
 import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
+import { Info } from "@/components/Icons.tsx";
 
 interface HomePageData extends State {
   itemsUsers: User[];
@@ -104,6 +105,24 @@ export default function HomePage(props: PageProps<HomePageData>) {
       <Head href={props.url.href} />
       <main class="flex-1 p-4">
         <TimeSelector url={props.url} />
+        {props.data.items.length === 0 && (
+          <>
+            <div class="flex flex-col justify-center items-center gap-2">
+              <div class="flex justify-center gap-2 pt-16">
+                <Info class="w-6 h-6" />
+                <p class="text-center font-medium">No items found.</p>
+              </div>
+
+              <a
+                href="/submit"
+                class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-primary hover:underline"
+              >
+                Submit your project
+              </a>
+            </div>
+          </>
+        )}
+
         {props.data.items.map((item, index) => (
           <ItemSummary
             item={item}
