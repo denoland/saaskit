@@ -23,8 +23,10 @@ interface HomePageData extends State {
   items: Item[];
   lastPage: number;
   areVoted: boolean[];
-  needsSetup: boolean;
 }
+
+const needsSetup = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
+  Deno.env.get("GITHUB_CLIENT_SECRET") === undefined;
 
 function calcTimeAgoFilter(url: URL) {
   return url.searchParams.get("time-ago");
@@ -55,8 +57,6 @@ export const handler: Handlers<HomePageData, State> = {
       ctx.state.sessionId,
     );
     const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
-    const needsSetup = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
-      Deno.env.get("GITHUB_CLIENT_SECRET") === undefined;
 
     return ctx.render({
       ...ctx.state,
@@ -64,7 +64,6 @@ export const handler: Handlers<HomePageData, State> = {
       itemsUsers,
       areVoted,
       lastPage,
-      needsSetup,
     });
   },
 };
@@ -132,7 +131,7 @@ export default function HomePage(props: PageProps<HomePageData>) {
     <>
       <Head href={props.url.href} />
       <main class="flex-1 p-4">
-        {props.data.needsSetup && <SetupInstruction />}
+        {needsSetup && <SetupInstruction />}
 
         <TimeSelector url={props.url} />
         {props.data.items.length === 0 && (
