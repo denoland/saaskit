@@ -41,23 +41,12 @@ async function migrateVote(voterUserId: string, oldItem: OldItem) {
     vote.item.id,
   ];
   const itemsByUserKey = ["items_by_user", vote.item.userLogin, vote.item.id];
-  const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
-    itemKey,
-    itemsByTimeKey,
-    itemsByUserKey,
-  ]);
-  assertIsEntry(itemRes);
-  assertIsEntry(itemsByTimeRes);
-  assertIsEntry(itemsByUserRes);
 
   const votesKey = ["votes", vote.id];
   const votesByItemKey = ["votes_by_item", vote.item.id, vote.id];
   const votesByUserKey = ["votes_by_user", vote.userLogin, vote.id];
 
   const res = await kv.atomic()
-    .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
     .set(itemKey, vote.item)
     .set(itemsByTimeKey, vote.item)
     .set(itemsByUserKey, vote.item)
@@ -123,7 +112,8 @@ export async function migrateKv() {
   for await (const entry of votedItemsByUserIter) {
     promises1.push(migrateVote(entry.key[1].toString(), entry.value));
   }
-  await Promise.all(promises1);
+  const values1 = await Promise.allSettled(promises1);
+  console.log(values1.filter(({ status }) => status === "rejected"));
 
   // Items
   const promises2 = [];
@@ -133,7 +123,8 @@ export async function migrateKv() {
       promises2.push(migrateItem(entry.value));
     }
   }
-  await Promise.all(promises2);
+  const values2 = await Promise.allSettled(promises2);
+  console.log(values2.filter(({ status }) => status === "rejected"));
   console.log("KV migration complete");
 }
 
