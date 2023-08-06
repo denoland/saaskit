@@ -4,6 +4,7 @@ import { CSS, render } from "$gfm";
 import { getPost, Post } from "@/utils/posts.ts";
 import type { State } from "@/routes/_middleware.ts";
 import Head from "@/components/Head.tsx";
+import Share from "@/components/Share.tsx";
 
 interface BlogPostPageData extends State {
   post: Post;
@@ -31,12 +32,13 @@ export default function PostPage(props: PageProps<BlogPostPageData>) {
         <style dangerouslySetInnerHTML={{ __html: CSS }} />
       </Head>
       <main class="p-4 flex-1">
-        <h1 class="text-5xl font-bold">{post.title}</h1>
+        <h1 class="text-4xl font-bold">{post.title}</h1>
         {date && (
           <time class="text-gray-500">
             {date}
           </time>
         )}
+        <Share url={new URL("https://google.com")} title={post.title} />
         <div
           class="mt-8 markdown-body !bg-transparent !dark:text-white"
           data-color-mode="auto"
