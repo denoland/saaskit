@@ -6,7 +6,7 @@ import {
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
-import { Discord, GitHub, Rss } from "./Icons.tsx";
+import { GitHub, Rss } from "./Icons.tsx";
 import { getToggledStyles } from "@/utils/display.ts";
 
 export default function Footer(props: { url: URL }) {
@@ -30,17 +30,9 @@ export default function Footer(props: { url: URL }) {
           <Rss class="h-6 w-6" />
         </a>
         <a
-          href="https://discord.gg/deno"
+          href="https://github.com/fuww/developer.fashionunited.com"
           target="_blank"
-          aria-label="Deno SaaSKit on Discord"
-          class={LINK_STYLES}
-        >
-          <Discord class="h-6 w-6" />
-        </a>
-        <a
-          href="https://github.com/denoland/saaskit"
-          target="_blank"
-          aria-label="Deno SaaSKit repo on GitHub"
+          aria-label="developer.fashionunited.com repo on GitHub"
           class={LINK_STYLES}
         >
           <GitHub class="h-6 w-6" />

@@ -17,8 +17,8 @@ async function redirectToNewOrigin(
   ctx: MiddlewareHandlerContext,
 ) {
   const { hostname } = new URL(req.url);
-  return hostname === "saaskit.deno.dev"
-    ? redirect("https://hunt.deno.land", Status.Found)
+  return hostname === "some-old-hostname-developers.fashionunited.com"
+    ? redirect("https://developer.fashionunnited.com", Status.Found)
     : await ctx.next();
 }
 

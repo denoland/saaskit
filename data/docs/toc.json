@@ -1,0 +1,35 @@
+{
+  "advertising": {
+    "title": "Advertising"
+  },
+  "components": {
+    "title": "Components"
+  },
+  "editorial-cheat-sheet": {
+    "title": "Editorial cheat sheet"
+  },
+  "editorial-style-guide": {
+    "title": "editorial-style-guide"
+  },
+  "fashionunited-for-websites": {
+    "title": "fashionunited-for-websites"
+  },
+  "header": {
+    "title": "header"
+  },
+  "jobs": {
+    "title": "jobs"
+  },
+  "logo": {
+    "title": "logo"
+  },
+  "marketplace": {
+    "title": "marketplace"
+  },
+  "styleguide": {
+    "title": "styleguide"
+  },
+  "system-requirements-and-browsers": {
+    "title": "system-requirements-and-browsers"
+  }
+}

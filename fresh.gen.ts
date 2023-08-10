@@ -19,20 +19,26 @@ import * as $13 from "./routes/dashboard/_middleware.ts";
 import * as $14 from "./routes/dashboard/index.tsx";
 import * as $15 from "./routes/dashboard/stats.tsx";
 import * as $16 from "./routes/dashboard/users.tsx";
-import * as $17 from "./routes/feed.ts";
-import * as $18 from "./routes/index.tsx";
-import * as $19 from "./routes/item/[id].tsx";
-import * as $20 from "./routes/notifications/[id].ts";
-import * as $21 from "./routes/notifications/_middleware.ts";
-import * as $22 from "./routes/notifications/index.tsx";
-import * as $23 from "./routes/pricing.tsx";
-import * as $24 from "./routes/signin.ts";
-import * as $25 from "./routes/signout.ts";
-import * as $26 from "./routes/submit.tsx";
-import * as $27 from "./routes/user/[login].tsx";
+import * as $17 from "./routes/docs/[...slug].tsx";
+import * as $18 from "./routes/docs/video.tsx";
+import * as $19 from "./routes/feed.ts";
+import * as $20 from "./routes/gfm.css.ts";
+import * as $21 from "./routes/index.tsx";
+import * as $22 from "./routes/item/[id].tsx";
+import * as $23 from "./routes/notifications/[id].ts";
+import * as $24 from "./routes/notifications/_middleware.ts";
+import * as $25 from "./routes/notifications/index.tsx";
+import * as $26 from "./routes/pricing.tsx";
+import * as $27 from "./routes/signin.ts";
+import * as $28 from "./routes/signout.ts";
+import * as $29 from "./routes/submit.tsx";
+import * as $30 from "./routes/user/[login].tsx";
 import * as $$0 from "./islands/Chart.tsx";
 import * as $$1 from "./islands/PageInput.tsx";
-import * as $$2 from "./islands/VoteButton.tsx";
+import * as $$2 from "./islands/SearchDialog.tsx";
+import * as $$3 from "./islands/Video.tsx";
+import * as $$4 from "./islands/VideoClick.tsx";
+import * as $$5 from "./islands/VoteButton.tsx";
 
 const manifest = {
   routes: {
@@ -53,22 +59,28 @@ const manifest = {
     "./routes/dashboard/index.tsx": $14,
     "./routes/dashboard/stats.tsx": $15,
     "./routes/dashboard/users.tsx": $16,
-    "./routes/feed.ts": $17,
-    "./routes/index.tsx": $18,
-    "./routes/item/[id].tsx": $19,
-    "./routes/notifications/[id].ts": $20,
-    "./routes/notifications/_middleware.ts": $21,
-    "./routes/notifications/index.tsx": $22,
-    "./routes/pricing.tsx": $23,
-    "./routes/signin.ts": $24,
-    "./routes/signout.ts": $25,
-    "./routes/submit.tsx": $26,
-    "./routes/user/[login].tsx": $27,
+    "./routes/docs/[...slug].tsx": $17,
+    "./routes/docs/video.tsx": $18,
+    "./routes/feed.ts": $19,
+    "./routes/gfm.css.ts": $20,
+    "./routes/index.tsx": $21,
+    "./routes/item/[id].tsx": $22,
+    "./routes/notifications/[id].ts": $23,
+    "./routes/notifications/_middleware.ts": $24,
+    "./routes/notifications/index.tsx": $25,
+    "./routes/pricing.tsx": $26,
+    "./routes/signin.ts": $27,
+    "./routes/signout.ts": $28,
+    "./routes/submit.tsx": $29,
+    "./routes/user/[login].tsx": $30,
   },
   islands: {
     "./islands/Chart.tsx": $$0,
     "./islands/PageInput.tsx": $$1,
-    "./islands/VoteButton.tsx": $$2,
+    "./islands/SearchDialog.tsx": $$2,
+    "./islands/Video.tsx": $$3,
+    "./islands/VideoClick.tsx": $$4,
+    "./islands/VoteButton.tsx": $$5,
   },
   baseUrl: import.meta.url,
 };

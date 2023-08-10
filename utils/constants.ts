@@ -1,6 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-export const SITE_NAME = "Deno Hunt (Beta)";
-export const SITE_DESCRIPTION = "Discover new Deno projects. Share your own.";
+export const SITE_NAME = "FashionUnited Developer (Beta)";
+export const SITE_DESCRIPTION =
+  "Discover FashionUnited projects. Share your own.";
 export const REDIRECT_PATH_AFTER_LOGIN = "/";
 
 /**

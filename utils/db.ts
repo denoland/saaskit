@@ -207,7 +207,7 @@ export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
  *   userLogin: "example-user-login",
  *   type: "example-type",
  *   text: "Hello, world!",
- *   originUrl: "https://hunt.deno.land"
+ *   originUrl: "https://developer.fashionunited.com"
  *   ...newNotificationProps(),
  * };
  *

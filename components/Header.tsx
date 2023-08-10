@@ -73,6 +73,26 @@ export default function Header(
         >
           Dashboard
         </a>
+        <a
+          href="/docs/advertising"
+          class={cx(
+            props.url.pathname === "/docs/advertising"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
+            NAV_ITEM,
+          )}
+        >
+          Docs
+        </a>
+        <a
+          href="/blog"
+          class={cx(
+            props.url.pathname === "/blog" ? ACTIVE_LINK_STYLES : LINK_STYLES,
+            NAV_ITEM,
+          )}
+        >
+          Blog
+        </a>
         {stripe
           ? (
             <a
