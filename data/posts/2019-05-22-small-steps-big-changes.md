@@ -77,8 +77,7 @@ When you put some of these together, you can start seeing the bigger picture.
 Check out the [lookbook](https://fashionunited.com/lookbook/) for example, it is
 fully in the new design.
 
-<figure>{{% amp-image src="./lookbook.png" width="1980"
-    height="1346" layout="responsive" alt="Lookbook" attribution="CC courtesy of Joost van der Laan" %}}</figure>
+![Lookbook](https://imagedelivery.net/7czaBv4WuiSsJFxi583jUw/fed234e6-4e32-4822-2815-269eb6885000/public "Lookbook, CC courtesy of Joost van der Laan")
 
 Back to the news sites, we've also started to make the first changes there. Just
 the last 2 weeks we started putting live the
