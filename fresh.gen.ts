@@ -29,10 +29,11 @@ import * as $23 from "./routes/notifications/[id].ts";
 import * as $24 from "./routes/notifications/_middleware.ts";
 import * as $25 from "./routes/notifications/index.tsx";
 import * as $26 from "./routes/pricing.tsx";
-import * as $27 from "./routes/signin.ts";
-import * as $28 from "./routes/signout.ts";
-import * as $29 from "./routes/submit.tsx";
-import * as $30 from "./routes/user/[login].tsx";
+import * as $27 from "./routes/showcase.tsx";
+import * as $28 from "./routes/signin.ts";
+import * as $29 from "./routes/signout.ts";
+import * as $30 from "./routes/submit.tsx";
+import * as $31 from "./routes/user/[login].tsx";
 import * as $$0 from "./islands/Chart.tsx";
 import * as $$1 from "./islands/PageInput.tsx";
 import * as $$2 from "./islands/SearchDialog.tsx";
@@ -69,10 +70,11 @@ const manifest = {
     "./routes/notifications/_middleware.ts": $24,
     "./routes/notifications/index.tsx": $25,
     "./routes/pricing.tsx": $26,
-    "./routes/signin.ts": $27,
-    "./routes/signout.ts": $28,
-    "./routes/submit.tsx": $29,
-    "./routes/user/[login].tsx": $30,
+    "./routes/showcase.tsx": $27,
+    "./routes/signin.ts": $28,
+    "./routes/signout.ts": $29,
+    "./routes/submit.tsx": $30,
+    "./routes/user/[login].tsx": $31,
   },
   islands: {
     "./islands/Chart.tsx": $$0,
