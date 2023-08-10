@@ -501,7 +501,7 @@ export async function deleteUserBySession(sessionId: string) {
 
 /** @todo Migrate to ["users", login] key */
 export async function getUser(login: string) {
-  return await getValue<User>(["users_by_login", login]);
+  return await getValue<User>(["users", login]);
 }
 
 export async function getUserBySession(sessionId: string) {
