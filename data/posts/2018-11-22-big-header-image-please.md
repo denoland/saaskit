@@ -1,6 +1,7 @@
 ---
 title: "Big header image please!"
 description: "Better looking job templates in the jobboard."
+summary: "Better looking job templates in the jobboard."
 author: "Joost van der Laan"
 date: 2018-11-22 13:07:01+00:00
 published_at: 2018-11-22

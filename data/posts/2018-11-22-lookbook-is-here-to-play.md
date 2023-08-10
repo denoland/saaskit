@@ -1,6 +1,7 @@
 ---
 title: "Lookbook is here to play"
 description: "Photoshoots, new collections, catwalks and patterns"
+summary: "Photoshoots, new collections, catwalks and patterns"
 author: "Joost van der Laan"
 date: 2018-11-22 13:07:01+00:00
 published_at: 2018-11-22

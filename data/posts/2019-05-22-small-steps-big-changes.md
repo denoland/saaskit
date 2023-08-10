@@ -1,6 +1,7 @@
 ---
 title: "Small steps big changes"
 description: "Taking small steps is key when implementing changes, like a new design."
+summary: "Taking small steps is key when implementing changes, like a new design."
 author: "Joost van der Laan"
 authors:
   - "Joost van der Laan"

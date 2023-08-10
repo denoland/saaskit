@@ -1,6 +1,7 @@
 ---
 title: "We have rebuilt our site, and you didn't even notice"
 description: "In preparation of the design upgrade, a lot has already changed."
+summary: "In preparation of the design upgrade, a lot has already changed."
 author: "Joost van der Laan"
 authors:
   - "Joost van der Laan"

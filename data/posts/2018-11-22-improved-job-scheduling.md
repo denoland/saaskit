@@ -1,6 +1,7 @@
 ---
 title: "Improved job scheduling!"
 description: "Getting jobs online faster, while not looking like a 'BrandX-only' jobboard"
+summary: "Getting jobs online faster, while not looking like a 'BrandX-only' jobboard"
 author: "Joost van der Laan"
 date: 2018-11-22 13:07:01+00:00
 published_at: 2018-11-22
