@@ -499,8 +499,9 @@ export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
 
+/** @todo Migrate to ["users", login] key */
 export async function getUser(login: string) {
-  return await getValue<User>(["users", login]);
+  return await getValue<User>(["users_by_login", login]);
 }
 
 export async function getUserBySession(sessionId: string) {
