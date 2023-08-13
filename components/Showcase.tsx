@@ -7,7 +7,7 @@ const projects = [
     href: "https://fashionunited.com/lookbook",
     imageSrc:
       "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2830&q=80&sat=-100",
-    imageAlt: "Lookbook"
+    imageAlt: "Lookbook",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ const projects = [
     href: "https://fashionunited.com",
     imageSrc:
       "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2830&q=80&sat=-100",
-    imageAlt: "News"
+    imageAlt: "News",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const projects = [
     href: "https://fashionunited.com/fashion-jobs",
     imageSrc:
       "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2830&q=80&sat=-100",
-    imageAlt: "Jobboard"
+    imageAlt: "Jobboard",
   },
   {
     id: 4,
@@ -37,16 +37,15 @@ const projects = [
     href: "https:/dashboard.fashionunited.com",
     imageSrc:
       "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2830&q=80&sat=-100",
-    imageAlt: "Dashboard"
+    imageAlt: "Dashboard",
   },
-
 ];
 
 // https://tailwindui.com/components/ecommerce/components/product-lists
 
 export default function Showcase() {
   return (
-    <div className="bg-white dark:bg-dark">
+    <div className="bg-transparent">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
           Showcase of FashionUnited's products and services
@@ -64,7 +63,7 @@ export default function Showcase() {
                   className="flex items-end p-4 opacity-0 group-hover:opacity-100"
                   aria-hidden="true"
                 >
-                  <div className="w-full rounded-md bg-white bg-opacity-75 dark:bg-gray-800 px-4 py-2 text-center text-sm font-medium text-gray-900 dark:text-gray-50 backdrop-blur backdrop-filter">
+                  <div className="w-full rounded-md bg-opacity-75 dark:bg-gray-800 px-4 py-2 text-center text-sm font-medium text-gray-900 dark:text-gray-50 backdrop-blur backdrop-filter">
                     View project
                   </div>
                 </div>
@@ -77,11 +76,13 @@ export default function Showcase() {
                   </a>
                 </h3>
               </div>
-              <p className="mt-1 text-sm text-gray-500">{project.description}</p>
+              <p className="mt-1 text-sm text-gray-500">
+                {project.description}
+              </p>
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

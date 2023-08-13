@@ -1,9 +1,8 @@
 import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { frontMatter } from "@/utils/markdown.ts";
-import * as gfm from "$gfm";
+import { CSS, render } from "$gfm";
 import DocumentationTitle from "@/components/DocumentationTitle.tsx";
-import DocumentationHeader from "@/components/DocumentationHeader.tsx";
 import DocumenationSidebar from "@/components/DocumentationSidebar.tsx";
 import { DocumentationToc } from "@/components/DocumentationToc.tsx";
 
@@ -12,8 +11,6 @@ import { getGitEditUrl, getGitIdeUrl } from "@/utils/get-git-edit-url.ts";
 import { EditPage } from "@/components/EditPage.tsx";
 import { generateImageSrcSet, resizeImage } from "@/utils/image.ts";
 import SearchDialog from "@/islands/SearchDialog.tsx";
-
-import * as mod from "https://deno.land/std@0.198.0/fmt/printf.ts";
 
 interface Data {
   page: Page;
@@ -25,7 +22,7 @@ interface Page extends TableOfContentsEntry {
   data: Record<string, unknown>;
 }
 
-export const handler: Handlers<Data> = {
+export const handler: Handlers<Data, State> = {
   async GET(_req, ctx) {
     const slug = ctx.params.slug;
     if (slug === "") {
@@ -52,7 +49,7 @@ export const handler: Handlers<Data> = {
 
     const searchQuery = new URL(_req.url).searchParams.get("search") ?? "";
 
-    const resp = ctx.render({ page, searchQuery });
+    const resp = ctx.render({ ...ctx.state, page, searchQuery });
 
     return resp;
   },
@@ -79,7 +76,6 @@ export default function DocsPage(props: PageProps<Data>) {
         {description && <meta name="description" content={description} />}
       </Head>
       <div class="ltr">
-        <DocumentationHeader title="Documentation" active="/docs" />
         <div class="mx-auto flex max-w-[90rem] min-h-screen">
           <div class="motion-reduce:transition-none [transition:background-color_1.5s_ease] bg-transparent">
           </div>
@@ -165,9 +161,12 @@ function Content(props: { page: Page }) {
           {props.page.title}
         </h1>
         <div
-          class="mt-6 markdown-body prose dark:bg-dark dark:text-gray-50"
+          class="mt-6 markdown-body prose !bg-transparent text-gray-900 !dark:text-white"
+          data-color-mode="auto"
+          data-light-theme="light"
+          data-dark-theme="dark"
           dangerouslySetInnerHTML={{
-            __html: gfm.render(props.page.markdown, {
+            __html: render(props.page.markdown, {
               allowedTags: ["progressive-img"],
               allowedAttributes: {
                 "progressive-img": [
