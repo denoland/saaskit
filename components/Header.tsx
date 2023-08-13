@@ -93,6 +93,17 @@ export default function Header(
         >
           Blog
         </a>
+        <a
+          href="/showcase"
+          class={cx(
+            props.url.pathname === "/showcase"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
+            NAV_ITEM,
+          )}
+        >
+          Showcase
+        </a>
         {stripe
           ? (
             <a
