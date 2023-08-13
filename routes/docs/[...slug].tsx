@@ -2,6 +2,7 @@ import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { frontMatter } from "@/utils/markdown.ts";
 import { CSS, render } from "$gfm";
+import type { State } from "@/routes/_middleware.ts";
 import DocumentationTitle from "@/components/DocumentationTitle.tsx";
 import DocumenationSidebar from "@/components/DocumentationSidebar.tsx";
 import { DocumentationToc } from "@/components/DocumentationToc.tsx";
@@ -12,7 +13,7 @@ import { EditPage } from "@/components/EditPage.tsx";
 import { generateImageSrcSet, resizeImage } from "@/utils/image.ts";
 import SearchDialog from "@/islands/SearchDialog.tsx";
 
-interface Data {
+interface DocsPageData extends State {
   page: Page;
   searchQuery: string;
 }
@@ -22,7 +23,7 @@ interface Page extends TableOfContentsEntry {
   data: Record<string, unknown>;
 }
 
-export const handler: Handlers<Data, State> = {
+export const handler: Handlers<DocsPageData, State> = {
   async GET(_req, ctx) {
     const slug = ctx.params.slug;
     if (slug === "") {
@@ -228,7 +229,8 @@ function Content(props: { page: Page }) {
   );
 }
 
-const button = "p-2 bg-gray-100 w-full border(1 gray-200) grid";
+const button =
+  "p-2 bg-opacity-75 dark:bg-gray-800 w-full border(1 gray-200) dark:border-gray-700 grid";
 
 function ForwardBackButtons(props: { slug: string }) {
   const currentIndex = SLUGS.findIndex((slug) => slug === props.slug);
@@ -237,9 +239,9 @@ function ForwardBackButtons(props: { slug: string }) {
   const previous = TABLE_OF_CONTENTS[previousSlug];
   const next = TABLE_OF_CONTENTS[nextSlug];
 
-  const upper = "text(sm gray-600)";
+  const upper = "text(sm gray-600) dark:text-gray-400";
   const category = "font-normal";
-  const lower = "text-gray-900 dark:text-white font-medium";
+  const lower = "text-gray-900 dark:text-gray-100 font-medium";
 
   return (
     <div class="mt-8 flex flex(col md:row) gap-4">

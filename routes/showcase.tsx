@@ -18,7 +18,7 @@ interface ShowcasePageData extends State {
   areVoted: boolean[];
 }
 
-export const handler: Handlers<Data, State> = {
+export const handler: Handlers<ShowcasePageData, State> = {
   async GET(_req, ctx) {
     const items = await getAllItems;
 
