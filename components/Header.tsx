@@ -3,11 +3,11 @@ import {
   ACTIVE_LINK_STYLES,
   LINK_STYLES,
   SITE_BAR_STYLES,
-  SITE_NAME,
 } from "@/utils/constants.ts";
 import { stripe } from "@/utils/payments.ts";
 import { Bars, Bell, CircleFilled, Cross } from "./Icons.tsx";
 import { cx } from "@twind/core";
+import Logo from "@/components/Logo.tsx";
 
 export default function Header(
   props: { sessionId?: string; hasNotifications: boolean; url: URL },
@@ -28,13 +28,9 @@ export default function Header(
 
       <div class="flex justify-between items-center">
         <a href="/" class="shrink-0">
-          <img
-            height="48"
-            width="48"
-            src="/logo.webp"
-            alt={SITE_NAME + " logo"}
-            class="h-12 w-12"
-          />
+          <span class="pt-2 pr-2 pb-2">
+            <Logo />
+          </span>
         </a>
         <div class="flex gap-4 items-center">
           <label

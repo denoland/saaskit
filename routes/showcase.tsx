@@ -1,24 +1,15 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 // import { State } from "@/utils/state.ts";
 import Container from "@/components/Container.tsx";
-import DocumentationHeader from "@/components/DocumentationHeader.tsx";
 import Showcase from "@/components/Showcase.tsx";
 
-
-
 import { Handlers } from "$fresh/server.ts";
-import {
-  type Item,
-  type Items,
-getAllItems
-} from "@/utils/db.ts";
+import { getAllItems, type Item, type Items } from "@/utils/db.ts";
 import type { State } from "./_middleware.ts";
-
 
 interface Data {
   projects: Items[];
 }
-
 
 interface ShowcasePageData extends State {
   itemsUsers: User[];
@@ -27,26 +18,22 @@ interface ShowcasePageData extends State {
   areVoted: boolean[];
 }
 
-
-export const handler: Handlers<Data> = {
+export const handler: Handlers<ShowcasePageData, State> = {
   async GET(_req, ctx) {
-    const items = await getAllItems;   
+    const items = await getAllItems;
 
-  return ctx.render({ items });
-
+    return ctx.render({ ...ctx.state, items });
   },
 };
 
 export default function ShowcasePage() {
   return (
     <>
-      <DocumentationHeader title="Showcase" active="/showcase" />   
       <main>
         <Container>
-        <Showcase />
+          <Showcase />
         </Container>
       </main>
     </>
   );
-};
-
+}

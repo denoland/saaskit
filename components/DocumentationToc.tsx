@@ -31,7 +31,7 @@ export const DocumentationToc = ({ preview, editUrl, editIdeUrl }: Props) => {
           </li>
         </ul> */
         }
-        <div class="mt-8 border-t bg-white pt-8 shadow-[0_-12px_16px_white] dark:bg-dark dark:shadow-[0_-12px_16px_#111] sticky bottom-0 flex flex-col items-start gap-2 pb-8 dark:border-neutral-800 contrast-more:border-t contrast-more:border-neutral-400 contrast-more:shadow-none contrast-more:dark:border-neutral-400">
+        <div class="mt-8 border-t bg-transparent pt-8 shadow-[0_-12px_16px_white] dark:shadow-[0_-12px_16px_#111] sticky bottom-0 flex flex-col items-start gap-2 pb-8 dark:border-neutral-800 contrast-more:border-t contrast-more:border-neutral-400 contrast-more:shadow-none contrast-more:dark:border-neutral-400">
           <a
             href="https://github.com/fuww/developer.fashionunited.com/issues/new/choose"
             target="_blank"
