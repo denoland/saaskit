@@ -1,9 +1,7 @@
 ---
 title: Advertising
+author: Joost van der Laan
 description: "Advertising | Developer documentation"
-images:
-  - "british-library-Ja-FfnUY3S4-unsplash.jpg"
-toc: true
 ---
 
 ## Branding Page

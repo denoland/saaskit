@@ -2,34 +2,52 @@
   "advertising": {
     "title": "Advertising"
   },
-  "components": {
-    "title": "Components"
-  },
   "editorial-cheat-sheet": {
-    "title": "Editorial cheat sheet"
+    "title": "Editorial Cheat Sheet"
   },
   "editorial-style-guide": {
-    "title": "editorial-style-guide"
+    "title": "Editorial Style Guide"
   },
   "fashionunited-for-websites": {
-    "title": "fashionunited-for-websites"
+    "title": "Fashionunited for Websites - Embedding Jobs and News"
   },
   "header": {
-    "title": "header"
+    "title": "Header"
   },
   "jobs": {
-    "title": "jobs"
+    "title": "Jobs"
   },
   "logo": {
-    "title": "logo"
+    "title": "Logo"
   },
   "marketplace": {
-    "title": "marketplace"
+    "title": "Marketplace"
   },
-  "styleguide": {
-    "title": "styleguide"
+  "marketplace/getting-started": {
+    "title": "Getting started - Marketplace"
+  },
+  "marketplace/brand-pages": {
+    "title": "Brand Pages - Marketplace"
+  },
+  "marketplace/categories": {
+    "title": "Categories - Marketplace"
+  },
+  "marketplace/colors": {
+    "title": "Colors - Marketplace"
+  },
+  "marketplace/graphql-api": {
+    "title": "GraphQL API - Marketplace"
+  },
+  "marketplace/how-to-register": {
+    "title": "How to register - Marketplace"
+  },
+  "marketplace/platforms": {
+    "title": "Platforms - Marketplace"
+  },
+  "style-guide": {
+    "title": "Style Guide"
   },
   "system-requirements-and-browsers": {
-    "title": "system-requirements-and-browsers"
+    "title": "System Requirements and Browsers"
   }
 }

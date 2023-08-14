@@ -1,6 +1,3 @@
-// import { Anchor } from "@/components";
-// Flexsearch, Footer, Navbar, TOC }
-
 export const site = {
   title:
     "Use Cases, Tutorials & Documentation | FashionUnited developer platform",
@@ -10,7 +7,7 @@ export const site = {
   viewSourceUrl: "https://github.com/fuww/developer.fashionunited.com.git",
   docsRepositoryBase: "https://github.com/fuww/developer.fashionunited.com",
   docsRepositoryIde:
-    "https://github.com/fuww/developer.fashionunited.com/edit/main/",
+    "https://github.com/fuww/developer.fashionunited.com/edit/main",
   footer: {
     text: `MIT ${new Date().getFullYear()} © FashionUnited.`,
   },

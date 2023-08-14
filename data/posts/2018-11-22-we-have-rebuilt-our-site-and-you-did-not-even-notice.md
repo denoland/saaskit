@@ -23,12 +23,7 @@ changed. Remember the blog post about experiments with GraphQL and React, back
 in May? Well, brace yourself, cause we've **already rebuilt most of the news
 homepage and article pages** with it.
 
-<figure>{{< amp-image src="./react-compared.jpg" width="2128"
-    height="1973" layout="responsive" alt="Screenshot React replaced modules" attribution="CC courtesy of Joost van der Laan" >}}</figure>
-
-<!-- ![ImageAlt][imgref]
-
-[imgref]: ./react-compared.jpg "ImageTitle" -->
+![Screenshot React replaced modules](https://imagedelivery.net/7czaBv4WuiSsJFxi583jUw/29972e30-df28-4f97-6015-b5527cb13b00/public "Screenshot React replaced modules, CC courtesy of Joost van der Laan")
 
 The green shows parts that are already replaced. This means both the homepage
 and article pages are more easy to replace when the _**design upgrade**_ is

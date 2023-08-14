@@ -1,12 +1,6 @@
 ---
 title: Logo
-images: 
-  - "hero-create.jpg"
-background_position: "50% 10%"
-menu:
-  developers:
-    weight: 20
-toc: true
+author: Joost van der Laan
 ---
 
 ## Quality Assurance

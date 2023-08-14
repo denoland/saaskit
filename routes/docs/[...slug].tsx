@@ -56,7 +56,7 @@ export const handler: Handlers<DocsPageData, State> = {
   },
 };
 
-export default function DocsPage(props: PageProps<Data>) {
+export default function DocsPage(props: PageProps<DocsPageData>) {
   let description;
 
   const filePath = `data/${props.data.page.file}`;
@@ -98,13 +98,8 @@ export default function DocsPage(props: PageProps<Data>) {
 
 function Main(props: { path: string; page: Page }) {
   return (
-    // <div class="flex-1">
     <div>
       <MobileSidebar path={props.path} />
-      {
-        /* <div class="mx-auto max-w-screen-lg px-4 flex gap-6">
-      */
-      }
       <div class="mx-auto flex max-w-[90rem]">
         <DesktopSidebar path={props.path} />
         <Content page={props.page} />
@@ -168,7 +163,7 @@ function Content(props: { page: Page }) {
           data-dark-theme="dark"
           dangerouslySetInnerHTML={{
             __html: render(props.page.markdown, {
-              allowedTags: ["progressive-img"],
+              allowedTags: ["progressive-img", "iframe"],
               allowedAttributes: {
                 "progressive-img": [
                   "placeholder",
