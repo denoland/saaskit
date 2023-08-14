@@ -9,12 +9,12 @@ const copyright = `Copyright ${new Date().getFullYear()} ${SITE_NAME}`;
 export default async function FeedPage(req: Request) {
   const { origin } = new URL(req.url);
   const feed = new Feed({
-    title: "Deno",
+    title: "Developers FashionUnited",
     description: `The latest news from ${SITE_NAME}`,
     id: `${origin}/blog`,
     link: `${origin}/blog`,
     language: "en",
-    favicon: `${origin}/favicon.ico`,
+    favicon: `https://media.fashionunited.com/media/favicon/dark/favicon.ico`,
     copyright: copyright,
     generator: "Feed (https://github.com/jpmonette/feed) for Deno",
     feedLinks: {
@@ -30,7 +30,7 @@ export default async function FeedPage(req: Request) {
       description: post.summary,
       date: new Date(post.publishedAt),
       link: `${origin}/blog/${post.slug}`,
-      author: [{ name: "The Deno Authors" }],
+      author: [{ name: "The FashionUnited Authors" }],
       copyright,
       published: new Date(post.publishedAt),
     };

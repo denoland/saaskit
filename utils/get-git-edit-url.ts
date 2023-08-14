@@ -1,18 +1,13 @@
-// import { useConfig } from "../contexts";
-// import gitUrlParse from "git-url-parse";
-
-import { site } from "../data/site.ts";
+import { site } from "@/data/site.ts";
 
 export const getGitEditUrl = (filePath?: string): string => {
-  //   const config = useConfig();
-  //   const repo = gitUrlParse(config.docsRepositoryBase || "");
   const repo = {
     href: site.docsRepositoryBase,
   };
 
   if (!repo) throw new Error("Invalid `docsRepositoryBase` URL!");
 
-  return `${repo.href}/-/tree/main/${filePath}`;
+  return `${repo.href}/blob/main/${filePath}`;
 };
 
 export const getGitIdeUrl = (filePath?: string): string => {
