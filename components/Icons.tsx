@@ -96,29 +96,15 @@ export function Twitter() {
   );
 }
 
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
 export function Bell(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke="currentColor"
-      fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-      <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-    </svg>
-  );
-}
-
-export function CheckCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -128,6 +114,33 @@ export function CheckCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
+      {...props}
+    >
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+    </svg>
+  );
+}
+
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
+export function CheckCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
     >
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
       <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -135,7 +148,120 @@ export function CheckCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
   );
 }
 
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
 export function XCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+  );
+}
+
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
+export function Rss(props: JSX.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
+    >
+      <path d="M4 11a9 9 0 0 1 9 9"></path>
+      <path d="M4 4a16 16 0 0 1 16 16"></path>
+      <circle cx="5" cy="19" r="1"></circle>
+    </svg>
+  );
+}
+
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
+export function Menu(props: JSX.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
+    >
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  );
+}
+
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
+export function X(props: JSX.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
+    >
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  );
+}
+
+/**
+ * Feather icons by @colebemis
+ * Licensed as MIT
+ * Reuse allowed without attribution
+ * {@link https://github.com/feathericons/feather}
+ */
+export function Info(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -150,85 +276,8 @@ export function XCircle(props: JSX.SVGAttributes<SVGSVGElement>) {
       stroke-linejoin="round"
     >
       <circle cx="12" cy="12" r="10"></circle>
-      <line x1="15" y1="9" x2="9" y2="15"></line>
-      <line x1="9" y1="9" x2="15" y2="15"></line>
-    </svg>
-  );
-}
-
-export function Rss(props: JSX.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      aria-hidden="true"
-      fill="currentColor"
-    >
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M2.5 3a.5.5 0 0 1 .5-.5h.5c5.523 0 10 4.477 10 10v.5a.5.5 0 0 1-.5.5h-.5a.5.5 0 0 1-.5-.5v-.5A8.5 8.5 0 0 0 3.5 4H3a.5.5 0 0 1-.5-.5V3Zm0 4.5A.5.5 0 0 1 3 7h.5A5.5 5.5 0 0 1 9 12.5v.5a.5.5 0 0 1-.5.5H8a.5.5 0 0 1-.5-.5v-.5a4 4 0 0 0-4-4H3a.5.5 0 0 1-.5-.5v-.5Zm0 5a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"
-      >
-      </path>
-    </svg>
-  );
-}
-
-export function Bars(props: JSX.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-      />
-    </svg>
-  );
-}
-
-export function Cross(props: JSX.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  );
-}
-
-export function Info(props: JSX.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="w-6 h-6"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-      />
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
     </svg>
   );
 }

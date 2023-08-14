@@ -6,7 +6,7 @@ import {
   SITE_NAME,
 } from "@/utils/constants.ts";
 import { stripe } from "@/utils/payments.ts";
-import { Bars, Bell, Cross } from "./Icons.tsx";
+import { Bell, Menu, X } from "./Icons.tsx";
 import { cx } from "@twind/core";
 
 export default function Header(
@@ -43,8 +43,8 @@ export default function Header(
             id="nav-toggle-label"
             htmlFor="nav-toggle"
           >
-            <Bars class="w-6 h-6" />
-            <Cross class="hidden w-6 h-6" />
+            <Menu class="w-6 h-6" />
+            <X class="hidden w-6 h-6" />
           </label>
         </div>
       </div>
