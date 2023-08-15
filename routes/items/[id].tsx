@@ -117,11 +117,12 @@ export default async function ItemsItemPage(
             />
           ))}
         </div>
-        <PaginationLink
-          url={ctx.url}
-          cursor={iter.cursor}
-          class="text-centre my-8"
-        />
+        <div class="text-center w-full">
+          <PaginationLink
+            url={ctx.url}
+            cursor={iter.cursor}
+          />
+        </div>
       </main>
     </>
   );

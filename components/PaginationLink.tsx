@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export default function Pagination(
-  props: { url: URL; cursor?: string; class?: string },
+  props: { url: URL; cursor?: string },
 ) {
   const url = new URL(props.url);
   let text: string;
@@ -11,7 +11,12 @@ export default function Pagination(
     url.searchParams.delete("cursor");
     text = "Back to start ↻";
   }
-  return props.url.href === url.href
-    ? null
-    : <a href={url.href} class={props.class}>{text}</a>;
+  return props.url.href === url.href ? null : (
+    <a
+      href={url.href}
+      class="px-4 py-2 transition duration-300 rounded-lg hover:(bg-gray-100 dark:bg-gray-800)"
+    >
+      {text}
+    </a>
+  );
 }
