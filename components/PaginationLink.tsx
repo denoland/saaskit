@@ -1,10 +1,15 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export default function Pagination(
-  props: { url: URL; cursor?: string },
+  props: {
+    url: URL;
+    cursor?: string;
+    /** @todo https://github.com/denoland/deno/issues/20173 */
+    done?: boolean;
+  },
 ) {
   const url = new URL(props.url);
   let text: string;
-  if (props.cursor) {
+  if (props.cursor && !props.done) {
     url.searchParams.set("cursor", props.cursor);
     text = "Next ›";
   } else {
