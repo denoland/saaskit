@@ -58,7 +58,8 @@ export default function Header(
       <nav
         class={"hidden flex-col gap-x-4 divide-y divide-solid sm:(flex items-center flex-row divide-y-0)"}
       >
-        <a
+        {
+          /* <a
           href="/dashboard"
           class={cx(
             props.url.pathname === "/dashboard"
@@ -68,19 +69,19 @@ export default function Header(
           )}
         >
           Dashboard
-        </a>
+        </a> */
+        }
         <a
-          href="/docs/advertising"
+          href="/docs"
           class={cx(
-            props.url.pathname === "/docs/advertising"
-              ? ACTIVE_LINK_STYLES
-              : LINK_STYLES,
+            props.url.pathname === "/docs" ? ACTIVE_LINK_STYLES : LINK_STYLES,
             NAV_ITEM,
           )}
         >
           Docs
         </a>
-        <a
+        {
+          /* <a
           href="/blog"
           class={cx(
             props.url.pathname === "/blog" ? ACTIVE_LINK_STYLES : LINK_STYLES,
@@ -88,7 +89,8 @@ export default function Header(
           )}
         >
           Blog
-        </a>
+        </a> */
+        }
         <a
           href="/showcase"
           class={cx(
@@ -100,7 +102,8 @@ export default function Header(
         >
           Showcase
         </a>
-        {stripe
+        {
+          /* {stripe
           ? (
             <a
               href="/pricing"
@@ -114,8 +117,10 @@ export default function Header(
               Pricing
             </a>
           )
-          : null}
-        {props.sessionId
+          : null} */
+        }
+        {
+          /* {props.sessionId
           ? (
             <a
               href="/account"
@@ -129,8 +134,10 @@ export default function Header(
               Account
             </a>
           )
-          : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>}
-        <a
+          : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>} */
+        }
+        {
+          /* <a
           href="/notifications"
           class={cx(
             props.url.pathname === "/notifications"
@@ -148,15 +155,18 @@ export default function Header(
           {props.hasNotifications && (
             <CircleFilled class="absolute top-0.5 right-0.5 text-primary w-2 h-2" />
           )}
-        </a>
-        <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
+        </a> */
+        }
+        {
+          /* <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
           <a
             href="/submit"
             class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))"
           >
             Submit
           </a>
-        </div>
+        </div> */
+        }
       </nav>
     </header>
   );

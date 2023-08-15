@@ -29,13 +29,7 @@ export const handler: Handlers<DocsPageData, State> = {
     if (slug === "") {
       return new Response("", {
         status: 307,
-        headers: { location: "/docs/introduction" },
-      });
-    }
-    if (slug === "concepts/architecture") {
-      return new Response("", {
-        status: 307,
-        headers: { location: "/docs/concepts/architecture" },
+        headers: { location: "/docs" },
       });
     }
 

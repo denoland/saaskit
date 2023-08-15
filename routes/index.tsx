@@ -31,6 +31,13 @@ function calcTimeAgoFilter(url: URL) {
 
 export const handler: Handlers<HomePageData, State> = {
   async GET(req, ctx) {
+    const slug = ctx.params.slug;
+    // temporarily redirect from / to /docs
+    return new Response("", {
+      status: 307,
+      headers: { location: "/docs" },
+    });
+
     const url = new URL(req.url);
     const pageNum = calcPageNum(url);
     const timeAgo = calcTimeAgoFilter(url);
