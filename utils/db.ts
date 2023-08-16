@@ -329,7 +329,6 @@ export function listCommentsByItem(
   options?: Deno.KvListOptions,
 ) {
   return kv.list<Comment>({ prefix: ["comments_by_item", itemId] }, {
-    limit: 10,
     reverse: true,
     ...options,
   });

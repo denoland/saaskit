@@ -84,6 +84,10 @@ function CommentSummary(props: Comment) {
   );
 }
 
+function getCursor(url: URL) {
+  return url.searchParams.get("cursor") ?? undefined;
+}
+
 export default async function ItemsItemPage(
   _req: Request,
   ctx: RouteContext<undefined, SignedInState>,
@@ -92,13 +96,25 @@ export default async function ItemsItemPage(
   const item = await getItem(itemId);
   if (item === null) return await ctx.renderNotFound();
 
-  const cursor = ctx.url.searchParams.get("cursor") ?? undefined;
-  const iter = listCommentsByItem(itemId, { cursor });
-  const comments = await valuesFromIter(iter);
+  const limit = 10;
+  const iter = listCommentsByItem(itemId, {
+    cursor: getCursor(ctx.url),
+    limit: limit + 1,
+  });
 
-  /** @todo https://github.com/denoland/deno/issues/20173 */
-  const nextPageIter = listCommentsByItem(itemId, { cursor: iter.cursor });
-  const { done } = await nextPageIter.next();
+  const results = [];
+  for await (const entry of iter) {
+    results.push({
+      comment: entry.value,
+      cursor: iter.cursor,
+    });
+  }
+
+  let done = true;
+  if (results.length > limit) {
+    results.pop();
+    done = false;
+  }
 
   const [isVoted] = await getAreVotedBySessionId(
     [item],
@@ -115,7 +131,7 @@ export default async function ItemsItemPage(
         />
         <CommentInput />
         <div>
-          {comments.map((comment) => (
+          {results.map(({ comment }) => (
             <CommentSummary
               {...comment}
             />
@@ -124,7 +140,7 @@ export default async function ItemsItemPage(
         <div class="text-center w-full">
           <PaginationLink
             url={ctx.url}
-            cursor={iter.cursor}
+            cursor={results.at(-1)?.cursor}
             done={done}
           />
         </div>

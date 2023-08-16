@@ -3,8 +3,7 @@ export default function Pagination(
   props: {
     url: URL;
     cursor?: string;
-    /** @todo https://github.com/denoland/deno/issues/20173 */
-    done?: boolean;
+    done: boolean;
   },
 ) {
   const url = new URL(props.url);
