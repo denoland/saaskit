@@ -96,8 +96,6 @@ export default async function ItemsItemPage(
   const iter = listCommentsByItem(itemId, { cursor });
   const comments = await valuesFromIter(iter);
 
-  console.log(iter.cursor);
-
   /** @todo https://github.com/denoland/deno/issues/20173 */
   const nextPageIter = listCommentsByItem(itemId, { cursor: iter.cursor });
   const { done } = await nextPageIter.next();
