@@ -72,9 +72,11 @@ export default function Header(
         </a> */
         }
         <a
-          href="/docs"
+          href="/docs/advertising"
           class={cx(
-            props.url.pathname === "/docs" ? ACTIVE_LINK_STYLES : LINK_STYLES,
+            props.url.pathname === "/docs/advertising"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
             NAV_ITEM,
           )}
         >

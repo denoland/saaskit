@@ -93,7 +93,7 @@ export default function Showcase() {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {projects.map((project) => (
             <div key={project.id} className="group relative">
-              <div className="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900">
+              <div className="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 dark:bg-slate-800">
                 <img
                   src={project.imageSrc}
                   alt={project.imageAlt}

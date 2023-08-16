@@ -24,6 +24,7 @@ export default {
           // Modify primary and secondary colors according to your color-scheme
           primary: "#be185d",
           secondary: "#4338ca",
+          indigo: colors.blue,
         },
         // deno-lint-ignore no-explicit-any
       }) as Preset<any>,
