@@ -7,6 +7,7 @@ import CommentSummary from "@/components/CommentSummary.tsx";
 async function fetchComments(itemId: string, cursor: string) {
   let url = `/api/items/${itemId}/comments`;
   if (cursor !== "") url += "?cursor=" + cursor;
+
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
   return await resp.json() as { comments: Comment[]; cursor: string };
@@ -35,7 +36,9 @@ export default function CommentsList(props: { itemId: string }) {
 
   return (
     <div>
-      {commentsSig.value.map((comment) => <CommentSummary {...comment} />)}
+      {commentsSig.value.map((comment) => (
+        <CommentSummary key={comment.id} {...comment} />
+      ))}
       <div ref={bottomRef}></div>
     </div>
   );
