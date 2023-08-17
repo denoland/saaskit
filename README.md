@@ -51,6 +51,31 @@ Want to know where Deno SaaSKit is headed? Check out
    cp .example.env .env
    ```
 
+### Vector search / OpenAI embeddings
+
+```sh
+supabase init
+supabase start
+deno task start
+```
+
+To install supabase cli:
+
+```sh
+brew install supabase/tap/supabase
+```
+
+## Reset database
+
+Resets the local database to a clean state.
+
+Requires the local development stack to be started by running `supabase start`.
+
+```sh
+supabase db reset
+supabase start
+```
+
 ### Auth (OAuth)
 
 1. [Register a new GitHub OAuth application](https://github.com/settings/applications/new)

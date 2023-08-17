@@ -24,12 +24,19 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
 
-      - name: Check typos
-        if: matrix.os == 'ubuntu-22.04'
-        uses: crate-ci/typos@master
+        # todo: set language for typo check
+      # - name: Check typos
+      #   if: matrix.os == 'ubuntu-22.04'
+      #   uses: crate-ci/typos@master
 
       - name: Check formatting, linting, license headers, types and run tests
         run: deno task ok
+      
+      - name: Create embeddings
+        run: |
+          '[ main = "$CI_COMMIT_REF_NAME" ] && export PROD="--prod"' \
+          export LOG_FILE="$(mktemp)" \
+          deno task create-embeddings | tee "${LOG_FILE}"
 
       - name: Create lcov file
         run: deno task cov

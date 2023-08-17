@@ -7,6 +7,7 @@ import Showcase from "@/components/Showcase.tsx";
 import { Handlers } from "$fresh/server.ts";
 import { getAllItems, type Item, type Items } from "@/utils/db.ts";
 import type { State } from "../_middleware.ts";
+import SearchDialog from "@/islands/SearchDialog.tsx";
 
 interface Data {
   projects: Items[];
@@ -32,6 +33,7 @@ export default function ShowcasePage() {
     <>
       <main>
         <Container>
+          <SearchDialog withPadding />
           <Hero />
           <Showcase />
         </Container>

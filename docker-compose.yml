@@ -1,16 +1,30 @@
 version: '3'
-
- services:
-   web:
-     build: .
-     container_name: deno-saaskit
-     image: deno-image
+services:
+  postgres:
+    image: ankane/pgvector:latest
     environment:
-      - DENO_DEPLOYMENT_ID=${DENO_DEPLOYMENT_ID}
-      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
-      - STRIPE_PREMIUM_PLAN_PRICE_ID=${STRIPE_PREMIUM_PLAN_PRICE_ID}
-     ports:
-       - "8000:8000"
+      - POSTGRES_PASSWORD="postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "test123@fashionunited.com"
+      PGADMIN_DEFAULT_PASSWORD: "test123"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_started
+    restart: unless-stopped
+volumes:
+  postgres:
+  pgadmin:
