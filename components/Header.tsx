@@ -104,6 +104,17 @@ export default function Header(
         >
           Showcase
         </a>
+        <a
+          href="/assistant"
+          class={cx(
+            props.url.pathname === "/assistant"
+              ? ACTIVE_LINK_STYLES
+              : LINK_STYLES,
+            NAV_ITEM,
+          )}
+        >
+          AI Assistant
+        </a>
         {
           /* {stripe
           ? (
