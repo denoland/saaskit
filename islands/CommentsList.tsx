@@ -1,10 +1,10 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { Signal, useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
+import { useSignal } from "@preact/signals";
+import { useEffect, useRef } from "preact/hooks";
 import { Comment } from "@/utils/db.ts";
 import CommentSummary from "@/components/CommentSummary.tsx";
 
-async function getComments(itemId: string, cursor: string) {
+async function fetchComments(itemId: string, cursor: string) {
   let url = `/api/items/${itemId}/comments`;
   if (cursor !== "") url += "?cursor=" + cursor;
   const resp = await fetch(url);
@@ -13,13 +13,14 @@ async function getComments(itemId: string, cursor: string) {
 }
 
 export default function CommentsList(props: { itemId: string }) {
-  const commentsSig: Signal<Comment[]> = useSignal([]);
+  const commentsSig = useSignal<Comment[]>([]);
   const cursorSig = useSignal("");
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        getComments(props.itemId, cursorSig.value)
+        fetchComments(props.itemId, cursorSig.value)
           .then(({ comments, cursor }) => {
             if (cursor === "") observer.unobserve(entry.target);
             commentsSig.value = [...commentsSig.value, ...comments];
@@ -28,14 +29,14 @@ export default function CommentsList(props: { itemId: string }) {
       }
     });
 
-    observer.observe(document.querySelector("#bottom")!);
+    observer.observe(bottomRef.current!);
     return () => observer.disconnect();
   }, []);
 
   return (
     <div>
       {commentsSig.value.map((comment) => <CommentSummary {...comment} />)}
-      <div id="bottom"></div>
+      <div ref={bottomRef}></div>
     </div>
   );
 }
