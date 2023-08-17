@@ -13,13 +13,13 @@ import {
   newCommentProps,
   newNotificationProps,
   Notification,
-  valuesFromIter,
 } from "@/utils/db.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { redirect } from "@/utils/redirect.ts";
 import Head from "@/components/Head.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
 import PaginationLink from "@/components/PaginationLink.tsx";
+import { getCursor, getPagination } from "@/utils/pagination.ts";
 
 export const handler: Handlers<unknown, SignedInState> = {
   async POST(req, ctx) {
@@ -84,10 +84,6 @@ function CommentSummary(props: Comment) {
   );
 }
 
-function getCursor(url: URL) {
-  return url.searchParams.get("cursor") ?? undefined;
-}
-
 export default async function ItemsItemPage(
   _req: Request,
   ctx: RouteContext<undefined, SignedInState>,
@@ -101,20 +97,7 @@ export default async function ItemsItemPage(
     cursor: getCursor(ctx.url),
     limit: limit + 1,
   });
-
-  const results = [];
-  for await (const entry of iter) {
-    results.push({
-      comment: entry.value,
-      cursor: iter.cursor,
-    });
-  }
-
-  let done = true;
-  if (results.length > limit) {
-    results.pop();
-    done = false;
-  }
+  const { cursor, values: comments, done } = await getPagination(iter, limit);
 
   const [isVoted] = await getAreVotedBySessionId(
     [item],
@@ -131,7 +114,7 @@ export default async function ItemsItemPage(
         />
         <CommentInput />
         <div>
-          {results.map(({ comment }) => (
+          {comments.map((comment) => (
             <CommentSummary
               {...comment}
             />
@@ -140,7 +123,7 @@ export default async function ItemsItemPage(
         <div class="text-center w-full">
           <PaginationLink
             url={ctx.url}
-            cursor={results.at(-1)?.cursor}
+            cursor={cursor}
             done={done}
           />
         </div>
