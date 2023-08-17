@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { RouteContext } from "$fresh/server.ts";
 import { listCommentsByItem, valuesFromIter } from "@/utils/db.ts";
 import { getCursor } from "@/utils/pagination.ts";
