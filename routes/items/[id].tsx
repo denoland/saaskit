@@ -9,17 +9,14 @@ import {
   getAreVotedBySessionId,
   getItem,
   getUserBySession,
-  listCommentsByItem,
   newCommentProps,
   newNotificationProps,
   Notification,
 } from "@/utils/db.ts";
-import UserPostedAt from "@/components/UserPostedAt.tsx";
 import { redirect } from "@/utils/redirect.ts";
 import Head from "@/components/Head.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
-import PaginationLink from "@/components/PaginationLink.tsx";
-import { getCursor, getPagination } from "@/utils/pagination.ts";
+import CommentsList from "@/islands/CommentsList.tsx";
 
 export const handler: Handlers<unknown, SignedInState> = {
   async POST(req, ctx) {
@@ -75,15 +72,6 @@ function CommentInput() {
   );
 }
 
-function CommentSummary(props: Comment) {
-  return (
-    <div class="py-4">
-      <UserPostedAt {...props} />
-      <p>{props.text}</p>
-    </div>
-  );
-}
-
 export default async function ItemsItemPage(
   _req: Request,
   ctx: RouteContext<undefined, SignedInState>,
@@ -91,13 +79,6 @@ export default async function ItemsItemPage(
   const itemId = ctx.params.id;
   const item = await getItem(itemId);
   if (item === null) return await ctx.renderNotFound();
-
-  const limit = 10;
-  const iter = listCommentsByItem(itemId, {
-    cursor: getCursor(ctx.url),
-    limit: limit + 1,
-  });
-  const { cursor, values: comments, done } = await getPagination(iter, limit);
 
   const [isVoted] = await getAreVotedBySessionId(
     [item],
@@ -113,20 +94,7 @@ export default async function ItemsItemPage(
           isVoted={isVoted}
         />
         <CommentInput />
-        <div>
-          {comments.map((comment) => (
-            <CommentSummary
-              {...comment}
-            />
-          ))}
-        </div>
-        <div class="text-center w-full">
-          <PaginationLink
-            url={ctx.url}
-            cursor={cursor}
-            done={done}
-          />
-        </div>
+        <CommentsList itemId={ctx.params.id} />
       </main>
     </>
   );
