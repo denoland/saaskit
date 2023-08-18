@@ -14,7 +14,6 @@ const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
 
 interface Story {
   id: number;
-  score: number;
   time: number; // Unix seconds
   by: string;
   title: string;
@@ -62,13 +61,12 @@ async function fetchTopStories(limit = 10) {
 }
 
 async function seedSubmissions(stories: Story[]) {
-  const items = stories.map(({ by: userLogin, title, url, score, time }) => {
+  const items = stories.map(({ by: userLogin, title, url, time }) => {
     return {
       ...newItemProps(),
       userLogin,
       title,
       url,
-      score,
       createdAt: new Date(time * 1000),
     } as Item;
   }).filter(({ url }) => url);
