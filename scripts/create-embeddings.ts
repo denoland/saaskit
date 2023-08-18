@@ -35,7 +35,7 @@ async function generatePage(
       [path, content],
     );
 
-    if ((existingPages).length === 0) {
+    if (existingPages.length === 0) {
       const openAI = new OpenAI(OPENAI_API_KEY);
 
       await connection.queryArray(

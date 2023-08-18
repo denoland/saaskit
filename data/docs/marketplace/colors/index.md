@@ -19,23 +19,26 @@ images:
 
 ### Overview
 
-You can use the main colors that FashionUnited uses when setting up your feed. This is **not mandatory** of course -- we can map any color to ours as long as it's used consistently. But using this will reduce any error sensitivity.
+You can use the main colors that FashionUnited uses when setting up your feed.
+This is **not mandatory** of course -- we can map any color to ours as long as
+it's used consistently. But using this will reduce any error sensitivity.
 
-* beige
-* black
-* blue
-* brown
-* gray
-* green
-* kaki
-* orange
-* pink
-* purple
-* red
-* white
-* yellow
-* gold
-* silver
-* multi-colored
+- beige
+- black
+- blue
+- brown
+- gray
+- green
+- kaki
+- orange
+- pink
+- purple
+- red
+- white
+- yellow
+- gold
+- silver
+- multi-colored
 
-Please also check our [categories overview](https://fashionunited.com/developers/marketplace/categories).
+Please also check our
+[categories overview](https://fashionunited.com/developers/marketplace/categories).

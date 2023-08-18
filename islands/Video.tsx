@@ -6,7 +6,7 @@ export default function Video(
     height: number;
     hideCaption?: boolean;
   },
-){
+) {
   // if (!props.hideCaption) {
   //   return props.hideCaption = false;
   // }

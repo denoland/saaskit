@@ -6,12 +6,12 @@ import { ApplicationError, UserError } from "../../errors.ts";
 import { Pool } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import "https://deno.land/std@0.192.0/dotenv/load.ts";
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!;
-const DB_DATABASE = Deno.env.get('DB_DATABASE')!;
-const DB_HOSTNAME = Deno.env.get('DB_HOSTNAME')!;
-const DB_PASSWORD = Deno.env.get('DB_PASSWORD')!;
-const DB_PORT = Deno.env.get('DB_PORT')!;
-const DB_USER = Deno.env.get('DB_USER')!;
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const DB_DATABASE = Deno.env.get("DB_DATABASE")!;
+const DB_HOSTNAME = Deno.env.get("DB_HOSTNAME")!;
+const DB_PASSWORD = Deno.env.get("DB_PASSWORD")!;
+const DB_PORT = Deno.env.get("DB_PORT")!;
+const DB_USER = Deno.env.get("DB_USER")!;
 
 const pool = new Pool({
   database: DB_DATABASE,
@@ -60,9 +60,12 @@ export async function handler(req: Request): Promise<Response> {
       const matchCount = 10;
       const minContentLength = 50;
 
-      const pageSections = await connection.queryArray(`
+      const pageSections = await connection.queryArray(
+        `
         SELECT * FROM match_page_sections($1::numeric[]::vector(1536), $2, $3, $4)
-      `, [embedding, matchThreshold, matchCount, minContentLength]);
+      `,
+        [embedding, matchThreshold, matchCount, minContentLength],
+      );
 
       const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
       let tokenCount = 0;
@@ -132,7 +135,6 @@ export async function handler(req: Request): Promise<Response> {
           "Content-Type": "text/event-stream",
         },
       });
-
     } finally {
       connection.release();
     }

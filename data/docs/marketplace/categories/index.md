@@ -19,38 +19,42 @@ images:
 
 ### Overview
 
-You can use the main categories that FashionUnited uses when setting up your feed. This is **not mandatory** of course -- we can map any category to ours as long as it's used consistently.
+You can use the main categories that FashionUnited uses when setting up your
+feed. This is **not mandatory** of course -- we can map any category to ours as
+long as it's used consistently.
 
-* Accessories
-* Aprons
-* Babywear
-* Bags
-* Beachwear
-* Blazers
-* Blouses
-* Cardigans
-* Casualwear
-* Clothing Accessories
-* Coats
-* Dresses
-* Facemasks
-* Footwear
-* Home & Garden
-* Hosiery
-* Jumpsuits
-* Nightwear
-* Outdoor Jackets
-* Pants
-* Rainwear
-* Shapewear
-* Shirts
-* Skirts
-* Sportswear
-* Suits
-* Sweaters
-* Swimwear
-* T-Shirts
-* Ties
-* Tops
+- Accessories
+- Aprons
+- Babywear
+- Bags
+- Beachwear
+- Blazers
+- Blouses
+- Cardigans
+- Casualwear
+- Clothing Accessories
+- Coats
+- Dresses
+- Facemasks
+- Footwear
+- Home & Garden
+- Hosiery
+- Jumpsuits
+- Nightwear
+- Outdoor Jackets
+- Pants
+- Rainwear
+- Shapewear
+- Shirts
+- Skirts
+- Sportswear
+- Suits
+- Sweaters
+- Swimwear
+- T-Shirts
+- Ties
+- Tops
 
-These are the main product categories we started out with. This will be expanded in the future. Please also check our [color overview](https://fashionunited.com/developers/marketplace/colors/).
+These are the main product categories we started out with. This will be expanded
+in the future. Please also check our
+[color overview](https://fashionunited.com/developers/marketplace/colors/).

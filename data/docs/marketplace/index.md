@@ -16,19 +16,20 @@ resources:
     title: Example CSV
 ---
 
-
-
-
 ## Introducing Marketplace
 
-> Overview of how the global B2B Fashion Marketplace works, and how you can connect your brand to buyers using it.
+> Overview of how the global B2B Fashion Marketplace works, and how you can
+> connect your brand to buyers using it.
 
-- Connect with Fashion Buyers globally and generate more traffic to your B2B webshop 365 days a year.
+- Connect with Fashion Buyers globally and generate more traffic to your B2B
+  webshop 365 days a year.
 - Products listed with trend articles and videos
 - Get your brand listed in Worldwide Fashion brands directory
-- Improve sales forecasting by connecting your new collection but also sell current stock and NOOS.
+- Improve sales forecasting by connecting your new collection but also sell
+  current stock and NOOS.
 - Create brand awareness and build new business relationships
-- No B2B webshop? FashionUnited provides help building your store with various partners who connect to the Marketplace.
+- No B2B webshop? FashionUnited provides help building your store with various
+  partners who connect to the Marketplace.
 
 <section>
   <div class="bg-white py-16">

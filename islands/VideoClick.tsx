@@ -2,14 +2,14 @@ import { useState } from "preact/hooks";
 
 import Button from "@/components/Button.tsx";
 
-export default function Video(props: { src: string; title: string; }) {
+export default function Video(props: { src: string; title: string }) {
   const [showVideo, setShowVideo] = useState(false);
   return (
     <figure class="video-container">
       {!showVideo
         ? (
           <Button
-          class="items-center hidden px-4 py-2 space-x-3 text-gray-600 transition-colors duration-300 transform border rounded-lg lg:flex dark:text-gray-200 dark:border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
+            class="items-center hidden px-4 py-2 space-x-3 text-gray-600 transition-colors duration-300 transform border rounded-lg lg:flex dark:text-gray-200 dark:border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
             onClick={() => {
               setShowVideo(true);
             }}
@@ -39,7 +39,6 @@ export default function Video(props: { src: string; title: string; }) {
 }
 
 Video.defaultProps = {
-  src:
-    "https://www.youtube-nocookie.com/embed/1La4QzGeaaQ",
+  src: "https://www.youtube-nocookie.com/embed/1La4QzGeaaQ",
   title: "Peru 8K HDR 60FPS (FUHD)",
 };

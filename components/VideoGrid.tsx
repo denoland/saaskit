@@ -52,7 +52,9 @@ const VideoTile = () => {
           <span class="text-white font-medium px-2">
             Title of the video
           </span>
-          <span class="text-gray-500 font-base text-xs px-2">FashionUnited</span>
+          <span class="text-gray-500 font-base text-xs px-2">
+            FashionUnited
+          </span>
           <span class="text-gray-500 font-base text-xs px-2">
             {Math.floor(Math.random() * 10000)} views •{" "}
             {Math.floor(Math.random() * 10)} months ago
