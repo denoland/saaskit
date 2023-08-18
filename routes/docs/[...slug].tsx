@@ -156,60 +156,62 @@ function Content(props: { page: Page }) {
           data-light-theme="light"
           data-dark-theme="dark"
           dangerouslySetInnerHTML={{
-            __html: render(props.page.markdown, {
-              allowedTags: ["progressive-img", "iframe"],
-              allowedAttributes: {
-                "progressive-img": [
-                  "placeholder",
-                  "src",
-                  "srcset",
-                  "sizes",
-                  "alt",
-                  "load-strategy",
-                  "placeholder-load-strategy",
-                  "placeholder-fetch-priority",
-                  "final-fetchpriority",
-                  "intersection-margin",
-                  "placeholder-intersection-margin",
-                ],
-              },
-              imageTag: (src, alt, title) => {
-                const imageUrls = generateImageSrcSet(src, [
-                  { width: 320 },
-                  { width: 599 },
-                  { width: 728 },
-                  { width: 984 },
-                  { width: 1198 },
-                  { width: 1456 },
-                  { width: 1968 },
-                  { width: 2480 },
-                  { width: 2992 },
-                ]);
+            __html: render(props.page.markdown),
+            //   __html: render(props.page.markdown, {
+            //   allowedTags: ["progressive-img", "iframe"],
+            //   allowedAttributes: {
+            //     "progressive-img": [
+            //       "placeholder",
+            //       "src",
+            //       "srcset",
+            //       "sizes",
+            //       "alt",
+            //       "load-strategy",
+            //       "placeholder-load-strategy",
+            //       "placeholder-fetch-priority",
+            //       "final-fetchpriority",
+            //       "intersection-margin",
+            //       "placeholder-intersection-margin",
+            //     ],
+            //   },
+            //   imageTag: (src, alt, title) => {
+            //     const imageUrls = generateImageSrcSet(src, [
+            //       { width: 320 },
+            //       { width: 599 },
+            //       { width: 728 },
+            //       { width: 984 },
+            //       { width: 1198 },
+            //       { width: 1456 },
+            //       { width: 1968 },
+            //       { width: 2480 },
+            //       { width: 2992 },
+            //     ]);
 
-                return (`<progressive-img
-              placeholder="${
-                  resizeImage(src, {
-                    width: 42,
-                    quality: 10,
-                  })
-                }"
-              src="${imageUrls[8]}"
-              alt="${alt ?? ""}" 
-              title="${title ?? ""}" 
-              sizes="(min-width: 1536px) 1496px, (min-width: 1280px) 1240px, (min-width: 1024px) 984px, (min-width: 768px) 728px, (min-width: 640px) 600px, calc(100vw - 2.5rem"
-              srcSet="
-                ${imageUrls[0]} 320w, 
-                ${imageUrls[1]} 599w, 
-                ${imageUrls[2]} 728w, 
-                ${imageUrls[3]} 984w, 
-                ${imageUrls[4]} 1198w, 
-                ${imageUrls[5]} 1456w, 
-                ${imageUrls[6]} 1968w, 
-                ${imageUrls[7]} 2480w, 
-                ${imageUrls[8]} 2992w"
-            />`);
-              },
-            }),
+            //     return (`<progressive-img
+            //   placeholder="${
+            //       resizeImage(src, {
+            //         width: 42,
+            //         quality: 10,
+            //       })
+            //     }"
+            //   src="${imageUrls[8]}"
+            //   alt="${alt ?? ""}"
+            //   title="${title ?? ""}"
+            //   sizes="(min-width: 1536px) 1496px, (min-width: 1280px) 1240px, (min-width: 1024px) 984px, (min-width: 768px) 728px, (min-width: 640px) 600px, calc(100vw - 2.5rem"
+            //   srcSet="
+            //     ${imageUrls[0]} 320w,
+            //     ${imageUrls[1]} 599w,
+            //     ${imageUrls[2]} 728w,
+            //     ${imageUrls[3]} 984w,
+            //     ${imageUrls[4]} 1198w,
+            //     ${imageUrls[5]} 1456w,
+            //     ${imageUrls[6]} 1968w,
+            //     ${imageUrls[7]} 2480w,
+            //     ${imageUrls[8]} 2992w"
+            // />`);
+            //   },
+            // }
+            // ),
           }}
         />
         <ForwardBackButtons slug={props.page.slug} />

@@ -1,3 +1,10 @@
+interface ImageOptionsType {
+  width: number;
+  quality?: number;
+  fit?: string;
+  height?: number;
+}
+
 export function resizeImage(
   originalUrl: string,
   { width, quality, fit, height }: ImageOptionsType,
