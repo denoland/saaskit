@@ -30,6 +30,8 @@ async function sharedHandler(
     return new Response(null, { status: 404 });
   }
 
+  const voteId = new URL(req.url).searchParams.get("vote_id");
+
   const vote = {
     item,
     userLogin: user.login,
@@ -39,12 +41,13 @@ async function sharedHandler(
   switch (req.method) {
     case "DELETE":
       status = 204;
+      if (voteId) vote.id = voteId;
       await deleteVote(vote);
       break;
     case "POST": {
       status = 201;
       await createVote(vote);
-
+      
       if (item.userLogin !== user.login) {
         const notification: Notification = {
           userLogin: item.userLogin,

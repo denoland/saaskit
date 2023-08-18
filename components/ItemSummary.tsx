@@ -6,6 +6,7 @@ import UserPostedAt from "./UserPostedAt.tsx";
 export interface ItemSummaryProps {
   item: Item;
   isVoted: boolean;
+  votes: any;
 }
 
 export default function ItemSummary(props: ItemSummaryProps) {
@@ -14,6 +15,7 @@ export default function ItemSummary(props: ItemSummaryProps) {
       <VoteButton
         item={props.item}
         isVoted={props.isVoted}
+        vote={props.votes.find((e: any)=>e.item.id === props.item.id)}
       />
       <div class="space-y-1">
         <p>

@@ -16,6 +16,9 @@ import Head from "@/components/Head.tsx";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import { TabItem } from "@/components/TabsBar.tsx";
 
+import { signal } from "@preact/signals";
+export const votes = signal<any[]>([]);
+
 const NEEDS_SETUP = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
   Deno.env.get("GITHUB_CLIENT_SECRET") === undefined;
 
@@ -99,9 +102,12 @@ export default async function HomePage(
     .toSorted(compareScore)
     .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
 
-  const areVoted = await getAreVotedBySessionId(
+  votes.value = await getAreVotedBySessionId(
     items,
     ctx.state.sessionId,
+  );
+  const areVoted = items.map((el) =>
+    votes.value.map((e) => e.id).includes(el.id)
   );
   const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
 
@@ -128,11 +134,11 @@ export default async function HomePage(
             </div>
           </>
         )}
-
         {items.map((item, index) => (
           <ItemSummary
             item={item}
             isVoted={areVoted[index]}
+            votes={votes.value}
           />
         ))}
         {lastPage > 1 && (

@@ -27,7 +27,7 @@ async function getValues<T>(
 ) {
   const values = [];
   const iter = kv.list<T>(selector, options);
-  for await (const { value } of iter) values.push(value);
+  for await (const { value } of iter) if(value) values.push(value);
   return values;
 }
 
@@ -405,7 +405,7 @@ export async function deleteVote(vote: Vote) {
     .delete(votesByItemKey)
     .delete(votesByUserKey)
     .commit();
-
+    
   if (!res.ok) throw new Error(`Failed to delete vote: ${vote}`);
 }
 
@@ -530,8 +530,9 @@ export async function getAreVotedBySessionId(
   const sessionUser = await getUserBySession(sessionId);
   if (!sessionUser) return [];
   const votes = await getVotesByUser(sessionUser.login);
-  const votesItemsIds = votes.map((vote) => vote.item.id);
-  return items.map((item) => votesItemsIds.includes(item.id));
+  return votes;
+  // const votesItemsIds = votes.map((vote) => vote.item.id);
+  // return items.map((item) => votesItemsIds.includes(item.id));
 }
 
 export function compareScore(a: Item, b: Item) {

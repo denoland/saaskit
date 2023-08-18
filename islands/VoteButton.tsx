@@ -5,26 +5,28 @@ import { useSignal } from "@preact/signals";
 export interface VoteButtonProps {
   item: Item;
   isVoted: boolean;
+  vote: any;
 }
 
 export default function VoteButton(props: VoteButtonProps) {
-  const isVoted = useSignal(props.isVoted);
+  const isVoted = useSignal(!!props.vote);
   const score = useSignal(props.item.score);
 
   async function onClick(event: MouseEvent) {
     if (event.detail === 1) {
-      const url = `/api/vote?item_id=${props.item.id}`;
+      const url = `/api/vote?item_id=${props.item.id}&vote_id=${props.vote?.id}`;
       const method = isVoted.value ? "DELETE" : "POST";
+
+      isVoted.value = !isVoted.value;
+      method === "POST" ? score.value++ : score.value--;
+      if (score.value < (props.item.score - 1) || score.value < 0) {
+        score.value = props.item.score;
+      }
       const resp = await fetch(url, { method, credentials: "same-origin" });
 
       if (resp.status === 401) {
         window.location.href = "/signin";
         return;
-      }
-      isVoted.value = !isVoted.value;
-      method === "POST" ? score.value++ : score.value--;
-      if (score.value < (props.item.score - 1) || score.value < 0) {
-        score.value = props.item.score;
       }
     }
   }
