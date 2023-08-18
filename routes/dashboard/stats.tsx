@@ -18,12 +18,10 @@ export default async function DashboardStatsPage(
     visitsCounts,
     usersCounts,
     itemsCounts,
-    votesCounts,
   ] = await Promise.all([
     getManyMetrics("visits_count", dates),
     getManyMetrics("users_count", dates),
     getManyMetrics("items_count", dates),
-    getManyMetrics("votes_count", dates),
   ]);
 
   const datasets = [
@@ -41,11 +39,6 @@ export default async function DashboardStatsPage(
       label: "Items created",
       data: itemsCounts.map(Number),
       borderColor: "#219ebc",
-    },
-    {
-      label: "Votes",
-      data: votesCounts.map(Number),
-      borderColor: "#4338ca",
     },
   ];
 

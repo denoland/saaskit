@@ -50,7 +50,7 @@ function FreePlanCard() {
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
-          Vote
+          Notifications
         </p>
       </div>
 

@@ -8,7 +8,6 @@ import {
   type Comment,
   createComment,
   createNotification,
-  getAreVotedBySessionId,
   getCommentsByItem,
   getItem,
   getUserBySession,
@@ -101,21 +100,13 @@ export default async function ItemsItemPage(
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice((pageNum - 1) * PAGE_LENGTH, pageNum * PAGE_LENGTH);
 
-  const [isVoted] = await getAreVotedBySessionId(
-    [item],
-    ctx.state.sessionId,
-  );
-
   const lastPage = calcLastPage(allComments.length, PAGE_LENGTH);
 
   return (
     <>
       <Head title={item.title} href={ctx.url.href} />
       <main class="flex-1 p-4 space-y-8">
-        <ItemSummary
-          item={item}
-          isVoted={isVoted}
-        />
+        <ItemSummary {...item} />
         <CommentInput />
         <div>
           {comments.map((comment) => (

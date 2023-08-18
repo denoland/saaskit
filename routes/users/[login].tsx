@@ -4,12 +4,7 @@ import type { State } from "@/routes/_middleware.ts";
 import ItemSummary from "@/components/ItemSummary.tsx";
 import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
 import PageSelector from "@/components/PageSelector.tsx";
-import {
-  compareScore,
-  getAreVotedBySessionId,
-  getItemsByUser,
-  getUser,
-} from "@/utils/db.ts";
+import { getItemsByUser, getUser } from "@/utils/db.ts";
 import { pluralize } from "@/utils/display.ts";
 import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
@@ -62,14 +57,9 @@ export default async function UsersUserPage(
   const allItems = await getItemsByUser(login);
   const itemsCount = allItems.length;
 
-  const items = allItems.sort(compareScore).slice(
+  const items = allItems.slice(
     (pageNum - 1) * PAGE_LENGTH,
     pageNum * PAGE_LENGTH,
-  );
-
-  const areVoted = await getAreVotedBySessionId(
-    items,
-    ctx.state.sessionId,
   );
 
   const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
@@ -83,12 +73,7 @@ export default async function UsersUserPage(
           login={user.login}
           itemsCount={itemsCount}
         />
-        {items.map((item, index) => (
-          <ItemSummary
-            item={item}
-            isVoted={areVoted[index]}
-          />
-        ))}
+        {items.map((item) => <ItemSummary {...item} />)}
         {lastPage > 1 && (
           <PageSelector
             currentPage={calcPageNum(ctx.url)}

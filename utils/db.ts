@@ -79,13 +79,11 @@ export interface Item {
   // The below properties can be automatically generated upon item creation
   id: string;
   createdAt: Date;
-  score: number;
 }
 
-export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
+export function newItemProps(): Pick<Item, "id" | "createdAt"> {
   return {
     id: crypto.randomUUID(),
-    score: 0,
     createdAt: new Date(),
   };
 }
@@ -312,107 +310,6 @@ export async function getCommentsByItem(itemId: string) {
   return await getValues<Comment>({ prefix: ["comments_by_item", itemId] });
 }
 
-// Vote
-export interface Vote {
-  userLogin: string;
-  item: Item;
-  // The below property can be automatically generated upon vote creation
-  id: string;
-  createdAt: Date;
-}
-
-export function newVoteProps(): Pick<Vote, "id" | "createdAt"> {
-  return {
-    id: crypto.randomUUID(),
-    createdAt: new Date(),
-  };
-}
-
-export async function createVote(vote: Vote) {
-  vote.item.score++;
-
-  const itemKey = ["items", vote.item.id];
-  const itemsByTimeKey = [
-    "items_by_time",
-    vote.item.createdAt.getTime(),
-    vote.item.id,
-  ];
-  const itemsByUserKey = ["items_by_user", vote.item.userLogin, vote.item.id];
-  const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
-    itemKey,
-    itemsByTimeKey,
-    itemsByUserKey,
-  ]);
-  assertIsEntry(itemRes);
-  assertIsEntry(itemsByTimeRes);
-  assertIsEntry(itemsByUserRes);
-
-  const votesKey = ["votes", vote.id];
-  const votesByItemKey = ["votes_by_item", vote.item.id, vote.id];
-  const votesByUserKey = ["votes_by_user", vote.userLogin, vote.id];
-  const votesCountKey = ["votes_count", formatDate(vote.createdAt)];
-
-  const res = await kv.atomic()
-    .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
-    .check({ key: votesKey, versionstamp: null })
-    .check({ key: votesByItemKey, versionstamp: null })
-    .check({ key: votesByUserKey, versionstamp: null })
-    .set(itemKey, vote.item)
-    .set(itemsByTimeKey, vote.item)
-    .set(itemsByUserKey, vote.item)
-    .set(votesKey, vote)
-    .set(votesByItemKey, vote)
-    .set(votesByUserKey, vote)
-    .sum(votesCountKey, 1n)
-    .commit();
-
-  if (!res.ok) throw new Error(`Failed to set vote: ${vote}`);
-}
-
-export async function deleteVote(vote: Vote) {
-  vote.item.score--;
-
-  const itemKey = ["items", vote.item.id];
-  const itemsByTimeKey = [
-    "items_by_time",
-    vote.item.createdAt.getTime(),
-    vote.item.id,
-  ];
-  const itemsByUserKey = ["items_by_user", vote.item.userLogin, vote.item.id];
-  const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
-    itemKey,
-    itemsByTimeKey,
-    itemsByUserKey,
-  ]);
-  assertIsEntry(itemRes);
-  assertIsEntry(itemsByTimeRes);
-  assertIsEntry(itemsByUserRes);
-
-  const votesKey = ["votes", vote.id];
-  const votesByItemKey = ["votes_by_item", vote.item.id, vote.id];
-  const votesByUserKey = ["votes_by_user", vote.userLogin, vote.id];
-
-  const res = await kv.atomic()
-    .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
-    .set(itemKey, vote.item)
-    .set(itemsByTimeKey, vote.item)
-    .set(itemsByUserKey, vote.item)
-    .delete(votesKey)
-    .delete(votesByItemKey)
-    .delete(votesByUserKey)
-    .commit();
-
-  if (!res.ok) throw new Error(`Failed to delete vote: ${vote}`);
-}
-
-export async function getVotesByUser(userLogin: string) {
-  return await getValues<Vote>({ prefix: ["votes_by_user", userLogin] });
-}
-
 // User
 export interface User {
   // AKA username
@@ -522,22 +419,6 @@ export async function getUsers() {
   return await getValues<User>({ prefix: ["users"] });
 }
 
-export async function getAreVotedBySessionId(
-  items: Item[],
-  sessionId?: string,
-) {
-  if (!sessionId) return [];
-  const sessionUser = await getUserBySession(sessionId);
-  if (!sessionUser) return [];
-  const votes = await getVotesByUser(sessionUser.login);
-  const votesItemsIds = votes.map((vote) => vote.item.id);
-  return items.map((item) => votesItemsIds.includes(item.id));
-}
-
-export function compareScore(a: Item, b: Item) {
-  return Number(b.score) - Number(a.score);
-}
-
 // Analytics
 export async function incrVisitsCountByDay(date: Date) {
   const visitsKey = ["visits_count", formatDate(date)];
@@ -547,7 +428,7 @@ export async function incrVisitsCountByDay(date: Date) {
 }
 
 export async function getManyMetrics(
-  metric: "visits_count" | "items_count" | "votes_count" | "users_count",
+  metric: "visits_count" | "items_count" | "users_count",
   dates: Date[],
 ) {
   const keys = dates.map((date) => [metric, formatDate(date)]);
