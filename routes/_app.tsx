@@ -5,16 +5,22 @@ import Footer from "@/components/Footer.tsx";
 
 export default function App(props: AppProps) {
   return (
-    <div class="dark:bg-gray-900">
-      <div class="flex flex-col min-h-screen mx-auto max-w-7xl w-full dark:text-white">
-        <Header
-          url={props.url}
-          sessionId={props.data?.sessionId}
-          hasNotifications={props.data?.hasNotifications}
-        />
-        <props.Component />
-        <Footer url={props.url} />
-      </div>
-    </div>
+    <html>
+      <head>
+      </head>
+      <body>
+        <div class="dark:bg-gray-900">
+          <div class="flex flex-col min-h-screen mx-auto max-w-7xl w-full dark:text-white">
+            <Header
+              url={props.url}
+              sessionId={props.data?.sessionId}
+              hasNotifications={props.data?.hasNotifications}
+            />
+            <props.Component />
+            <Footer url={props.url} />
+          </div>
+        </div>
+      </body>
+    </html>
   );
 }
