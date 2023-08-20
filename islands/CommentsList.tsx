@@ -8,10 +8,9 @@ import { LINK_STYLES } from "@/utils/constants.ts";
 async function fetchComments(itemId: string, cursor: string) {
   let url = `/api/items/${itemId}/comments`;
   if (cursor !== "" && cursor !== undefined) url += "?cursor=" + cursor;
-
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
-  return await resp.json() as { newComments: Comment[]; newCursor: string };
+  return await resp.json() as { comments: Comment[]; cursor: string };
 }
 
 function CommentSummary(props: Comment) {
@@ -24,28 +23,36 @@ function CommentSummary(props: Comment) {
 }
 
 export default function CommentsList(props: { itemId: string }) {
-  const comments = useSignal<Comment[]>([]);
-  const cursor = useSignal("");
-  const isLoading = useSignal(false);
+  const commentsSig = useSignal<Comment[]>([]);
+  const cursorSig = useSignal("");
+  const isLoadingSig = useSignal(false);
 
-  function loadMoreComments() {
-    isLoading.value = true;
-    fetchComments(props.itemId, cursor.value)
-      .then(({ newComments, newCursor }) => {
-        comments.value = [...comments.value, ...newComments];
-        cursor.value = newCursor;
-        isLoading.value = false;
-      });
+  async function loadMoreComments() {
+    isLoadingSig.value = true;
+    try {
+      const { comments, cursor } = await fetchComments(
+        props.itemId,
+        cursorSig.value,
+      );
+      commentsSig.value = [...commentsSig.value, ...comments];
+      cursorSig.value = cursor;
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      isLoadingSig.value = false;
+    }
   }
 
-  useEffect(loadMoreComments, []);
+  useEffect(() => {
+    loadMoreComments();
+  }, []);
 
   return (
     <div>
-      {comments.value.map((comment) => (
+      {commentsSig.value.map((comment) => (
         <CommentSummary key={comment.id} {...comment} />
       ))}
-      {cursor.value !== "" && !isLoading.value && (
+      {cursorSig.value !== "" && !isLoadingSig.value && (
         <button onClick={loadMoreComments} class={LINK_STYLES}>
           Load more
         </button>
