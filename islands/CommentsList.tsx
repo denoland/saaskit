@@ -26,7 +26,7 @@ export default function CommentsList(props: { itemId: string }) {
   const commentsSig = useSignal<Comment[]>([]);
   const cursorSig = useSignal<string>("");
   const observer = useRef<IntersectionObserver>();
-  const lastElementRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   async function loadMoreComments() {
     if (cursorSig.value === "") return;
@@ -60,7 +60,7 @@ export default function CommentsList(props: { itemId: string }) {
     }
 
     if (cursorSig.value) {
-      observer.current.observe(lastElementRef.current!);
+      observer.current.observe(bottomRef.current!);
     }
 
     return () => {
@@ -73,7 +73,7 @@ export default function CommentsList(props: { itemId: string }) {
       {commentsSig.value.map((comment) => (
         <CommentSummary key={comment.id} {...comment} />
       ))}
-      <div ref={lastElementRef} />
+      <div ref={bottomRef} />
     </div>
   );
 }
