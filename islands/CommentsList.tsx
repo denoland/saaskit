@@ -1,8 +1,9 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { useSignal } from "@preact/signals";
-import { useEffect, useRef } from "preact/hooks";
+import { useCallback, useEffect, useRef } from "preact/hooks";
+import { Ref } from "preact";
 import { Comment } from "@/utils/db.ts";
-import CommentSummary from "@/components/CommentSummary.tsx";
+import UserPostedAt from "@/components/UserPostedAt.tsx";
 
 async function fetchComments(itemId: string, cursor: string) {
   let url = `/api/items/${itemId}/comments`;
@@ -16,30 +17,55 @@ async function fetchComments(itemId: string, cursor: string) {
 export default function CommentsList(props: { itemId: string }) {
   const commentsSig = useSignal<Comment[]>([]);
   const cursorSig = useSignal("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const observer = useRef<IntersectionObserver>();
+  const lastElementRef = useCallback((node: HTMLDivElement) => {
+    if (!cursorSig.value) return;
+    if (observer.current) observer.current.disconnect();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
+    observer.current = new IntersectionObserver(async ([entry]) => {
       if (entry.isIntersecting) {
-        fetchComments(props.itemId, cursorSig.value)
-          .then(({ comments, cursor }) => {
-            if (cursor === "") observer.unobserve(entry.target);
-            commentsSig.value = [...commentsSig.value, ...comments];
-            cursorSig.value = cursor;
-          });
+        const { comments, cursor } = await fetchComments(
+          props.itemId,
+          cursorSig.value,
+        );
+
+        if (cursor === "") observer.current?.unobserve(entry.target);
+
+        commentsSig.value = [...commentsSig.value, ...comments];
+        cursorSig.value = cursor;
       }
     });
 
-    observer.observe(bottomRef.current!);
-    return () => observer.disconnect();
+    if (node) observer.current.observe(node);
+  }, [cursorSig.value]);
+
+  useEffect(() => {
+    fetchComments(props.itemId, cursorSig.value).then(
+      ({ comments, cursor }) => {
+        commentsSig.value = comments;
+        cursorSig.value = cursor;
+      },
+    );
   }, []);
 
   return (
     <div>
-      {commentsSig.value.map((comment) => (
-        <CommentSummary key={comment.id} {...comment} />
-      ))}
-      <div ref={bottomRef}></div>
+      {commentsSig.value.map((comment) => {
+        const isLast =
+          comment.id === commentsSig.value[commentsSig.value.length - 1].id;
+        const props = {
+          class: "py-4",
+          key: comment.id,
+          ref: isLast ? lastElementRef as Ref<HTMLDivElement> : null,
+        };
+
+        return (
+          <div {...props}>
+            <UserPostedAt {...comment} />
+            <p>{comment.text}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
