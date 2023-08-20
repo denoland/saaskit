@@ -9,7 +9,7 @@ export default async function getCommentsByItem(
 ) {
   const iter = listCommentsByItem(ctx.params.id, {
     cursor: getCursor(ctx.url),
-    limit: 10,
+    limit: 1,
   });
   const comments = await valuesFromIter(iter);
   return Response.json({ comments, cursor: iter.cursor });

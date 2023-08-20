@@ -29,14 +29,11 @@ export default function CommentsList(props: { itemId: string }) {
 
   async function loadMoreComments() {
     if (cursorSig.value === "") return;
-
     const { comments, cursor } = await fetchComments(
       props.itemId,
       cursorSig.value,
     );
-
     if (cursor === "") observerRef.current?.disconnect();
-
     commentsSig.value = [...commentsSig.value, ...comments];
     cursorSig.value = cursor;
   }
@@ -52,17 +49,11 @@ export default function CommentsList(props: { itemId: string }) {
   useEffect(() => {
     if (!observerRef.current) {
       observerRef.current = new IntersectionObserver(async ([entry]) => {
-        if (entry.isIntersecting) {
-          await loadMoreComments();
-        }
+        if (entry.isIntersecting) await loadMoreComments();
       });
     }
-
     observerRef.current.observe(bottomRef.current!);
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
+    return () => observerRef.current?.disconnect();
   }, [cursorSig.value]);
 
   return (
