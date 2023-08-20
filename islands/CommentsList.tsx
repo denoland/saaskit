@@ -24,7 +24,7 @@ function CommentSummary(props: Comment) {
 export default function CommentsList(props: { itemId: string }) {
   const commentsSig = useSignal<Comment[]>([]);
   const cursorSig = useSignal<string>("");
-  const observer = useRef<IntersectionObserver>();
+  const observerRef = useRef<IntersectionObserver>();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   async function loadMoreComments() {
@@ -35,7 +35,7 @@ export default function CommentsList(props: { itemId: string }) {
       cursorSig.value,
     );
 
-    if (cursor === "") observer.current?.disconnect();
+    if (cursor === "") observerRef.current?.disconnect();
 
     commentsSig.value = [...commentsSig.value, ...comments];
     cursorSig.value = cursor;
@@ -50,20 +50,18 @@ export default function CommentsList(props: { itemId: string }) {
   }, []);
 
   useEffect(() => {
-    if (!observer.current) {
-      observer.current = new IntersectionObserver(([entry]) => {
+    if (!observerRef.current) {
+      observerRef.current = new IntersectionObserver(async ([entry]) => {
         if (entry.isIntersecting) {
-          loadMoreComments();
+          await loadMoreComments();
         }
       });
     }
 
-    if (cursorSig.value) {
-      observer.current.observe(bottomRef.current!);
-    }
+    observerRef.current.observe(bottomRef.current!);
 
     return () => {
-      observer.current?.disconnect();
+      observerRef.current?.disconnect();
     };
   }, [cursorSig.value]);
 
