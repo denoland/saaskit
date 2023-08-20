@@ -5,9 +5,8 @@ import { Comment } from "@/utils/db.ts";
 import UserPostedAt from "@/components/UserPostedAt.tsx";
 
 async function fetchComments(itemId: string, cursor: string) {
-  const url = `/api/items/${itemId}/comments${
-    cursor ? `?cursor=${cursor}` : ""
-  }`;
+  let url = `/api/items/${itemId}/comments`;
+  if (cursor !== "") url += "?cursor=" + cursor;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
   return await resp.json() as { comments: Comment[]; cursor: string };
