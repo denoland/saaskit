@@ -1,14 +1,36 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 
-import { createHandler } from "$fresh/server.ts";
+import { createHandler, Status } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
 import {
   assert,
+  assertArrayIncludes,
   assertEquals,
   assertFalse,
   assertInstanceOf,
+  assertNotEquals,
   assertStringIncludes,
 } from "std/testing/asserts.ts";
+import { genNewComment, genNewItem, genNewUser } from "@/utils/db_test.ts";
+import {
+  type Comment,
+  createComment,
+  createItem,
+  createUser,
+  type Item,
+} from "@/utils/db.ts";
+
+function assertResponseNotFound(resp: Response) {
+  assertFalse(resp.ok);
+  assertEquals(resp.body, null);
+  assertEquals(resp.status, Status.NotFound);
+}
+
+function assertResponseJson(resp: Response) {
+  assert(resp.ok);
+  assertNotEquals(resp.body, null);
+  assertEquals(resp.headers.get("content-type"), "application/json");
+}
 
 Deno.test("[http]", async (test) => {
   const handler = await createHandler(manifest);
@@ -156,5 +178,101 @@ Deno.test("[http]", async (test) => {
       "application/atom+xml; charset=utf-8",
     );
     assertEquals(resp.status, 200);
+  });
+
+  await test.step("GET /api/items", async () => {
+    const item1 = genNewItem();
+    const item2 = genNewItem();
+    await createItem(item1);
+    await createItem(item2);
+
+    const req = new Request("http://localhost/api/items");
+    const resp = await handler(req);
+
+    const { items } = await resp.json();
+    assertResponseJson(resp);
+    assertArrayIncludes(items, [
+      JSON.parse(JSON.stringify(item1)),
+      JSON.parse(JSON.stringify(item2)),
+    ]);
+  });
+
+  await test.step("GET /api/items/[id]", async () => {
+    const item = genNewItem();
+    const req = new Request("http://localhost/api/items/" + item.id);
+
+    const resp1 = await handler(req);
+    assertResponseNotFound(resp1);
+
+    await createItem(item);
+    const resp2 = await handler(req);
+    assertResponseJson(resp2);
+    assertEquals(await resp2.json(), JSON.parse(JSON.stringify(item)));
+  });
+
+  await test.step("GET /api/items/[id]/comments", async () => {
+    const item = genNewItem();
+    const comment: Comment = {
+      ...genNewComment(),
+      itemId: item.id,
+    };
+    const req = new Request(`http://localhost/api/items/${item.id}/comments`);
+
+    const resp1 = await handler(req);
+    assertResponseNotFound(resp1);
+
+    await createItem(item);
+    await createComment(comment);
+    const resp2 = await handler(req);
+    const { comments } = await resp2.json();
+    assertResponseJson(resp2);
+    assertEquals(comments, JSON.parse(JSON.stringify(comments)));
+  });
+
+  await test.step("GET /api/users", async () => {
+    const user1 = genNewUser();
+    const user2 = genNewUser();
+    await createUser(user1);
+    await createUser(user2);
+
+    const req = new Request("http://localhost/api/users");
+    const resp = await handler(req);
+
+    const { users } = await resp.json();
+    assertResponseJson(resp);
+    assertArrayIncludes(users, [user1, user2]);
+  });
+
+  await test.step("GET /api/users/[login]", async () => {
+    const user = genNewUser();
+    const req = new Request("http://localhost/api/users/" + user.login);
+
+    const resp1 = await handler(req);
+    assertResponseNotFound(resp1);
+
+    await createUser(user);
+    const resp2 = await handler(req);
+    assertResponseJson(resp2);
+    assertEquals(await resp2.json(), user);
+  });
+
+  await test.step("GET /api/users/[login]/items", async () => {
+    const user = genNewUser();
+    const item: Item = {
+      ...genNewItem(),
+      userLogin: user.login,
+    };
+    const req = new Request(`http://localhost/api/users/${user.login}/items`);
+
+    const resp1 = await handler(req);
+    assertResponseNotFound(resp1);
+
+    await createUser(user);
+    await createItem(item);
+
+    const resp2 = await handler(req);
+    const { items } = await resp2.json();
+    assertResponseJson(resp2);
+    assertArrayIncludes(items, [JSON.parse(JSON.stringify(item))]);
   });
 });

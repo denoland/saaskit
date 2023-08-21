@@ -72,6 +72,12 @@ export function getDatesSince(msAgo: number) {
   return dates;
 }
 
+export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
+  const values = [];
+  for await (const { value } of iter) values.push(value);
+  return values;
+}
+
 /** Converts `Date` to ISO format that is zero UTC offset */
 export function formatDate(date: Date) {
   return date.toISOString().split("T")[0];
@@ -152,6 +158,17 @@ export async function getItem(id: string) {
 
 export async function getItemsByUser(userLogin: string) {
   return await getValues<Item>({ prefix: ["items_by_user", userLogin] });
+}
+
+export function listItemsByUser(
+  userLogin: string,
+  options?: Deno.KvListOptions,
+) {
+  return kv.list<Item>({ prefix: ["items_by_user", userLogin] }, options);
+}
+
+export function listItemsByTime(options?: Deno.KvListOptions) {
+  return kv.list<Item>({ prefix: ["items_by_time"] }, options);
 }
 
 export async function getAllItems() {
@@ -332,6 +349,13 @@ export function listCommentsByItem(
     reverse: true,
     ...options,
   });
+}
+
+export function listCommentsByItem(
+  itemId: string,
+  options?: Deno.KvListOptions,
+) {
+  return kv.list<Comment>({ prefix: ["comments_by_item", itemId] }, options);
 }
 
 // Vote
@@ -542,6 +566,10 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 export async function getUsers() {
   return await getValues<User>({ prefix: ["users"] });
+}
+
+export function listUsers(options?: Deno.KvListOptions) {
+  return kv.list<User>({ prefix: ["users"] }, options);
 }
 
 export async function getAreVotedBySessionId(

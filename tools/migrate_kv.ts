@@ -11,7 +11,6 @@ export async function migrateKv() {
     }
   }
   await Promise.all(promises);
-
   console.log("KV migration complete");
 }
 
