@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { Handlers, Status } from "$fresh/server.ts";
 import { collectValues, getUser, listItemsByUser } from "@/utils/db.ts";
 import { getCursor } from "@/utils/pagination.ts";
