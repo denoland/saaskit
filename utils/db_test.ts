@@ -75,7 +75,7 @@ export function genNewUser(): User {
   };
 }
 
-function genNewNotification(): Notification {
+export function genNewNotification(): Notification {
   return {
     userLogin: crypto.randomUUID(),
     type: crypto.randomUUID(),
