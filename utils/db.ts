@@ -345,16 +345,6 @@ export function listCommentsByItem(
   itemId: string,
   options?: Deno.KvListOptions,
 ) {
-  return kv.list<Comment>({ prefix: ["comments_by_item", itemId] }, {
-    reverse: true,
-    ...options,
-  });
-}
-
-export function listCommentsByItem(
-  itemId: string,
-  options?: Deno.KvListOptions,
-) {
   return kv.list<Comment>({ prefix: ["comments_by_item", itemId] }, options);
 }
 
