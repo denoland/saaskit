@@ -61,7 +61,7 @@ export default function NotificationsList(props: { userLogin: string }) {
         ? notificationsSig.value?.map((notification) => (
           <NotificationSummary key={notification.id} {...notification} />
         ))
-        : "Nothing notifications yet"}
+        : "No notifications yet"}
       {cursorSig.value !== "" && !isLoadingSig.value && (
         <button onClick={loadMoreNotifications} class={LINK_STYLES}>
           Load more
