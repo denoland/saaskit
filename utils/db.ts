@@ -52,12 +52,6 @@ export function assertIsEntry<T>(
   assertNotEquals(entry.value, null, `KV entry not found: ${entry.key}`);
 }
 
-export async function valuesFromIter<T>(iter: Deno.KvListIterator<T>) {
-  const values = [];
-  for await (const result of iter) values.push(result.value);
-  return values;
-}
-
 /** Gets all dates since a given number of milliseconds ago */
 export function getDatesSince(msAgo: number) {
   const dates = [];
