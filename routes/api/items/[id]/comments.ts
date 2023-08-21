@@ -1,16 +1,22 @@
-// Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { RouteContext } from "$fresh/server.ts";
-import { listCommentsByItem, valuesFromIter } from "@/utils/db.ts";
+import { Handlers, Status } from "$fresh/server.ts";
+import { collectValues, getItem, listCommentsByItem } from "@/utils/db.ts";
 import { getCursor } from "@/utils/pagination.ts";
 
-export default async function getCommentsByItem(
-  _req: Request,
-  ctx: RouteContext,
-) {
-  const iter = listCommentsByItem(ctx.params.id, {
-    cursor: getCursor(ctx.url),
-    limit: 10,
-  });
-  const comments = await valuesFromIter(iter);
-  return Response.json({ comments, cursor: iter.cursor });
-}
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    const itemId = ctx.params.id;
+    const item = await getItem(itemId);
+    if (item === null) return new Response(null, { status: Status.NotFound });
+
+    const url = new URL(req.url);
+    const iter = listCommentsByItem(itemId, {
+      cursor: getCursor(url),
+      limit: 10,
+      // Newest to oldest
+      reverse: true,
+    });
+    const comments = await collectValues(iter);
+    return Response.json({ comments, cursor: iter.cursor });
+  },
+};

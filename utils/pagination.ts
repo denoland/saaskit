@@ -12,25 +12,5 @@ export function calcLastPage(total = 0, pageLength = PAGE_LENGTH): number {
 }
 
 export function getCursor(url: URL) {
-  return url.searchParams.get("cursor") ?? undefined;
-}
-
-export async function getPagination<T>(
-  iter: Deno.KvListIterator<T>,
-  limit: number,
-) {
-  const values: T[] = [];
-  let cursor = "";
-  let done = true;
-  for await (const entry of iter) {
-    if (values.length <= limit - 1) {
-      values.push(entry.value);
-      cursor = iter.cursor;
-    } else {
-      done = false;
-      break;
-    }
-  }
-
-  return { values, cursor, done };
+  return url.searchParams.get("cursor") ?? "";
 }
