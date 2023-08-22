@@ -9,7 +9,7 @@ Deno.test("[url_validation] isValidUrl()", () => {
   assertEquals(isValidUrl("ws://hunt.deno.land/"), false);
   assertEquals(isValidUrl("wss://hunt.deno.land/"), false);
   assertEquals(isValidUrl("invalidurl"), false);
-})
+});
 
 Deno.test("[url_validation] isPublicUrl()", () => {
   assertEquals(isPublicUrl("https://hunt.deno.land/"), true);
@@ -21,4 +21,4 @@ Deno.test("[url_validation] isPublicUrl()", () => {
   assertEquals(isPublicUrl("http://10.0.0.0/"), false);
   assertEquals(isPublicUrl("http://172.16.0.0/"), false);
   assertEquals(isPublicUrl("http://192.168.0.0/"), false);
-})
+});

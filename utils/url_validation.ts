@@ -21,5 +21,4 @@ export function isPublicUrl(string: string): boolean {
   } catch (_) {
     return false;
   }
-  
 }
