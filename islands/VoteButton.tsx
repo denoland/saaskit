@@ -13,7 +13,7 @@ export default function VoteButton(props: VoteButtonProps) {
 
   async function onClick(event: MouseEvent) {
     if (event.detail === 1) {
-      const url = `/api/vote?item_id=${props.item.id}`;
+      const url = `/api/items/${props.item.id}/vote`;
       const method = isVoted.value ? "DELETE" : "POST";
       const resp = await fetch(url, { method, credentials: "same-origin" });
 

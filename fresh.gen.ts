@@ -12,13 +12,13 @@ import * as $6 from "./routes/account/manage.ts";
 import * as $7 from "./routes/account/upgrade.ts";
 import * as $8 from "./routes/api/items/[id]/comments.ts";
 import * as $9 from "./routes/api/items/[id]/index.ts";
-import * as $10 from "./routes/api/items/index.ts";
-import * as $11 from "./routes/api/stripe-webhooks.ts";
-import * as $12 from "./routes/api/users/[login]/index.ts";
-import * as $13 from "./routes/api/users/[login]/items.ts";
-import * as $14 from "./routes/api/users/[login]/notifications.ts";
-import * as $15 from "./routes/api/users/index.ts";
-import * as $16 from "./routes/api/vote.ts";
+import * as $10 from "./routes/api/items/[id]/vote.ts";
+import * as $11 from "./routes/api/items/index.ts";
+import * as $12 from "./routes/api/stripe-webhooks.ts";
+import * as $13 from "./routes/api/users/[login]/index.ts";
+import * as $14 from "./routes/api/users/[login]/items.ts";
+import * as $15 from "./routes/api/users/[login]/notifications.ts";
+import * as $16 from "./routes/api/users/index.ts";
 import * as $17 from "./routes/blog/[slug].tsx";
 import * as $18 from "./routes/blog/index.tsx";
 import * as $19 from "./routes/callback.ts";
@@ -56,13 +56,13 @@ const manifest = {
     "./routes/account/upgrade.ts": $7,
     "./routes/api/items/[id]/comments.ts": $8,
     "./routes/api/items/[id]/index.ts": $9,
-    "./routes/api/items/index.ts": $10,
-    "./routes/api/stripe-webhooks.ts": $11,
-    "./routes/api/users/[login]/index.ts": $12,
-    "./routes/api/users/[login]/items.ts": $13,
-    "./routes/api/users/[login]/notifications.ts": $14,
-    "./routes/api/users/index.ts": $15,
-    "./routes/api/vote.ts": $16,
+    "./routes/api/items/[id]/vote.ts": $10,
+    "./routes/api/items/index.ts": $11,
+    "./routes/api/stripe-webhooks.ts": $12,
+    "./routes/api/users/[login]/index.ts": $13,
+    "./routes/api/users/[login]/items.ts": $14,
+    "./routes/api/users/[login]/notifications.ts": $15,
+    "./routes/api/users/index.ts": $16,
     "./routes/blog/[slug].tsx": $17,
     "./routes/blog/index.tsx": $18,
     "./routes/callback.ts": $19,

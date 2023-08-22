@@ -25,11 +25,11 @@ import {
   getUser,
   getUserBySession,
   getUserByStripeCustomer,
-  getVotesByUser,
   ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
   listCommentsByItem,
+  listItemsByUser,
   listNotificationsByUser,
   newCommentProps,
   newItemProps,
@@ -212,25 +212,25 @@ Deno.test("[db] votes", async () => {
   const user = genNewUser();
   const vote = {
     item,
-    userLogin: user.login,
+    user,
     ...newVoteProps(),
   };
 
   const dates = [vote.createdAt];
   assertEquals(await getManyMetrics("votes_count", dates), [0n]);
-  assertEquals(await getVotesByUser(vote.userLogin), []);
+  assertEquals(await collectValues(listItemsByUser(user.login)), []);
 
   await assertRejects(async () => await createVote(vote));
   await createItem(item);
   await createUser(user);
   await createVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
-  assertEquals(await getVotesByUser(vote.userLogin), [vote]);
+  assertEquals(await collectValues(listItemsByUser(user.login)), [item]);
   await assertRejects(async () => await createVote(vote));
 
   await deleteVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
-  assertEquals(await getVotesByUser(vote.userLogin), []);
+  assertEquals(await collectValues(listItemsByUser(user.login)), []);
 });
 
 Deno.test("[db] getManyMetrics()", async () => {
@@ -330,7 +330,7 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
   };
 
   const user = genNewUser();
-  const vote = { ...newVoteProps(), userLogin: user.login, item };
+  const vote = { item, user, ...newVoteProps() };
 
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getItem(item.id), null);
