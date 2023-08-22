@@ -209,7 +209,9 @@ Deno.test("[http]", async (test) => {
     const req = new Request("http://localhost/api/items/" + item.id);
 
     const resp1 = await handler(req);
-    assertResponseNotFound(resp1);
+    assertFalse(resp1.ok);
+    assertEquals(await resp1.text(), "Item not found");
+    assertEquals(resp1.status, Status.NotFound);
 
     await createItem(item);
     const resp2 = await handler(req);
@@ -226,7 +228,9 @@ Deno.test("[http]", async (test) => {
     const req = new Request(`http://localhost/api/items/${item.id}/comments`);
 
     const resp1 = await handler(req);
-    assertResponseNotFound(resp1);
+    assertFalse(resp1.ok);
+    assertEquals(await resp1.text(), "Item not found");
+    assertEquals(resp1.status, Status.NotFound);
 
     await createItem(item);
     await createComment(comment);
@@ -255,7 +259,9 @@ Deno.test("[http]", async (test) => {
     const req = new Request("http://localhost/api/users/" + user.login);
 
     const resp1 = await handler(req);
-    assertResponseNotFound(resp1);
+    assertFalse(resp1.ok);
+    assertEquals(await resp1.text(), "User not found");
+    assertEquals(resp1.status, Status.NotFound);
 
     await createUser(user);
     const resp2 = await handler(req);
