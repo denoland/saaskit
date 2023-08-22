@@ -1,4 +1,4 @@
-// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 
 export function isValidUrl(string: string): boolean {
   return URL.canParse(string) && string.startsWith("http");
