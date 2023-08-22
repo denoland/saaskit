@@ -12,7 +12,6 @@ import {
   deleteUserBySession,
   formatDate,
   getAllItems,
-  getCommentsByItem,
   getDatesSince,
   getItem,
   getItemsByUser,
