@@ -27,7 +27,7 @@ async function getValues<T>(
 ) {
   const values = [];
   const iter = kv.list<T>(selector, options);
-  for await (const { value } of iter) values.push(value);
+  for await (const entry of iter) values.push(entry.value);
   return values;
 }
 
@@ -64,6 +64,12 @@ export function getDatesSince(msAgo: number) {
   }
 
   return dates;
+}
+
+export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
+  const values = [];
+  for await (const { value } of iter) values.push(value);
+  return values;
 }
 
 /** Converts `Date` to ISO format that is zero UTC offset */
@@ -146,6 +152,17 @@ export async function getItemsByUser(userLogin: string) {
   return await getValues<Item>({ prefix: ["items_by_user", userLogin] });
 }
 
+export function listItemsByUser(
+  userLogin: string,
+  options?: Deno.KvListOptions,
+) {
+  return kv.list<Item>({ prefix: ["items_by_user", userLogin] }, options);
+}
+
+export function listItemsByTime(options?: Deno.KvListOptions) {
+  return kv.list<Item>({ prefix: ["items_by_time"] }, options);
+}
+
 export async function getAllItems() {
   return await getValues<Item>({ prefix: ["items"] });
 }
@@ -217,6 +234,7 @@ export async function createNotification(notification: Notification) {
   const notificationsByUserKey = [
     "notifications_by_user",
     notification.userLogin,
+    notification.createdAt.getTime(),
     notification.id,
   ];
 
@@ -237,6 +255,7 @@ export async function deleteNotification(notification: Notification) {
   const notificationsByUserKey = [
     "notifications_by_user",
     notification.userLogin,
+    notification.createdAt.getTime(),
     notification.id,
   ];
 
@@ -254,10 +273,13 @@ export async function getNotification(id: string) {
   return await getValue<Notification>(["notifications", id]);
 }
 
-export async function getNotificationsByUser(userLogin: string) {
-  return await getValues<Notification>({
+export function listNotificationsByUser(
+  userLogin: string,
+  options?: Deno.KvListOptions,
+) {
+  return kv.list<Notification>({
     prefix: ["notifications_by_user", userLogin],
-  });
+  }, options);
 }
 
 export async function ifUserHasNotifications(userLogin: string) {
@@ -286,7 +308,12 @@ export function newCommentProps(): Pick<Comment, "id" | "createdAt"> {
 }
 
 export async function createComment(comment: Comment) {
-  const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
+  const commentsByItemKey = [
+    "comments_by_item",
+    comment.itemId,
+    comment.createdAt.getTime(),
+    comment.id,
+  ];
 
   const res = await kv.atomic()
     .check({ key: commentsByItemKey, versionstamp: null })
@@ -297,7 +324,12 @@ export async function createComment(comment: Comment) {
 }
 
 export async function deleteComment(comment: Comment) {
-  const commentsByItemKey = ["comments_by_item", comment.itemId, comment.id];
+  const commentsByItemKey = [
+    "comments_by_item",
+    comment.itemId,
+    comment.createdAt.getTime(),
+    comment.id,
+  ];
 
   const res = await kv.atomic()
     .delete(commentsByItemKey)
@@ -306,8 +338,11 @@ export async function deleteComment(comment: Comment) {
   if (!res.ok) throw new Error(`Failed to delete comment: ${comment}`);
 }
 
-export async function getCommentsByItem(itemId: string) {
-  return await getValues<Comment>({ prefix: ["comments_by_item", itemId] });
+export function listCommentsByItem(
+  itemId: string,
+  options?: Deno.KvListOptions,
+) {
+  return kv.list<Comment>({ prefix: ["comments_by_item", itemId] }, options);
 }
 
 // User
@@ -417,6 +452,10 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 export async function getUsers() {
   return await getValues<User>({ prefix: ["users"] });
+}
+
+export function listUsers(options?: Deno.KvListOptions) {
+  return kv.list<User>({ prefix: ["users"] }, options);
 }
 
 // Analytics

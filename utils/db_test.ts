@@ -1,5 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import {
+  collectValues,
   type Comment,
   createComment,
   createItem,
@@ -18,13 +19,14 @@ import {
   getItemsSince,
   getManyMetrics,
   getNotification,
-  getNotificationsByUser,
   getUser,
   getUserBySession,
   getUserByStripeCustomer,
   ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
+  listCommentsByItem,
+  listNotificationsByUser,
   newCommentProps,
   newItemProps,
   newNotificationProps,
@@ -41,7 +43,7 @@ import {
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
 
-function genNewComment(): Comment {
+export function genNewComment(): Comment {
   return {
     itemId: crypto.randomUUID(),
     userLogin: crypto.randomUUID(),
@@ -50,7 +52,7 @@ function genNewComment(): Comment {
   };
 }
 
-function genNewItem(): Item {
+export function genNewItem(): Item {
   return {
     userLogin: crypto.randomUUID(),
     title: crypto.randomUUID(),
@@ -59,7 +61,7 @@ function genNewItem(): Item {
   };
 }
 
-function genNewUser(): User {
+export function genNewUser(): User {
   return {
     login: crypto.randomUUID(),
     sessionId: crypto.randomUUID(),
@@ -68,7 +70,7 @@ function genNewUser(): User {
   };
 }
 
-function genNewNotification(): Notification {
+export function genNewNotification(): Notification {
   return {
     userLogin: crypto.randomUUID(),
     type: crypto.randomUUID(),
@@ -184,16 +186,19 @@ Deno.test("[db] (create/delete)Comment() + getCommentsByItem()", async () => {
   const comment1 = { ...genNewComment(), itemId };
   const comment2 = { ...genNewComment(), itemId };
 
-  assertEquals(await getCommentsByItem(itemId), []);
+  assertEquals(await collectValues(listCommentsByItem(itemId)), []);
 
   await createComment(comment1);
   await createComment(comment2);
   await assertRejects(async () => await createComment(comment2));
-  assertArrayIncludes(await getCommentsByItem(itemId), [comment1, comment2]);
+  assertArrayIncludes(await collectValues(listCommentsByItem(itemId)), [
+    comment1,
+    comment2,
+  ]);
 
   await deleteComment(comment1);
   await deleteComment(comment2);
-  assertEquals(await getCommentsByItem(itemId), []);
+  assertEquals(await collectValues(listCommentsByItem(itemId)), []);
 });
 
 Deno.test("[db] getManyMetrics()", async () => {
@@ -242,12 +247,12 @@ Deno.test("[db] getNotificationsByUser()", async () => {
   const notification1 = { ...genNewNotification(), userLogin };
   const notification2 = { ...genNewNotification(), userLogin };
 
-  assertEquals(await getNotificationsByUser(userLogin), []);
+  assertEquals(await collectValues(listNotificationsByUser(userLogin)), []);
   assertEquals(await ifUserHasNotifications(userLogin), false);
 
   await createNotification(notification1);
   await createNotification(notification2);
-  assertArrayIncludes(await getNotificationsByUser(userLogin), [
+  assertArrayIncludes(await collectValues(listNotificationsByUser(userLogin)), [
     notification1,
     notification2,
   ]);
