@@ -1,3 +1,5 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+
 import { assertEquals } from "std/testing/asserts.ts";
 import { isPublicUrl, isValidUrl } from "./url_validation.ts";
 
