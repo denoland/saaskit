@@ -3,6 +3,7 @@ import type { Handlers } from "$fresh/server.ts";
 import { stripe } from "@/utils/payments.ts";
 import Stripe from "stripe";
 import { getUserByStripeCustomer, updateUser } from "@/utils/db.ts";
+import { errors } from "std/http/http_errors.ts";
 
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
@@ -12,8 +13,8 @@ export const handler: Handlers = {
    * 1. customer.subscription.created (when a user subscribes to the premium plan)
    * 2. customer.subscription.deleted (when a user cancels the premium plan)
    */
-  async POST(req, ctx) {
-    if (stripe === undefined) return await ctx.renderNotFound();
+  async POST(req) {
+    if (stripe === undefined) throw new errors.NotFound();
 
     const body = await req.text();
     const signature = req.headers.get("stripe-signature")!;
@@ -39,20 +40,18 @@ export const handler: Handlers = {
     switch (event.type) {
       case "customer.subscription.created": {
         const user = await getUserByStripeCustomer(customer);
-        if (!user) return new Response(null, { status: 400 });
+        if (user === null) throw new errors.NotFound("User not found");
         await updateUser({ ...user, isSubscribed: true });
         return new Response(null, { status: 201 });
       }
       case "customer.subscription.deleted": {
         const user = await getUserByStripeCustomer(customer);
-        if (!user) return new Response(null, { status: 400 });
+        if (user === null) throw new errors.NotFound("User not found");
         await updateUser({ ...user, isSubscribed: false });
         return new Response(null, { status: 202 });
       }
       default: {
-        const message = `Event type not supported: ${event.type}`;
-        console.error(message);
-        return new Response(message, { status: 400 });
+        throw new errors.BadRequest("Event type not supported");
       }
     }
   },

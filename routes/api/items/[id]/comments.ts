@@ -1,13 +1,14 @@
-import { Handlers, Status } from "$fresh/server.ts";
+import type { Handlers } from "$fresh/server.ts";
 import { collectValues, getItem, listCommentsByItem } from "@/utils/db.ts";
 import { getCursor } from "@/utils/pagination.ts";
+import { errors } from "std/http/http_errors.ts";
 
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export const handler: Handlers = {
   async GET(req, ctx) {
     const itemId = ctx.params.id;
     const item = await getItem(itemId);
-    if (item === null) return new Response(null, { status: Status.NotFound });
+    if (item === null) throw new errors.NotFound("Item not found");
 
     const url = new URL(req.url);
     const iter = listCommentsByItem(itemId, {
