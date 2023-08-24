@@ -349,8 +349,8 @@ export function listCommentsByItem(
 
 // Vote
 export interface Vote {
-  item: Item;
-  user: User;
+  itemId: string;
+  userLogin: string;
   // The below property can be automatically generated upon vote creation
   createdAt: Date;
 }
@@ -362,100 +362,96 @@ export function newVoteProps(): Pick<Vote, "createdAt"> {
 }
 
 export async function createVote(vote: Vote) {
-  vote.item.score++;
+  const itemKey = ["items", vote.itemId];
+  const userKey = ["users", vote.userLogin];
+  const [itemRes, userRes] = await kv.getMany<[Item, User]>([itemKey, userKey]);
+  const item = itemRes.value;
+  const user = userRes.value;
+  if (item === null) throw new Deno.errors.NotFound("Item not found");
+  if (user === null) throw new Deno.errors.NotFound("User not found");
 
-  const itemKey = ["items", vote.item.id];
-  const itemsByTimeKey = [
-    "items_by_time",
-    vote.item.createdAt.getTime(),
-    vote.item.id,
+  const itemVotedByUserKey = [
+    "items_voted_by_user",
+    vote.userLogin,
+    vote.itemId,
   ];
-  const itemsByUserKey = ["items_by_user", vote.item.userLogin, vote.item.id];
-  const [itemRes, itemsByTimeRes, itemsByUserRes] = await kv.getMany([
-    itemKey,
-    itemsByTimeKey,
-    itemsByUserKey,
-  ]);
-  assertIsEntry(itemRes);
-  assertIsEntry(itemsByTimeRes);
-  assertIsEntry(itemsByUserRes);
-
-  const votedItemsByUserKey = ["voted_items_by_user", vote.user.login];
-  const votedUsersByItemKey = ["voted_users_by_item", vote.item.id];
+  const userVotedForItemKey = [
+    "users_voted_for_item",
+    vote.itemId,
+    vote.userLogin,
+  ];
+  const itemByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
+  const itemByUserKey = ["items_by_user", item.userLogin, item.id];
   const votesCountKey = ["votes_count", formatDate(vote.createdAt)];
+
+  item.score++;
 
   const res = await kv.atomic()
     .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
-    .check({ key: votedItemsByUserKey, versionstamp: null })
-    .check({ key: votedUsersByItemKey, versionstamp: null })
-    .set(itemKey, vote.item)
-    .set(itemsByTimeKey, vote.item)
-    .set(itemsByUserKey, vote.item)
-    .set(votedItemsByUserKey, vote)
-    .set(votedUsersByItemKey, vote)
+    .check(userRes)
+    .check({ key: itemVotedByUserKey, versionstamp: null })
+    .check({ key: userVotedForItemKey, versionstamp: null })
+    .set(itemKey, item)
+    .set(itemByTimeKey, item)
+    .set(itemByUserKey, item)
+    .set(itemVotedByUserKey, item)
+    .set(userVotedForItemKey, user)
     .sum(votesCountKey, 1n)
     .commit();
 
-  if (!res.ok) throw new Error(`Failed to set vote: ${vote}`);
+  if (!res.ok) throw new Error("Failed to set vote");
 }
 
 export async function deleteVote(vote: Omit<Vote, "createdAt">) {
-  vote.item.score--;
-
-  const itemKey = ["items", vote.item.id];
-  const itemsByTimeKey = [
-    "items_by_time",
-    vote.item.createdAt.getTime(),
-    vote.item.id,
+  const itemKey = ["items", vote.itemId];
+  const userKey = ["users", vote.userLogin];
+  const itemVotedByUserKey = [
+    "items_voted_by_user",
+    vote.userLogin,
+    vote.itemId,
   ];
-  const itemsByUserKey = ["items_by_user", vote.item.userLogin, vote.item.id];
-  const votedItemsByUserKey = ["voted_items_by_user", vote.user.login];
-  const votedUsersByItemKey = ["voted_users_by_item", vote.item.id];
-  const [
-    itemRes,
-    itemsByTimeRes,
-    itemsByUserRes,
-    votedItemsByUserRes,
-    votedUsersByItemRes,
-  ] = await kv.getMany([
-    itemKey,
-    itemsByTimeKey,
-    itemsByUserKey,
-    votedItemsByUserKey,
-    votedUsersByItemKey,
-  ]);
-  [
-    itemRes,
-    itemsByTimeRes,
-    itemsByUserRes,
-    votedItemsByUserRes,
-    votedUsersByItemRes,
-  ].forEach(assertIsEntry);
+  const userVotedForItemKey = [
+    "users_voted_for_item",
+    vote.itemId,
+    vote.userLogin,
+  ];
+  const [itemRes, userRes, itemVotedByUserRes, userVotedForItemRes] = await kv
+    .getMany<
+      [Item, User, Item, User]
+    >([itemKey, userKey, itemVotedByUserKey, userVotedForItemKey]);
+  const item = itemRes.value;
+  const user = userRes.value;
+  if (item === null) throw new Deno.errors.NotFound("Item not found");
+  if (user === null) throw new Deno.errors.NotFound("User not found");
+  if (itemVotedByUserRes.value === null) {
+    throw new Deno.errors.NotFound("Item voted by user not found");
+  }
+  if (userVotedForItemRes.value === null) {
+    throw new Deno.errors.NotFound("User voted for item not found");
+  }
+
+  const itemByTimeKey = ["items_by_time", item.createdAt.getTime(), item.id];
+  const itemByUserKey = ["items_by_user", item.userLogin, item.id];
+
+  item.score--;
 
   const res = await kv.atomic()
     .check(itemRes)
-    .check(itemsByTimeRes)
-    .check(itemsByUserRes)
-    .check(votedItemsByUserRes)
-    .check(votedUsersByItemRes)
-    .set(itemKey, vote.item)
-    .set(itemsByTimeKey, vote.item)
-    .set(itemsByUserKey, vote.item)
-    .delete(votedItemsByUserKey)
-    .delete(votedUsersByItemKey)
+    .check(userRes)
+    .check(itemVotedByUserRes)
+    .check(userVotedForItemRes)
+    .set(itemKey, item)
+    .set(itemByTimeKey, item)
+    .set(itemByUserKey, item)
+    .delete(itemVotedByUserKey)
+    .delete(userVotedForItemKey)
     .commit();
 
   if (!res.ok) throw new Error("Failed to delete vote");
 }
 
-export function listVotedItemsByUser(userLogin: string) {
-  return kv.list<Item>({ prefix: ["voted_items_by_user", userLogin] });
-}
-
-export async function getVotesByUser(userLogin: string) {
-  return await getValues<Vote>({ prefix: ["votes_by_user", userLogin] });
+export function listItemsVotedByUser(userLogin: string) {
+  return kv.list<Item>({ prefix: ["items_voted_by_user", userLogin] });
 }
 
 // User
@@ -576,11 +572,11 @@ export async function getAreVotedBySessionId(
   sessionId?: string,
 ) {
   if (!sessionId) return [];
-  const sessionUser = await getUserBySession(sessionId);
-  if (!sessionUser) return [];
-  const votes = await getVotesByUser(sessionUser.login);
-  const votesItemsIds = votes.map((vote) => vote.item.id);
-  return items.map((item) => votesItemsIds.includes(item.id));
+  const user = await getUserBySession(sessionId);
+  if (!user) return [];
+  const votedItems = await collectValues(listItemsVotedByUser(user.login));
+  const votedItemsIds = votedItems.map((item) => item.id);
+  return items.map((item) => votedItemsIds.includes(item.id));
 }
 
 export function compareScore(a: Item, b: Item) {

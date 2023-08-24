@@ -29,7 +29,7 @@ import {
   incrVisitsCountByDay,
   type Item,
   listCommentsByItem,
-  listItemsByUser,
+  listItemsVotedByUser,
   listNotificationsByUser,
   newCommentProps,
   newItemProps,
@@ -211,26 +211,28 @@ Deno.test("[db] votes", async () => {
   const item = genNewItem();
   const user = genNewUser();
   const vote = {
-    item,
-    user,
+    itemId: item.id,
+    userLogin: user.login,
     ...newVoteProps(),
   };
 
   const dates = [vote.createdAt];
   assertEquals(await getManyMetrics("votes_count", dates), [0n]);
-  assertEquals(await collectValues(listItemsByUser(user.login)), []);
+  assertEquals(await collectValues(listItemsVotedByUser(user.login)), []);
 
   await assertRejects(async () => await createVote(vote));
   await createItem(item);
   await createUser(user);
   await createVote(vote);
+  item.score++;
+
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
-  assertEquals(await collectValues(listItemsByUser(user.login)), [item]);
+  assertEquals(await collectValues(listItemsVotedByUser(user.login)), [item]);
   await assertRejects(async () => await createVote(vote));
 
   await deleteVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
-  assertEquals(await collectValues(listItemsByUser(user.login)), []);
+  assertEquals(await collectValues(listItemsVotedByUser(user.login)), []);
 });
 
 Deno.test("[db] getManyMetrics()", async () => {
@@ -321,16 +323,13 @@ Deno.test("[db] compareScore()", () => {
 });
 
 Deno.test("[db] getAreVotedBySessionId()", async () => {
-  const item: Item = {
-    userLogin: crypto.randomUUID(),
-    title: crypto.randomUUID(),
-    url: `http://${crypto.randomUUID()}.com`,
-    ...newItemProps(),
-    score: 1,
-  };
-
+  const item = genNewItem();
   const user = genNewUser();
-  const vote = { item, user, ...newVoteProps() };
+  const vote = {
+    itemId: item.id,
+    userLogin: user.login,
+    ...newVoteProps(),
+  };
 
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getItem(item.id), null);
@@ -348,6 +347,7 @@ Deno.test("[db] getAreVotedBySessionId()", async () => {
   await createItem(item);
   await createUser(user);
   await createVote(vote);
+  item.score++;
 
   assertEquals(await getItem(item.id), item);
   assertEquals(await getUserBySession(user.sessionId), user);

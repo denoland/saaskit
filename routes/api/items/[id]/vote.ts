@@ -24,8 +24,8 @@ export const handler: Handlers<undefined, State> = {
     if (user === null) return new Response(null, { status: Status.NotFound });
 
     await createVote({
-      item,
-      user,
+      itemId,
+      userLogin: user.login,
       ...newVoteProps(),
     });
 
@@ -52,7 +52,7 @@ export const handler: Handlers<undefined, State> = {
     const user = await getUserBySession(ctx.state.sessionId);
     if (user === null) return new Response(null, { status: Status.NotFound });
 
-    await deleteVote({ item, user });
+    await deleteVote({ itemId, userLogin: user.login });
 
     return new Response(null, { status: Status.NoContent });
   },
