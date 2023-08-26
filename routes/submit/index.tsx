@@ -3,6 +3,7 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import { HEADING_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import {
   createItem,
+  getItemsByUser,
   getUserBySession,
   type Item,
   newItemProps,
@@ -35,6 +36,12 @@ export const handler: Handlers<SignedInState, SignedInState> = {
     const user = await getUserBySession(ctx.state.sessionId);
 
     if (!user) return new Response(null, { status: 400 });
+
+    const items = await getItemsByUser(user.login);
+
+    if (items.some((item) => item.url === url || item.title === title)) {
+      return new Response(null, { status: 400 });
+    }
 
     const item: Item = {
       userLogin: user.login,
