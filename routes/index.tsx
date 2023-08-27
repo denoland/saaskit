@@ -50,7 +50,7 @@ export default async function HomePage(
       <Head href={ctx.url.href} />
       <main class="flex-1 p-4">
         {NEEDS_SETUP && <SetupInstruction />}
-        <ItemsList />
+        <ItemsList endpoint={"/api/items"} />
       </main>
     </>
   );

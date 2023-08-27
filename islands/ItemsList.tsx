@@ -4,10 +4,10 @@ import { useEffect } from "preact/hooks";
 import type { Item } from "@/utils/db.ts";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
-import UserPostedAt from "@/components/UserPostedAt.tsx";
+import ItemSummary from "@/components/ItemSummary.tsx";
 
-async function fetchItems(cursor: string) {
-  let url = "/api/items";
+async function fetchItems(endpoint: string, cursor: string) {
+  let url = endpoint;
   if (cursor !== "") url += "?cursor=" + cursor;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
@@ -41,68 +41,7 @@ function EmptyItemsList() {
   );
 }
 
-interface ItemSummaryProps {
-  item: Item;
-  isVoted: boolean;
-}
-
-function ItemSummary(props: ItemSummaryProps) {
-  const isVoted = useSignal(props.isVoted);
-  const score = useSignal(props.item.score);
-  const url = `/api/items/${props.item.id}/vote`;
-
-  async function onClick(event: MouseEvent) {
-    if (event.detail !== 1) return;
-    const method = isVoted.value ? "DELETE" : "POST";
-    const resp = await fetch(url, { method });
-
-    if (resp.status === 401) {
-      window.location.href = "/signin";
-      return;
-    }
-    if (!resp.ok) throw new Error(`Request failed: ${method} ${url}`);
-
-    isVoted.value = !isVoted.value;
-    method === "POST" ? score.value++ : score.value--;
-  }
-
-  return (
-    <div class="py-2 flex gap-4">
-      <button
-        class={(isVoted.value ? "text-primary" : "text-inherit") +
-          " pr-2 text-center"}
-        onClick={onClick}
-      >
-        ▲
-        <br />
-        {score.value}
-      </button>
-      <div class="space-y-1">
-        <p>
-          <a
-            class="visited:(text-[purple] dark:text-[lightpink]) hover:underline mr-4"
-            href={`/items/${props.item.id}`}
-          >
-            {props.item.title}
-          </a>
-          <a
-            class="hover:underline text-gray-500"
-            href={props.item.url}
-            target="_blank"
-          >
-            {new URL(props.item.url).host} ↗
-          </a>
-        </p>
-        <UserPostedAt
-          userLogin={props.item.userLogin}
-          createdAt={props.item.createdAt}
-        />
-      </div>
-    </div>
-  );
-}
-
-export default function ItemsList() {
+export default function ItemsList(props: { endpoint: string }) {
   const itemsSig = useSignal<Item[]>([]);
   const votedItemsIdsSig = useSignal<string[]>([]);
   const itemsAreVotedSig = useSignal<boolean[]>([]);
@@ -117,7 +56,10 @@ export default function ItemsList() {
   async function loadMoreItems() {
     isLoadingSig.value = true;
     try {
-      const { items, cursor } = await fetchItems(cursorSig.value);
+      const { items, cursor } = await fetchItems(
+        props.endpoint,
+        cursorSig.value,
+      );
       itemsSig.value = [...itemsSig.value, ...items];
       cursorSig.value = cursor;
     } catch (error) {
