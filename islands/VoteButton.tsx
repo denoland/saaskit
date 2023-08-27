@@ -35,7 +35,7 @@ export default function VoteButton(props: VoteButtonProps) {
     >
       ▲
       <br />
-      {score.value}
+      {score}
     </button>
   );
 }
