@@ -9,6 +9,7 @@ interface OldVote {
   createdAt: Date;
 }
 
+/** @todo Remove previous vote data once this migration is complete */
 export async function migrateKv() {
   const promises = [];
   const iter = kv.list<OldVote>({ prefix: ["votes"] });
