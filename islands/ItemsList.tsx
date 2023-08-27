@@ -1,5 +1,5 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { useSignal } from "@preact/signals";
+import { useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import type { Item } from "@/utils/db.ts";
 import { LINK_STYLES } from "@/utils/constants.ts";
@@ -44,14 +44,11 @@ function EmptyItemsList() {
 export default function ItemsList(props: { endpoint: string }) {
   const itemsSig = useSignal<Item[]>([]);
   const votedItemsIdsSig = useSignal<string[]>([]);
-  const itemsAreVotedSig = useSignal<boolean[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal(false);
-
-  function calcAreVotedItems() {
-    itemsAreVotedSig.value = itemsSig.value
-      .map((item) => votedItemsIdsSig.value.includes(item.id));
-  }
+  const itemsAreVotedSig = useComputed(() =>
+    itemsSig.value.map((item) => votedItemsIdsSig.value.includes(item.id))
+  );
 
   async function loadMoreItems() {
     isLoadingSig.value = true;
@@ -74,13 +71,8 @@ export default function ItemsList(props: { endpoint: string }) {
       .then((votedItems) =>
         votedItemsIdsSig.value = votedItems.map(({ id }) => id)
       )
-      .then(() => loadMoreItems())
-      .then(() => calcAreVotedItems());
+      .then(() => loadMoreItems());
   }, []);
-
-  useEffect(() => {
-    calcAreVotedItems();
-  }, [cursorSig.value]);
 
   return (
     <div>
