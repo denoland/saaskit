@@ -345,8 +345,9 @@ export async function createVote(vote: Vote) {
   const res = await kv.atomic()
     .check(itemRes)
     .check(userRes)
-    .check({ key: itemVotedByUserKey, versionstamp: null })
-    .check({ key: userVotedForItemKey, versionstamp: null })
+    /** @todo(iuioiua) Enable these checks once the migration is complete */
+    // .check({ key: itemVotedByUserKey, versionstamp: null })
+    // .check({ key: userVotedForItemKey, versionstamp: null })
     .set(itemKey, item)
     .set(itemByTimeKey, item)
     .set(itemByUserKey, item)
@@ -355,7 +356,7 @@ export async function createVote(vote: Vote) {
     .sum(votesCountKey, 1n)
     .commit();
 
-  if (!res.ok) throw new Error("Failed to set vote");
+  if (!res.ok) throw new Error("Failed to set vote", { cause: vote });
 }
 
 export async function deleteVote(vote: Omit<Vote, "createdAt">) {
