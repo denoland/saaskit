@@ -21,16 +21,6 @@ async function getValue<T>(
   return res.value;
 }
 
-async function getValues<T>(
-  selector: Deno.KvListSelector,
-  options?: Deno.KvListOptions,
-) {
-  const values = [];
-  const iter = kv.list<T>(selector, options);
-  for await (const entry of iter) values.push(entry.value);
-  return values;
-}
-
 /**
  * Gets many values from KV. Uses batched requests to get values in chunks of 10.
  */
@@ -150,10 +140,6 @@ export async function getItem(id: string) {
   return await getValue<Item>(["items", id]);
 }
 
-export async function getItemsByUser(userLogin: string) {
-  return await getValues<Item>({ prefix: ["items_by_user", userLogin] });
-}
-
 export function listItemsByUser(
   userLogin: string,
   options?: Deno.KvListOptions,
@@ -163,36 +149,6 @@ export function listItemsByUser(
 
 export function listItemsByTime(options?: Deno.KvListOptions) {
   return kv.list<Item>({ prefix: ["items_by_time"] }, options);
-}
-
-export async function getAllItems() {
-  return await getValues<Item>({ prefix: ["items"] });
-}
-
-/**
- * Gets all items since a given number of milliseconds ago from KV.
- *
- * @example Since a week ago
- * ```ts
- * import { WEEK } from "std/datetime/constants.ts";
- * import { getItemsSince } from "@/utils/db.ts";
- *
- * const itemsSinceAllTime = await getItemsSince(WEEK);
- * ```
- *
- * @example Since a month ago
- * ```ts
- * import { DAY } from "std/datetime/constants.ts";
- * import { getItemsSince } from "@/utils/db.ts";
- *
- * const itemsSinceAllTime = await getItemsSince(DAY * 30);
- * ```
- */
-export async function getItemsSince(msAgo: number) {
-  return await getValues<Item>({
-    prefix: ["items_by_time"],
-    start: ["items_by_time", Date.now() - msAgo],
-  });
 }
 
 // Notification
@@ -557,10 +513,6 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
     "users_by_stripe_customer",
     stripeCustomerId,
   ]);
-}
-
-export async function getUsers() {
-  return await getValues<User>({ prefix: ["users"] });
 }
 
 export function listUsers(options?: Deno.KvListOptions) {

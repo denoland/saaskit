@@ -14,12 +14,9 @@ import {
   deleteUserBySession,
   deleteVote,
   formatDate,
-  getAllItems,
   getAreVotedBySessionId,
   getDatesSince,
   getItem,
-  getItemsByUser,
-  getItemsSince,
   getManyMetrics,
   getNotification,
   getUser,
@@ -29,6 +26,8 @@ import {
   incrVisitsCountByDay,
   type Item,
   listCommentsByItem,
+  listItemsByTime,
+  listItemsByUser,
   listItemsVotedByUser,
   listNotificationsByUser,
   newCommentProps,
@@ -96,11 +95,11 @@ Deno.test("[db] getAllItems()", async () => {
   const item1 = genNewItem();
   const item2 = genNewItem();
 
-  assertEquals(await getAllItems(), []);
+  assertEquals(await collectValues(listItemsByTime()), []);
 
   await createItem(item1);
   await createItem(item2);
-  assertArrayIncludes(await getAllItems(), [item1, item2]);
+  assertArrayIncludes(await collectValues(listItemsByTime()), [item1, item2]);
 });
 
 Deno.test("[db] (get/create/delete)Item()", async () => {
@@ -124,25 +123,14 @@ Deno.test("[db] getItemsByUser()", async () => {
   const item1 = { ...genNewItem(), userLogin };
   const item2 = { ...genNewItem(), userLogin };
 
-  assertEquals(await getItemsByUser(userLogin), []);
+  assertEquals(await collectValues(listItemsByUser(userLogin)), []);
 
   await createItem(item1);
   await createItem(item2);
-  assertArrayIncludes(await getItemsByUser(userLogin), [item1, item2]);
-});
-
-Deno.test("[db] getItemsSince()", async () => {
-  const item1 = genNewItem();
-  const item2 = {
-    ...genNewItem(),
-    createdAt: new Date(Date.now() - (2 * DAY)),
-  };
-
-  await createItem(item1);
-  await createItem(item2);
-
-  assertArrayIncludes(await getItemsSince(DAY), [item1]);
-  assertArrayIncludes(await getItemsSince(3 * DAY), [item1, item2]);
+  assertArrayIncludes(await collectValues(listItemsByUser(userLogin)), [
+    item1,
+    item2,
+  ]);
 });
 
 Deno.test("[db] user", async () => {
