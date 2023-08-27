@@ -22,25 +22,25 @@ export const handler: Handlers<SignedInState, SignedInState> = {
     const url = form.get("url");
 
     if (typeof title !== "string" || typeof url !== "string") {
-      return new Response(null, { status: 400 });
+      return new Response("URL or Title are either invalid or missing.", { status: 400 });
     }
 
     try {
       if (!isValidUrl(url) || !isPublicUrl(url)) {
-        return new Response(null, { status: 400 });
+        return new Response("URL must be valid and publicly available.", { status: 400 });
       }
     } catch {
-      return new Response(null, { status: 400 });
+      return new Response("An Error occured while validating the URL.", { status: 500 });
     }
 
     const user = await getUserBySession(ctx.state.sessionId);
 
-    if (!user) return new Response(null, { status: 400 });
+    if (!user) return new Response("You must be logged in to submit a new Item.", { status: 401 });
 
     const items = await getItemsByUser(user.login);
 
     if (items.some((item) => item.url === url || item.title === title)) {
-      return new Response(null, { status: 400 });
+      return new Response("You already submitted an Item which contains the same Title or URL.", { status: 409 });
     }
 
     const item: Item = {
