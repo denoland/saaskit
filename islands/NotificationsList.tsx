@@ -7,7 +7,7 @@ import { timeAgo } from "@/utils/display.ts";
 
 async function fetchNotifications(userLogin: string, cursor: string) {
   let url = `/api/users/${userLogin}/notifications`;
-  if (cursor !== "" && cursor !== undefined) url += "?cursor=" + cursor;
+  if (cursor !== "") url += "?cursor=" + cursor;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
   return await resp.json() as { notifications: Notification[]; cursor: string };

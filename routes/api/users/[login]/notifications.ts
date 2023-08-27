@@ -15,7 +15,7 @@ export const handler: Handlers = {
       // Newest to oldest
       reverse: true,
     });
-    const notifications = await collectValues(iter);
-    return Response.json({ notifications, cursor: iter.cursor });
+    const values = await collectValues(iter);
+    return Response.json({ values, cursor: iter.cursor });
   },
 };

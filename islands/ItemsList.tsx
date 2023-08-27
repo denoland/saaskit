@@ -5,14 +5,7 @@ import type { Item } from "@/utils/db.ts";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import ItemSummary from "@/components/ItemSummary.tsx";
-
-async function fetchItems(endpoint: string, cursor: string) {
-  let url = endpoint;
-  if (cursor !== "") url += "?cursor=" + cursor;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
-  return await resp.json() as { items: Item[]; cursor: string };
-}
+import { fetchValues } from "@/utils/http.ts";
 
 async function fetchVotedItems() {
   const url = "/api/me/votes";
@@ -53,11 +46,11 @@ export default function ItemsList(props: { endpoint: string }) {
   async function loadMoreItems() {
     isLoadingSig.value = true;
     try {
-      const { items, cursor } = await fetchItems(
+      const { values, cursor } = await fetchValues<Item>(
         props.endpoint,
         cursorSig.value,
       );
-      itemsSig.value = [...itemsSig.value, ...items];
+      itemsSig.value = [...itemsSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
       console.error(error.message);
