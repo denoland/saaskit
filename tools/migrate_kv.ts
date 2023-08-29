@@ -20,7 +20,10 @@ export async function migrateKv() {
       createdAt: value.createdAt,
     }));
   }
-  await Promise.all(promises);
+  const results = await Promise.allSettled(promises);
+  results
+    .filter((result) => result.status === "rejected")
+    .forEach((result) => console.log(result));
   console.log("KV migration complete");
 }
 
