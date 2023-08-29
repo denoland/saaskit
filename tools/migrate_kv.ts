@@ -21,9 +21,9 @@ export async function migrateKv() {
     }));
   }
   const results = await Promise.allSettled(promises);
-  results
-    .filter((result) => result.status === "rejected")
-    .forEach((result) => console.log(result));
+  const failures = results.filter((result) => result.status === "rejected");
+  failures.forEach((result) => console.log(result));
+  console.log(`${results.length} total | ${failures.length} failed`);
   console.log("KV migration complete");
 }
 
