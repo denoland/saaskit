@@ -49,8 +49,8 @@ export function timeAgo(date: Date) {
   )
     .toReversed()
     .find(([_, amount]) => amount > 0);
-  if (match === undefined) return "Now";
+  if (match === undefined) return "just now";
   const [unit, amount] = match;
   // Remove the last character which is an "s"
-  return pluralize(amount, unit.slice(0, -1));
+  return pluralize(amount, unit.slice(0, -1)) + " ago";
 }
