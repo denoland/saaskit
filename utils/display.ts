@@ -25,9 +25,9 @@ export function pluralize(amount: number, unit: string) {
  * import { timeAgo } from "@/utils/display.ts";
  * import { SECOND, MINUTE, HOUR } from ""std/datetime/constants.ts""
  *
- * timeAgo(new Date(Date.now() - SECOND)); // Returns "1 second"
- * timeAgo(new Date(Date.now() - 2 * MINUTE)); // Returns "2 minutes"
- * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours"
+ * timeAgo(new Date()); // Returns "just now"
+ * timeAgo(new Date(Date.now() - MINUTE)); // Returns "2 minutes ago"
+ * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours ago"
  * ```
  */
 export function timeAgo(date: Date) {
