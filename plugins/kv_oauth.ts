@@ -33,7 +33,7 @@ async function getGitHubUser(accessToken: string): Promise<any> {
 /**
  * This custom plugin centralizes all authentication logic using the {@link https://deno.land/x/deno_kv_oauth|Deno KV OAuth} module.
  *
- * The implementation is based off Deno KV OAuth's native {@link https://deno.land/x/deno_kv_oauth/src/fresh_plugin.ts?source|Fresh plugin implementation}
+ * The implementation is based off Deno KV OAuth's own {@link https://deno.land/x/deno_kv_oauth/src/fresh_plugin.ts?source|Fresh plugin implementation}.
  */
 export default {
   name: "kv-oauth",
