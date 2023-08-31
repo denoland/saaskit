@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 
-import { createHandler, Status } from "$fresh/server.ts";
+import { ServerContext, Status } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
 import {
   assert,
@@ -26,6 +26,10 @@ import {
   type Item,
   type Notification,
 } from "@/utils/db.ts";
+import options from "./fresh.config.ts";
+
+const ctx = await ServerContext.fromManifest(manifest, options);
+const handler = ctx.handler();
 
 function assertResponseNotFound(resp: Response) {
   assertFalse(resp.ok);
@@ -40,8 +44,6 @@ function assertResponseJson(resp: Response) {
 }
 
 Deno.test("[http]", async (test) => {
-  const handler = await createHandler(manifest);
-
   await test.step("GET /", async () => {
     const resp = await handler(new Request("http://localhost"));
 
@@ -111,6 +113,8 @@ Deno.test("[http]", async (test) => {
     const resp = await handler(
       new Request("http://localhost/signin"),
     );
+
+    console.log(resp);
 
     assertFalse(resp.ok);
     assertFalse(resp.body);
