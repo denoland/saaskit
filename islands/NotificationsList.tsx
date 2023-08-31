@@ -4,14 +4,7 @@ import { useEffect } from "preact/hooks";
 import type { Notification } from "@/utils/db.ts";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import { timeAgo } from "@/utils/display.ts";
-
-async function fetchNotifications(userLogin: string, cursor: string) {
-  let url = `/api/users/${userLogin}/notifications`;
-  if (cursor !== "" && cursor !== undefined) url += "?cursor=" + cursor;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
-  return await resp.json() as { notifications: Notification[]; cursor: string };
-}
+import { fetchValues } from "@/utils/islands.ts";
 
 function NotificationSummary(props: Notification) {
   return (
@@ -21,7 +14,7 @@ function NotificationSummary(props: Notification) {
           <strong>New {props.type}!</strong>
         </span>
         <span class="text-gray-500">
-          {" " + timeAgo(props.createdAt)} ago
+          {" " + timeAgo(new Date(props.createdAt))}
         </span>
         <br />
         <span>{props.text}</span>
@@ -30,19 +23,21 @@ function NotificationSummary(props: Notification) {
   );
 }
 
-export default function NotificationsList(props: { userLogin: string }) {
+export default function NotificationsList() {
   const notificationsSig = useSignal<Notification[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal(false);
+  const endpoint = `/api/me/notifications`;
 
   async function loadMoreNotifications() {
+    if (isLoadingSig.value) return;
     isLoadingSig.value = true;
     try {
-      const { notifications, cursor } = await fetchNotifications(
-        props.userLogin,
+      const { values, cursor } = await fetchValues<Notification>(
+        endpoint,
         cursorSig.value,
       );
-      notificationsSig.value = [...notificationsSig.value, ...notifications];
+      notificationsSig.value = [...notificationsSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
       console.log(error.message);
@@ -62,9 +57,9 @@ export default function NotificationsList(props: { userLogin: string }) {
           <NotificationSummary key={notification.id} {...notification} />
         ))
         : "No notifications yet"}
-      {cursorSig.value !== "" && !isLoadingSig.value && (
+      {cursorSig.value !== "" && (
         <button onClick={loadMoreNotifications} class={LINK_STYLES}>
-          Load more
+          {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>
       )}
     </div>

@@ -26,6 +26,9 @@ import {
   type Item,
   type Notification,
 } from "@/utils/db.ts";
+import options from "./fresh.config.ts";
+
+const handler = await createHandler(manifest, options);
 
 function assertResponseNotFound(resp: Response) {
   assertFalse(resp.ok);
@@ -40,8 +43,6 @@ function assertResponseJson(resp: Response) {
 }
 
 Deno.test("[http]", async (test) => {
-  const handler = await createHandler(manifest);
-
   await test.step("GET /", async () => {
     const resp = await handler(new Request("http://localhost"));
 
@@ -61,10 +62,7 @@ Deno.test("[http]", async (test) => {
 
     assertFalse(resp.ok);
     assertFalse(resp.body);
-    assertEquals(
-      resp.headers.get("location"),
-      "/signin?from=http://localhost/account",
-    );
+    assertEquals(resp.headers.get("location"), "/signin");
     assertEquals(resp.status, 303);
   });
 
@@ -142,10 +140,7 @@ Deno.test("[http]", async (test) => {
 
     assertFalse(resp.ok);
     assertFalse(resp.body);
-    assertEquals(
-      resp.headers.get("location"),
-      "/signin?from=http://localhost/dashboard",
-    );
+    assertEquals(resp.headers.get("location"), "/signin");
     assertEquals(resp.status, 303);
   });
 
@@ -156,10 +151,7 @@ Deno.test("[http]", async (test) => {
 
     assertFalse(resp.ok);
     assertFalse(resp.body);
-    assertEquals(
-      resp.headers.get("location"),
-      "/signin?from=http://localhost/submit",
-    );
+    assertEquals(resp.headers.get("location"), "/signin");
     assertEquals(resp.status, 303);
   });
 
@@ -196,9 +188,9 @@ Deno.test("[http]", async (test) => {
     const req = new Request("http://localhost/api/items");
     const resp = await handler(req);
 
-    const { items } = await resp.json();
+    const { values } = await resp.json();
     assertResponseJson(resp);
-    assertArrayIncludes(items, [
+    assertArrayIncludes(values, [
       JSON.parse(JSON.stringify(item1)),
       JSON.parse(JSON.stringify(item2)),
     ]);
@@ -235,9 +227,9 @@ Deno.test("[http]", async (test) => {
     await createItem(item);
     await createComment(comment);
     const resp2 = await handler(req);
-    const { comments } = await resp2.json();
+    const { values } = await resp2.json();
     assertResponseJson(resp2);
-    assertEquals(comments, JSON.parse(JSON.stringify(comments)));
+    assertEquals(values, [JSON.parse(JSON.stringify(comment))]);
   });
 
   await test.step("GET /api/users", async () => {
@@ -249,9 +241,9 @@ Deno.test("[http]", async (test) => {
     const req = new Request("http://localhost/api/users");
     const resp = await handler(req);
 
-    const { users } = await resp.json();
+    const { values } = await resp.json();
     assertResponseJson(resp);
-    assertArrayIncludes(users, [user1, user2]);
+    assertArrayIncludes(values, [user1, user2]);
   });
 
   await test.step("GET /api/users/[login]", async () => {
@@ -284,9 +276,9 @@ Deno.test("[http]", async (test) => {
     await createItem(item);
 
     const resp2 = await handler(req);
-    const { items } = await resp2.json();
+    const { values } = await resp2.json();
     assertResponseJson(resp2);
-    assertArrayIncludes(items, [JSON.parse(JSON.stringify(item))]);
+    assertArrayIncludes(values, [JSON.parse(JSON.stringify(item))]);
   });
 
   await test.step("GET /api/users/[login]/notifications", async () => {
@@ -295,20 +287,24 @@ Deno.test("[http]", async (test) => {
       ...genNewNotification(),
       userLogin: user.login,
     };
-    const req = new Request(
-      `http://localhost/api/users/${user.login}/notifications`,
-    );
+    const url = "http://localhost/api/me/notifications";
 
-    const resp1 = await handler(req);
-    assertResponseNotFound(resp1);
+    const resp1 = await handler(new Request(url));
+    assertFalse(resp1.ok);
+    assertEquals(resp1.body, null);
+    assertEquals(resp1.status, Status.Unauthorized);
 
     await createUser(user);
     await createNotification(notification);
 
-    const resp2 = await handler(req);
-    const { notifications } = await resp2.json();
+    const resp2 = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+    const { values } = await resp2.json();
     assertResponseJson(resp2);
-    assertArrayIncludes(notifications, [
+    assertArrayIncludes(values, [
       JSON.parse(JSON.stringify(notification)),
     ]);
   });

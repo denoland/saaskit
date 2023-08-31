@@ -1,39 +1,56 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { difference } from "std/datetime/difference.ts";
 
-export function pluralize(unit: number, label: string) {
-  return unit === 1 ? `${unit} ${label}` : `${unit} ${label}s`;
-}
-
-export function timeAgo(time: number | Date) {
-  const minutes = difference(new Date(), new Date(time))?.minutes;
-  if (!minutes) return pluralize(0, "minute");
-  if (minutes < 60) return pluralize(~~minutes, "minute");
-  else if (minutes < 24 * 60) return pluralize(~~(minutes / 60), "hour");
-  else return pluralize(~~(minutes / (24 * 60)), "day");
-}
-
 /**
- * Dynamically generates styles depending on whether the given condition is truthy.
- * This is used to visually highlight a link if it matches the current page.
+ * Returns a pluralized string for the given amount and unit.
  *
  * @example
  * ```ts
- * import { getToggledStyles } from "@/utils/display.ts";
+ * import { pluralize } from "@/utils/display.ts";
  *
- * // Returns "text-gray !text-black"
- * const activeLinkStyles = getToggledStyles("text-gray", "!text-black", true);
- *
- * // Returns "text-gray"
- * const inactiveLinkStyles = getToggledStyles("text-gray", "!text-black", false);
+ * pluralize(0, "meow"); // Returns "0 meows"
+ * pluralize(1, "meow"); // Returns "1 meow"
+ * pluralize(2, "meow"); // Returns "2 meows"
  * ```
  */
-export function getToggledStyles(
-  baseStyles: string,
-  toggledStyles: string,
-  cond: boolean,
-) {
-  let styles = baseStyles;
-  if (cond) styles += " " + toggledStyles;
-  return styles;
+export function pluralize(amount: number, unit: string) {
+  return amount === 1 ? `${amount} ${unit}` : `${amount} ${unit}s`;
+}
+
+/**
+ * Returns how long ago a given date is from now.
+ *
+ * @example
+ * ```ts
+ * import { timeAgo } from "@/utils/display.ts";
+ * import { SECOND, MINUTE, HOUR } from ""std/datetime/constants.ts""
+ *
+ * timeAgo(new Date()); // Returns "just now"
+ * timeAgo(new Date(Date.now() - MINUTE)); // Returns "2 minutes ago"
+ * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours ago"
+ * ```
+ */
+export function timeAgo(date: Date) {
+  const now = new Date();
+  if (date > now) throw new Error("Timestamp must be in the past");
+  const match = Object.entries(
+    difference(now, date, {
+      // These units make sense for a web UI
+      units: [
+        "seconds",
+        "minutes",
+        "hours",
+        "days",
+        "weeks",
+        "months",
+        "years",
+      ],
+    }),
+  )
+    .toReversed()
+    .find(([_, amount]) => amount > 0);
+  if (match === undefined) return "just now";
+  const [unit, amount] = match;
+  // Remove the last character which is an "s"
+  return pluralize(amount, unit.slice(0, -1)) + " ago";
 }

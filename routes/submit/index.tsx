@@ -1,18 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { Handlers, PageProps } from "$fresh/server.ts";
+import { type Handlers, type PageProps, Status } from "$fresh/server.ts";
 import { HEADING_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
-import {
-  createItem,
-  getUserBySession,
-  type Item,
-  newItemProps,
-} from "@/utils/db.ts";
-import { redirect } from "@/utils/redirect.ts";
+import { createItem, type Item, newItemProps } from "@/utils/db.ts";
+import { redirect } from "@/utils/http.ts";
 import Head from "@/components/Head.tsx";
 import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
 import IconCircleX from "tabler_icons_tsx/circle-x.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
-import { isPublicUrl, isValidUrl } from "@/utils/url_validation.ts";
 
 export const handler: Handlers<SignedInState, SignedInState> = {
   async POST(req, ctx) {
@@ -20,31 +14,25 @@ export const handler: Handlers<SignedInState, SignedInState> = {
     const title = form.get("title");
     const url = form.get("url");
 
-    if (typeof title !== "string" || typeof url !== "string") {
-      return new Response(null, { status: 400 });
+    if (typeof title !== "string") {
+      return new Response("Title is missing", { status: Status.BadRequest });
     }
 
-    try {
-      if (!isValidUrl(url) || !isPublicUrl(url)) {
-        return new Response(null, { status: 400 });
-      }
-    } catch {
-      return new Response(null, { status: 400 });
+    if (!(typeof url === "string" && URL.canParse(url))) {
+      return new Response("URL is invalid or missing", {
+        status: Status.BadRequest,
+      });
     }
-
-    const user = await getUserBySession(ctx.state.sessionId);
-
-    if (!user) return new Response(null, { status: 400 });
 
     const item: Item = {
-      userLogin: user.login,
+      userLogin: ctx.state.user.login,
       title,
       url,
       ...newItemProps(),
     };
     await createItem(item);
 
-    return redirect(`/items/${item!.id}`);
+    return redirect("/items/" + item.id);
   },
 };
 

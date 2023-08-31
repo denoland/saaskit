@@ -4,17 +4,10 @@ import { useEffect } from "preact/hooks";
 import type { User } from "@/utils/db.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
+import { fetchValues } from "@/utils/islands.ts";
 
 const TH_STYLES = "p-4 text-left";
 const TD_STYLES = "p-4";
-
-async function fetchUsers(cursor: string) {
-  let url = "/api/users";
-  if (cursor !== "") url += "?cursor=" + cursor;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
-  return await resp.json() as { users: User[]; cursor: string };
-}
 
 function UserTableRow(props: User) {
   return (
@@ -42,12 +35,17 @@ export default function UsersTable() {
   const usersSig = useSignal<User[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal(false);
+  const endpoint = "/api/users";
 
   async function loadMoreUsers() {
+    if (isLoadingSig.value) return;
     isLoadingSig.value = true;
     try {
-      const { users, cursor } = await fetchUsers(cursorSig.value);
-      usersSig.value = [...usersSig.value, ...users];
+      const { values, cursor } = await fetchValues<User>(
+        endpoint,
+        cursorSig.value,
+      );
+      usersSig.value = [...usersSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
       console.log(error.message);
@@ -74,12 +72,12 @@ export default function UsersTable() {
           {usersSig.value.map((user) => <UserTableRow {...user} />)}
         </tbody>
       </table>
-      {cursorSig.value !== "" && !isLoadingSig.value && (
+      {cursorSig.value !== "" && (
         <button
           onClick={loadMoreUsers}
           class={LINK_STYLES + " p-4"}
         >
-          Load more
+          {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>
       )}
     </div>

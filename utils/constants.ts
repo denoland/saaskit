@@ -1,7 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export const SITE_NAME = "Deno Hunt (Beta)";
 export const SITE_DESCRIPTION = "Discover new Deno projects. Share your own.";
-export const REDIRECT_PATH_AFTER_LOGIN = "/";
 
 /**
  * These are base styles for some elements. This approach is chosen as it avoids more complex alternatives:
@@ -17,6 +16,6 @@ export const NAV_STYLES =
   "flex flex-wrap justify-start gap-x-8 gap-y-4 items-center justify-between h-full";
 export const LINK_STYLES =
   "text-gray-500 transition duration-300 hover:(text-black dark:text-white)";
-export const ACTIVE_LINK_STYLES = "!text-black !dark:text-white";
+export const ACTIVE_LINK_STYLES = LINK_STYLES + " !text-black !dark:text-white";
 export const HEADING_STYLES = "text-3xl font-bold";
 export const HEADING_WITH_MARGIN_STYLES = HEADING_STYLES + " mb-8";

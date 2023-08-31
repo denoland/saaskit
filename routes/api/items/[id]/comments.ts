@@ -1,7 +1,7 @@
 import type { Handlers } from "$fresh/server.ts";
 import { collectValues, getItem, listCommentsByItem } from "@/utils/db.ts";
-import { getCursor } from "@/utils/pagination.ts";
 import { errors } from "std/http/http_errors.ts";
+import { getCursor } from "@/utils/http.ts";
 
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export const handler: Handlers = {
@@ -17,7 +17,7 @@ export const handler: Handlers = {
       // Newest to oldest
       reverse: true,
     });
-    const comments = await collectValues(iter);
-    return Response.json({ comments, cursor: iter.cursor });
+    const values = await collectValues(iter);
+    return Response.json({ values, cursor: iter.cursor });
   },
 };
