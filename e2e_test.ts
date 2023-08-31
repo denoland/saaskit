@@ -114,8 +114,6 @@ Deno.test("[http]", async (test) => {
       new Request("http://localhost/signin"),
     );
 
-    console.log(resp);
-
     assertFalse(resp.ok);
     assertFalse(resp.body);
     assertStringIncludes(
