@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 
-import { ServerContext, Status } from "$fresh/server.ts";
+import { createHandler, Status } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
 import {
   assert,
@@ -28,8 +28,7 @@ import {
 } from "@/utils/db.ts";
 import options from "./fresh.config.ts";
 
-const ctx = await ServerContext.fromManifest(manifest, options);
-const handler = ctx.handler();
+const handler = await createHandler(manifest, options);
 
 function assertResponseNotFound(resp: Response) {
   assertFalse(resp.ok);
