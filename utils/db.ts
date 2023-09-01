@@ -36,11 +36,6 @@ async function getManyValues<T>(
     .map((entry) => entry?.value);
 }
 
-export function assertIsEntry<T>(
-  entry: Deno.KvEntryMaybe<T>,
-): asserts entry is Deno.KvEntry<T> {
-  assertNotEquals(entry.value, null, `KV entry not found: ${entry.key}`);
-}
 
 /** Gets all dates since a given number of milliseconds ago */
 export function getDatesSince(msAgo: number) {
