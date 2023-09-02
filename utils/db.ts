@@ -1,5 +1,4 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { assertNotEquals } from "std/testing/asserts.ts";
 import { chunk } from "std/collections/chunk.ts";
 
 const KV_PATH_KEY = "KV_PATH";
@@ -35,7 +34,6 @@ async function getManyValues<T>(
     .flat()
     .map((entry) => entry?.value);
 }
-
 
 /** Gets all dates since a given number of milliseconds ago */
 export function getDatesSince(msAgo: number) {
