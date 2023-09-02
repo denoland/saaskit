@@ -32,7 +32,6 @@ import {
   listNotificationsByUser,
   newCommentProps,
   newItemProps,
-  newNotificationProps,
   newUserProps,
   newVoteProps,
   Notification,
@@ -46,6 +45,7 @@ import {
   assertRejects,
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
+import { ulid } from "@/utils/ulid.ts";
 
 export function genNewComment(): Comment {
   return {
@@ -76,11 +76,11 @@ export function genNewUser(): User {
 
 export function genNewNotification(): Notification {
   return {
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     type: crypto.randomUUID(),
     text: crypto.randomUUID(),
     originUrl: crypto.randomUUID(),
-    ...newNotificationProps(),
   };
 }
 
@@ -245,20 +245,14 @@ Deno.test("[db] getDatesSince()", () => {
   ]);
 });
 
-Deno.test("[db] newNotificationProps()", () => {
-  const notificationProps = newNotificationProps();
-  assert(notificationProps.createdAt.getTime() <= Date.now());
-  assertEquals(typeof notificationProps.id, "string");
-});
-
 Deno.test("[db] (get/create/delete)Notification()", async () => {
   const notification = genNewNotification();
 
-  assertEquals(await getNotification(notification.id), null);
+  assertEquals(await getNotification(notification), null);
 
   await createNotification(notification);
   await assertRejects(async () => await createNotification(notification));
-  assertEquals(await getNotification(notification.id), notification);
+  assertEquals(await getNotification(notification), notification);
 
   await deleteNotification(notification);
   assertEquals(await getItem(notification.id), null);

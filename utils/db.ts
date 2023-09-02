@@ -146,20 +146,11 @@ export function listItemsByTime(options?: Deno.KvListOptions) {
 
 // Notification
 export interface Notification {
+  id: string;
   userLogin: string;
   type: string;
   text: string;
   originUrl: string;
-  // The below properties can be automatically generated upon notification creation
-  id: string;
-  createdAt: Date;
-}
-
-export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
-  return {
-    id: crypto.randomUUID(),
-    createdAt: new Date(),
-  };
 }
 
 /**
@@ -167,33 +158,30 @@ export function newNotificationProps(): Pick<Item, "id" | "createdAt"> {
  *
  * @example New notification creation
  * ```ts
- * import { newNotificationProps, createNotification } from "@/utils/db.ts";
+ * import { createNotification } from "@/utils/db.ts";
+ * import { ulid } from "@/utils/ulid.ts";
  *
  * const notification: Notification = {
+ *   id: ulid(),
  *   userLogin: "example-user-login",
  *   type: "example-type",
  *   text: "Hello, world!",
  *   originUrl: "https://hunt.deno.land"
- *   ...newNotificationProps(),
  * };
  *
  * await createNotification(notification);
  * ```
  */
 export async function createNotification(notification: Notification) {
-  const notificationsKey = ["notifications", notification.id];
-  const notificationsByUserKey = [
+  const key = [
     "notifications_by_user",
     notification.userLogin,
-    notification.createdAt.getTime(),
     notification.id,
   ];
 
   const res = await kv.atomic()
-    .check({ key: notificationsKey, versionstamp: null })
-    .check({ key: notificationsByUserKey, versionstamp: null })
-    .set(notificationsKey, notification)
-    .set(notificationsByUserKey, notification)
+    .check({ key: key, versionstamp: null })
+    .set(key, notification)
     .commit();
 
   if (!res.ok) {
@@ -201,18 +189,17 @@ export async function createNotification(notification: Notification) {
   }
 }
 
-export async function deleteNotification(notification: Notification) {
-  const notificationsKey = ["notifications", notification.id];
-  const notificationsByUserKey = [
+export async function deleteNotification(
+  notification: Pick<Notification, "id" | "userLogin">,
+) {
+  const key = [
     "notifications_by_user",
     notification.userLogin,
-    notification.createdAt.getTime(),
     notification.id,
   ];
 
   const res = await kv.atomic()
-    .delete(notificationsKey)
-    .delete(notificationsByUserKey)
+    .delete(key)
     .commit();
 
   if (!res.ok) {
@@ -220,8 +207,14 @@ export async function deleteNotification(notification: Notification) {
   }
 }
 
-export async function getNotification(id: string) {
-  return await getValue<Notification>(["notifications", id]);
+export async function getNotification(
+  notification: Pick<Notification, "id" | "userLogin">,
+) {
+  return await getValue<Notification>([
+    "notifications_by_user",
+    notification.userLogin,
+    notification.id,
+  ]);
 }
 
 export function listNotificationsByUser(

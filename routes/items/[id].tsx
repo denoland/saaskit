@@ -10,13 +10,13 @@ import {
   getItem,
   getUserBySession,
   newCommentProps,
-  newNotificationProps,
   Notification,
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import Head from "@/components/Head.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
 import CommentsList from "@/islands/CommentsList.tsx";
+import { ulid } from "@/utils/ulid.ts";
 
 export const handler: Handlers<unknown, SignedInState> = {
   async POST(req, ctx) {
@@ -45,11 +45,11 @@ export const handler: Handlers<unknown, SignedInState> = {
 
     if (item.userLogin !== user.login) {
       const notification: Notification = {
+        id: ulid(),
         userLogin: item.userLogin,
         type: "comment",
         text: `${user.login} commented on your post: ${item.title}`,
         originUrl: `/items/${itemId}`,
-        ...newNotificationProps(),
       };
       await createNotification(notification);
     }

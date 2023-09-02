@@ -7,9 +7,9 @@ import {
   deleteVote,
   getItem,
   getUserBySession,
-  newNotificationProps,
   newVoteProps,
 } from "@/utils/db.ts";
+import { ulid } from "ulid";
 
 export const handler: Handlers<undefined, State> = {
   async POST(_req, ctx) {
@@ -31,11 +31,11 @@ export const handler: Handlers<undefined, State> = {
 
     if (item.userLogin !== user.login) {
       await createNotification({
+        id: ulid(),
         userLogin: item.userLogin,
         type: "vote",
         text: `${user.login} upvoted your post: ${item.title}`,
         originUrl: `/items/${itemId}`,
-        ...newNotificationProps(),
       });
     }
 
