@@ -15,6 +15,6 @@ export async function handler(
         status: error.status,
         headers: error.headers,
       })
-      : new Response(null, { status: Status.InternalServerError });
+      : new Response(error.message, { status: Status.InternalServerError });
   }
 }
