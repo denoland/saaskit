@@ -47,7 +47,7 @@ export function assertHasSession(
   }
 }
 
-export async function assertHasSessionMiddelware(
+export async function assertHasSessionMiddleware(
   _req: Request,
   ctx: MiddlewareHandlerContext<State>,
 ) {
