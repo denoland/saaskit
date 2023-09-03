@@ -4,7 +4,7 @@ import { redirect } from "@/utils/http.ts";
 import { Status } from "std/http/http_status.ts";
 import { incrVisitsCountByDay } from "@/utils/db.ts";
 import {
-  handleNoSessionWebpage,
+  handleNotSignedInWebpage,
   setSessionState,
 } from "@/middleware/session.ts";
 
@@ -31,6 +31,6 @@ async function recordVisit(
 export const handler = [
   redirectToNewOrigin,
   setSessionState,
-  handleNoSessionWebpage,
+  handleNotSignedInWebpage,
   recordVisit,
 ];

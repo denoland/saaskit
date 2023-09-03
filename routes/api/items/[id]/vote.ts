@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { type Handlers, Status } from "$fresh/server.ts";
-import { assertHasSession, type State } from "@/middleware/session.ts";
+import { assertSignedIn, type State } from "@/middleware/session.ts";
 import {
   createNotification,
   createVote,
@@ -13,7 +13,7 @@ import { errors } from "std/http/http_errors.ts";
 
 export const handler: Handlers<undefined, State> = {
   async POST(_req, ctx) {
-    assertHasSession(ctx);
+    assertSignedIn(ctx);
 
     const itemId = ctx.params.id;
     const item = await getItem(itemId);
@@ -39,7 +39,7 @@ export const handler: Handlers<undefined, State> = {
     return new Response(null, { status: Status.Created });
   },
   async DELETE(_req, ctx) {
-    assertHasSession(ctx);
+    assertSignedIn(ctx);
 
     const itemId = ctx.params.id;
     const item = await getItem(itemId);

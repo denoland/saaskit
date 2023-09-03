@@ -29,7 +29,6 @@ export async function setSessionState(
 
   const sessionId = getSessionId(req);
   if (sessionId === undefined) return await ctx.next();
-
   const user = await getUserBySession(sessionId);
   if (user === null) return await ctx.next();
 
@@ -39,7 +38,7 @@ export async function setSessionState(
   return await ctx.next();
 }
 
-export function assertHasSession(
+export function assertSignedIn(
   ctx: { state: State },
 ): asserts ctx is { state: SignedInState } {
   if (ctx.state.sessionUser === undefined) {
@@ -47,16 +46,16 @@ export function assertHasSession(
   }
 }
 
-export async function assertHasSessionMiddleware(
+export async function ensureSignedIn(
   _req: Request,
   ctx: MiddlewareHandlerContext<State>,
 ) {
-  assertHasSession(ctx);
+  assertSignedIn(ctx);
   return await ctx.next();
 }
 
 // For web pages
-export async function handleNoSessionWebpage(
+export async function handleNotSignedInWebpage(
   _req: Request,
   ctx: MiddlewareHandlerContext,
 ) {
@@ -68,8 +67,10 @@ export async function handleNoSessionWebpage(
   }
 }
 
-// For REST API endpoints
-export async function handleNoSessionRest(
+/**
+ * This middleware is for REST API endpoints. The returned response is based on the error thrown downstream.
+ */
+export async function handleNotSignedInRest(
   _req: Request,
   ctx: MiddlewareHandlerContext,
 ) {

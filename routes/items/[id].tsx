@@ -14,14 +14,14 @@ import {
 } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import Head from "@/components/Head.tsx";
-import { assertHasSession, State } from "@/middleware/session.ts";
+import { assertSignedIn, State } from "@/middleware/session.ts";
 import CommentsList from "@/islands/CommentsList.tsx";
 import { errors } from "std/http/http_errors.ts";
 
 /** @todo Move to `POST /api/comments` */
 export const handler: Handlers<unknown, State> = {
   async POST(req, ctx) {
-    assertHasSession(ctx);
+    assertSignedIn(ctx);
 
     const form = await req.formData();
     const text = form.get("text");
