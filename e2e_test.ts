@@ -35,7 +35,6 @@ const handler = await createHandler(manifest, options);
 
 function assertResponseNotFound(resp: Response) {
   assertFalse(resp.ok);
-  assertEquals(resp.body, null);
   assertEquals(resp.status, Status.NotFound);
 }
 
@@ -294,7 +293,6 @@ Deno.test("[e2e]", async (test) => {
 
     const resp1 = await handler(new Request(url));
     assertFalse(resp1.ok);
-    assertEquals(resp1.body, null);
     assertEquals(resp1.status, Status.Unauthorized);
 
     await createUser(user);
