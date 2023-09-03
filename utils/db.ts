@@ -512,6 +512,12 @@ export function listUsers(options?: Deno.KvListOptions) {
   return kv.list<User>({ prefix: ["users"] }, options);
 }
 
+export async function getAreVotedByUser(items: Item[], userLogin: string) {
+  const votedItems = await collectValues(listItemsVotedByUser(userLogin));
+  const votedItemsIds = votedItems.map((item) => item.id);
+  return items.map((item) => votedItemsIds.includes(item.id));
+}
+
 export async function getAreVotedBySessionId(
   items: Item[],
   sessionId?: string,
