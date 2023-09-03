@@ -9,7 +9,7 @@ import {
   getUserBySession,
   newVoteProps,
 } from "@/utils/db.ts";
-import { ulid } from "ulid";
+import { ulid } from "@/utils/monotonic_factory.ts";
 
 export const handler: Handlers<undefined, State> = {
   async POST(_req, ctx) {

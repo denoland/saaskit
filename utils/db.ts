@@ -160,7 +160,7 @@ export interface Notification {
  * @example New notification creation
  * ```ts
  * import { createNotification } from "@/utils/db.ts";
- * import { ulid } from "@/utils/ulid.ts";
+ * import { ulid } from "@/utils/monotonic_factory.ts";
  *
  * const notification: Notification = {
  *   id: ulid(),

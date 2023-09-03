@@ -45,7 +45,7 @@ import {
   assertRejects,
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
-import { ulid } from "@/utils/ulid.ts";
+import { ulid } from "@/utils/monotonic_factory.ts";
 
 export function genNewComment(): Comment {
   return {

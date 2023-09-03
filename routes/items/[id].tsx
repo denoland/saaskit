@@ -16,7 +16,7 @@ import { redirect } from "@/utils/http.ts";
 import Head from "@/components/Head.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
 import CommentsList from "@/islands/CommentsList.tsx";
-import { ulid } from "@/utils/ulid.ts";
+import { ulid } from "@/utils/monotonic_factory.ts";
 
 export const handler: Handlers<unknown, SignedInState> = {
   async POST(req, ctx) {
