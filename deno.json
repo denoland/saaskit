@@ -4,6 +4,7 @@
     "init:stripe": "deno run --allow-read --allow-env --allow-net tools/init_stripe.ts",
     "db:dump": "deno run --allow-read --allow-env --unstable tools/dump_kv.ts",
     "db:seed": "deno run --allow-read --allow-env --allow-net --unstable tools/seed_submissions.ts",
+    "db:migrate": "deno run --allow-read --allow-env --allow-net --unstable tasks/db_migrate.ts",
     "db:reset": "deno run --allow-read --allow-env --unstable tools/reset_kv.ts",
     "start": "deno run --unstable -A --watch=static/,routes/ dev.ts",
     "test": "KV_PATH=:memory: deno test -A --unstable --parallel --coverage=./cov",

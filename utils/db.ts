@@ -146,6 +146,7 @@ export function listItemsByTime(options?: Deno.KvListOptions) {
 
 // Notification
 export interface Notification {
+  // Uses ULID
   id: string;
   userLogin: string;
   type: string;
