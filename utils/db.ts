@@ -518,18 +518,6 @@ export async function getAreVotedByUser(items: Item[], userLogin: string) {
   return items.map((item) => votedItemsIds.includes(item.id));
 }
 
-export async function getAreVotedBySessionId(
-  items: Item[],
-  sessionId?: string,
-) {
-  if (!sessionId) return [];
-  const user = await getUserBySession(sessionId);
-  if (!user) return [];
-  const votedItems = await collectValues(listItemsVotedByUser(user.login));
-  const votedItemsIds = votedItems.map((item) => item.id);
-  return items.map((item) => votedItemsIds.includes(item.id));
-}
-
 export function compareScore(a: Item, b: Item) {
   return Number(b.score) - Number(a.score);
 }
