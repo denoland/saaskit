@@ -160,10 +160,10 @@ export interface Notification {
  * @example New notification creation
  * ```ts
  * import { createNotification } from "@/utils/db.ts";
- * import { ulid } from "@/utils/monotonic_factory.ts";
+ * import { monotonicUlid } from "std/ulid/mod.ts";
  *
  * const notification: Notification = {
- *   id: ulid(),
+ *   id: monotonicUlid(),
  *   userLogin: "example-user-login",
  *   type: "example-type",
  *   text: "Hello, world!",

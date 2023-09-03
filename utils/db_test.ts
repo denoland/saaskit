@@ -45,7 +45,7 @@ import {
   assertRejects,
 } from "std/testing/asserts.ts";
 import { DAY } from "std/datetime/constants.ts";
-import { ulid } from "@/utils/monotonic_factory.ts";
+import { monotonicUlid } from "std/ulid/mod.ts";
 
 export function genNewComment(): Comment {
   return {
@@ -76,7 +76,7 @@ export function genNewUser(): User {
 
 export function genNewNotification(): Notification {
   return {
-    id: ulid(),
+    id: monotonicUlid(),
     userLogin: crypto.randomUUID(),
     type: crypto.randomUUID(),
     text: crypto.randomUUID(),

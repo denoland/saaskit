@@ -16,7 +16,7 @@ import { redirect } from "@/utils/http.ts";
 import Head from "@/components/Head.tsx";
 import { SignedInState } from "@/utils/middleware.ts";
 import CommentsList from "@/islands/CommentsList.tsx";
-import { ulid } from "@/utils/monotonic_factory.ts";
+import { monotonicUlid } from "std/ulid/mod.ts";
 
 export const handler: Handlers<unknown, SignedInState> = {
   async POST(req, ctx) {
@@ -45,7 +45,7 @@ export const handler: Handlers<unknown, SignedInState> = {
 
     if (item.userLogin !== user.login) {
       const notification: Notification = {
-        id: ulid(),
+        id: monotonicUlid(),
         userLogin: item.userLogin,
         type: "comment",
         text: `${user.login} commented on your post: ${item.title}`,
