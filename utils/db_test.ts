@@ -245,34 +245,42 @@ Deno.test("[db] getDatesSince()", () => {
   ]);
 });
 
-Deno.test("[db] (get/create/delete)Notification()", async () => {
-  const notification = genNewNotification();
-
-  assertEquals(await getNotification(notification), null);
-
-  await createNotification(notification);
-  await assertRejects(async () => await createNotification(notification));
-  assertEquals(await getNotification(notification), notification);
-
-  await deleteNotification(notification);
-  assertEquals(await getItem(notification.id), null);
-});
-
-Deno.test("[db] getNotificationsByUser()", async () => {
+Deno.test("[db] notifications", async () => {
   const userLogin = crypto.randomUUID();
   const notification1 = { ...genNewNotification(), userLogin };
   const notification2 = { ...genNewNotification(), userLogin };
 
+  assertEquals(await getNotification(notification1), null);
+  assertEquals(await getNotification(notification2), null);
   assertEquals(await collectValues(listNotificationsByUser(userLogin)), []);
   assertEquals(await ifUserHasNotifications(userLogin), false);
 
   await createNotification(notification1);
   await createNotification(notification2);
-  assertArrayIncludes(await collectValues(listNotificationsByUser(userLogin)), [
+  await assertRejects(
+    async () => await createNotification(notification1),
+    "Failed to create notification",
+  );
+
+  await assertEquals(await getNotification(notification1), notification1);
+  assertEquals(await getNotification(notification2), notification2);
+  assertEquals(await collectValues(listNotificationsByUser(userLogin)), [
     notification1,
     notification2,
   ]);
   assertEquals(await ifUserHasNotifications(userLogin), true);
+
+  await deleteNotification(notification1);
+  await deleteNotification(notification2);
+  await assertRejects(
+    async () => await deleteNotification(notification1),
+    "Failed to delete notification",
+  );
+
+  assertEquals(await getNotification(notification1), null);
+  assertEquals(await getNotification(notification2), null);
+  assertEquals(await collectValues(listNotificationsByUser(userLogin)), []);
+  assertEquals(await ifUserHasNotifications(userLogin), false);
 });
 
 Deno.test("[db] compareScore()", () => {

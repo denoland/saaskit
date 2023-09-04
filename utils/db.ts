@@ -181,9 +181,7 @@ export async function createNotification(notification: Notification) {
     .set(key, notification)
     .commit();
 
-  if (!res.ok) {
-    throw new Error(`Failed to create notification: ${notification}`);
-  }
+  if (!res.ok) throw new Error("Failed to create notification");
 }
 
 export async function deleteNotification(
@@ -194,14 +192,17 @@ export async function deleteNotification(
     notification.userLogin,
     notification.id,
   ];
+  const notificationRes = await kv.get<Notification>(key);
+  if (notificationRes.value === null) {
+    throw new Deno.errors.NotFound("Notification not found");
+  }
 
   const res = await kv.atomic()
+    .check(notificationRes)
     .delete(key)
     .commit();
 
-  if (!res.ok) {
-    throw new Error(`Failed to delete notification: ${notification}`);
-  }
+  if (!res.ok) throw new Error("Failed to delete notification");
 }
 
 export async function getNotification(
