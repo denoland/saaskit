@@ -215,7 +215,7 @@ export async function getNotification(
   ]);
 }
 
-export function listNotificationsByUser(
+export function listNotifications(
   userLogin: string,
   options?: Deno.KvListOptions,
 ) {

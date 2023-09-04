@@ -29,7 +29,7 @@ import {
   listItemsByTime,
   listItemsByUser,
   listItemsVotedByUser,
-  listNotificationsByUser,
+  listNotifications,
   newCommentProps,
   newItemProps,
   newUserProps,
@@ -252,7 +252,11 @@ Deno.test("[db] notifications", async () => {
 
   assertEquals(await getNotification(notification1), null);
   assertEquals(await getNotification(notification2), null);
-  assertEquals(await collectValues(listNotificationsByUser(userLogin)), []);
+  await assertRejects(
+    async () => await deleteNotification(notification1),
+    "Notification not found",
+  );
+  assertEquals(await collectValues(listNotifications(userLogin)), []);
   assertEquals(await ifUserHasNotifications(userLogin), false);
 
   await createNotification(notification1);
@@ -264,7 +268,7 @@ Deno.test("[db] notifications", async () => {
 
   await assertEquals(await getNotification(notification1), notification1);
   assertEquals(await getNotification(notification2), notification2);
-  assertEquals(await collectValues(listNotificationsByUser(userLogin)), [
+  assertEquals(await collectValues(listNotifications(userLogin)), [
     notification1,
     notification2,
   ]);
@@ -279,7 +283,7 @@ Deno.test("[db] notifications", async () => {
 
   assertEquals(await getNotification(notification1), null);
   assertEquals(await getNotification(notification2), null);
-  assertEquals(await collectValues(listNotificationsByUser(userLogin)), []);
+  assertEquals(await collectValues(listNotifications(userLogin)), []);
   assertEquals(await ifUserHasNotifications(userLogin), false);
 });
 
