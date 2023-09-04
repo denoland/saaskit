@@ -4,8 +4,9 @@ import { ensureSignedIn, type State } from "@/middleware/session.ts";
 
 /**
  * Adds middleware to the defined protected routes. The middleware throws a
- * HTTP 401 Unauthorized-equivalent error if `ctx.state.sessionUser` is
- * `undefined` by {@linkcode ensureSignedIn}.
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401|HTTP 401 Unauthorized}-equivalent
+ * error if `ctx.state.sessionUser` is `undefined` by
+ * {@linkcode ensureSignedIn}.
  *
  * The thrown error is then handled by {@linkcode handleNotSignedInWebpage}, or
  * {@linkcode handleNotSignedInRest} if the request is made to a REST API
