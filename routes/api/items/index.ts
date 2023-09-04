@@ -28,7 +28,7 @@ export const handler: Handlers<undefined, State> = {
     if (typeof title !== "string") {
       throw new errors.BadRequest("Title is missing");
     }
-    if (!(typeof url === "string" && URL.canParse(url))) {
+    if (typeof url !== "string" || !URL.canParse(url)) {
       throw new errors.BadRequest("URL is invalid or missing");
     }
 
