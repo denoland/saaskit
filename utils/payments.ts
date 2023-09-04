@@ -32,26 +32,43 @@ export type StripProductWithPrice = Stripe.Product & {
   default_price: Stripe.Price;
 };
 
-export function isProductWithPrice(
-  product: Stripe.Product,
-): product is StripProductWithPrice {
-  return product.default_price !== undefined &&
+/**
+ * Type guard function to check if a Stripe product has a valid price.
+ *
+ * @param {Stripe.Product} product - The Stripe product to be checked.
+ *
+ * @returns {product is StripProductWithPrice} A boolean value indicating whether the provided product meets the criteria for being a `StripProductWithPrice`.
+ */
+export function isProductWithPrice(product: Stripe.Product): product is StripProductWithPrice {
+  return (
+    product.default_price !== undefined &&
     product.default_price !== null &&
-    typeof product.default_price !== "string";
+    typeof product.default_price !== "string"
+  );
 }
 
-export function formatAmountForDisplay(
-  amount: number,
-  currency: string,
-): string {
+
+/**
+ * Format a numeric amount with a specified currency for display.
+ *
+ * @param {number} amount - The numeric amount to be formatted.
+ * @param {string} currency - The currency code (e.g., "USD", "EUR") for formatting.
+ *
+ * @returns {string} A formatted string representing the amount with the currency symbol.
+ */
+export function formatAmountForDisplay(amount: number, currency: string): string {
+  // Create a new `Intl.NumberFormat` object with the specified options for formatting.
   const numberFormat = new Intl.NumberFormat(
-    navigator.language,
+    navigator.language, // Use the user's preferred language for formatting.
     {
-      style: "currency",
-      currency,
-      currencyDisplay: "symbol",
-      maximumFractionDigits: 0,
+      style: "currency", // Format as currency.
+      currency, // Specify the currency code.
+      currencyDisplay: "symbol", // Display the currency symbol (e.g., $, €).
+      maximumFractionDigits: 0, // Maximum number of decimal places (0 for whole numbers).
     },
   );
+
+  // Format the numeric `amount` using the `numberFormat` object and return the result as a string.
   return numberFormat.format(amount);
 }
+
