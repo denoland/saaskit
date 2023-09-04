@@ -82,18 +82,16 @@ export function newItemProps(): Pick<Item, "id" | "score" | "createdAt"> {
 /**
  * Creates a new item in KV. Throws if the item already exists in one of the indexes.
  *
- * @example New item creation
+ * @example
  * ```ts
  * import { newItemProps, createItem } from "@/utils/db.ts";
  *
- * const item: Item = {
- *   userLogin: "example-user-login",
+ * await createItem({
+ *   userLogin: "john_doe",
  *   title: "example-title",
- *   url: "https://example.com"
- *   ..newItemProps(),
- * };
- *
- * await createItem(item);
+ *   url: "https://example.com",
+ *   ...newItemProps(),
+ * });
  * ```
  */
 export async function createItem(item: Item) {
@@ -157,20 +155,18 @@ export interface Notification {
 /**
  * Creates a new notification in KV. Throws if the item already exists in one of the indexes.
  *
- * @example New notification creation
+ * @example
  * ```ts
  * import { createNotification } from "@/utils/db.ts";
  * import { monotonicUlid } from "std/ulid/mod.ts";
  *
- * const notification: Notification = {
- *   id: monotonicUlid(),
- *   userLogin: "example-user-login",
+ * await createNotification({
+ *   userLogin: "john_doe",
  *   type: "example-type",
  *   text: "Hello, world!",
- *   originUrl: "https://hunt.deno.land"
- * };
- *
- * await createNotification(notification);
+ *   originUrl: "https://hunt.deno.land",
+ *   ...newNotificationProps(),
+ * });
  * ```
  */
 export async function createNotification(notification: Notification) {
@@ -332,9 +328,8 @@ export async function createVote(vote: Vote) {
   const res = await kv.atomic()
     .check(itemRes)
     .check(userRes)
-    /** @todo(iuioiua) Enable these checks once the migration is complete */
-    // .check({ key: itemVotedByUserKey, versionstamp: null })
-    // .check({ key: userVotedForItemKey, versionstamp: null })
+    .check({ key: itemVotedByUserKey, versionstamp: null })
+    .check({ key: userVotedForItemKey, versionstamp: null })
     .set(itemKey, item)
     .set(itemByTimeKey, item)
     .set(itemByUserKey, item)
@@ -419,14 +414,13 @@ export function newUserProps(): Pick<User, "isSubscribed"> {
  *
  * @example
  * ```ts
- * import { createUser, newUser } from "@/utils/db.ts";
+ * import { createUser, newUserProps } from "@/utils/db.ts";
  *
- * const user = {
- *   login: "login",
- *   sessionId: "sessionId",
+ * await createUser({
+ *   login: "john-doe",
+ *   sessionId: crypto.randomUUID(),
  *   ...newUserProps(),
- * };
- * await createUser(user);
+ * });
  * ```
  */
 export async function createUser(user: User) {
@@ -507,14 +501,8 @@ export function listUsers(options?: Deno.KvListOptions) {
   return kv.list<User>({ prefix: ["users"] }, options);
 }
 
-export async function getAreVotedBySessionId(
-  items: Item[],
-  sessionId?: string,
-) {
-  if (!sessionId) return [];
-  const user = await getUserBySession(sessionId);
-  if (!user) return [];
-  const votedItems = await collectValues(listItemsVotedByUser(user.login));
+export async function getAreVotedByUser(items: Item[], userLogin: string) {
+  const votedItems = await collectValues(listItemsVotedByUser(userLogin));
   const votedItemsIds = votedItems.map((item) => item.id);
   return items.map((item) => votedItemsIds.includes(item.id));
 }
