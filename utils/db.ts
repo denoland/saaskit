@@ -161,11 +161,11 @@ export interface Notification {
  * import { monotonicUlid } from "std/ulid/mod.ts";
  *
  * await createNotification({
+ *   id: monotonicUlid(),
  *   userLogin: "john_doe",
  *   type: "example-type",
  *   text: "Hello, world!",
  *   originUrl: "https://hunt.deno.land",
- *   ...newNotificationProps(),
  * });
  * ```
  */

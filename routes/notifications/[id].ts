@@ -2,7 +2,7 @@
 import type { RouteContext } from "$fresh/server.ts";
 import { deleteNotification, getNotification } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
-import { SignedInState } from "@/middleware/session.ts";
+import type { SignedInState } from "@/middleware/session.ts";
 
 export default async function NotificationsNotificationPage(
   _req: Request,
@@ -10,7 +10,7 @@ export default async function NotificationsNotificationPage(
 ) {
   const notification = await getNotification({
     id: ctx.params.id,
-    userLogin: ctx.state.user.login,
+    userLogin: ctx.state.sessionUser.login,
   });
   if (notification === null) return await ctx.renderNotFound();
 
