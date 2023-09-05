@@ -200,13 +200,13 @@ Deploy your SaaS app close to your users at the edge with
 
 1. Clone this repository for your SaaSKit project.
 1. Sign into [Deno Deploy](https://dash.deno.com) with your GitHub account.
-1. Select your GitHub organization or user, repository, and branch
-1. Select "Automatic" deployment mode and `main.ts` as the entry point
+1. Select your GitHub organization or user, repository, and branch.
+1. Select "Automatic" deployment mode and `main.ts` as the entry point.
 1. Click "Link", which will start the deployment.
 1. Once the deployment is complete, click on "Settings" and add the production
-   environmental variables, then hit "Save"
+   environmental variables, then hit "Save".
 
-You should be able to visit your newly deployed SaaS.
+You should now be able to visit your newly deployed SaaS.
 
 ## Deploy to any VPS with Docker
 
