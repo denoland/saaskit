@@ -23,17 +23,16 @@ if (!confirm("WARNING: The database will be migrated. Continue?")) Deno.exit();
 
 const promises = [];
 
-const iter1 = kv.list<OldComment>({ prefix: ["comments_by_item"] });
-for await (const { key, value } of iter1) {
-  if (value.createdAt) {
-    promises.push(kv.delete(key));
-    promises.push(createComment({
-      id: monotonicUlid(value.createdAt.getTime()),
-      userLogin: value.userLogin,
-      itemId: value.itemId,
-      text: value.text,
-    }));
-  }
+const iter = kv.list<OldComment>({ prefix: ["comments_by_item"] });
+for await (const { key, value } of iter) {
+  if (!value.createdAt) continue;
+  promises.push(kv.delete(key));
+  promises.push(createComment({
+    id: monotonicUlid(value.createdAt.getTime()),
+    userLogin: value.userLogin,
+    itemId: value.itemId,
+    text: value.text,
+  }));
 }
 
 const results = await Promise.allSettled(promises);
