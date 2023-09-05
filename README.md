@@ -193,6 +193,21 @@ Keep your user's customer information up-to-date with billing changes by
 as the user will be taken to Stripe's checkout page when they upgrade to a
 subscription.
 
+## Deploy to Deno Deploy
+
+Deploy your SaaS app close to your users at the edge with
+[Deno Deploy](https://deno.com/deploy):
+
+1. Clone this repository for your SaaSKit project.
+1. Sign into [Deno Deploy](https://dash.deno.com) with your GitHub account.
+1. Select your GitHub organization or user, repository, and branch
+1. Select "Automatic" deployment mode and `main.ts` as the entry point
+1. Click "Link", which will start the deployment.
+1. Once the deployment is complete, click on "Settings" and add the production
+   environmental variables, then hit "Save"
+
+You should be able to visit your newly deployed SaaS.
+
 ## Deploy to any VPS with Docker
 
 [Docker](https://docker.com) makes it easy to deploy and run your Deno app to
@@ -227,26 +242,6 @@ Refer to these guides for using Docker to deploy Deno to specific platforms:
 - [Amazon Lightsail](https://deno.land/manual/advanced/deploying_deno/aws_lightsail)
 - [Digital Ocean](https://deno.land/manual/advanced/deploying_deno/digital_ocean)
 - [Google Cloud Run](https://deno.land/manual/advanced/deploying_deno/google_cloud_run)
-
-## Deploy to Deno Deploy
-
-These steps show you how to deploy your SaaS app close to your users at the edge
-with [Deno Deploy](https://deno.com/deploy).
-
-1. Clone this repository for your SaaSKit project.
-
-2. Sign into [Deno Deploy](https://dash.deno.com) with your GitHub account.
-
-3. Select your GitHub organization or user, repository, and branch
-
-4. Select "Automatic" deployment mode and `main.ts` as the entry point
-
-5. Click "Link", which will start the deployment.
-
-6. Once the deployment is complete, click on "Settings" and add the production
-   environmental variables, then hit "Save"
-
-You should be able to visit your newly deployed SaaS.
 
 ## Goals and Philosophy
 
