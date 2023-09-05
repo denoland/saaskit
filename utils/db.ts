@@ -12,14 +12,6 @@ if (
 export const kv = await Deno.openKv(path);
 
 // Helpers
-async function getValue<T>(
-  key: Deno.KvKey,
-  options?: { consistency?: Deno.KvConsistencyLevel },
-) {
-  const res = await kv.get<T>(key, options);
-  return res.value;
-}
-
 /**
  * Gets many values from KV. Uses batched requests to get values in chunks of 10.
  */
@@ -128,7 +120,8 @@ export async function deleteItem(item: Item) {
 }
 
 export async function getItem(id: string) {
-  return await getValue<Item>(["items", id]);
+  const itemsByIdKey = ["items", id];
+  return (await kv.get<Item>(itemsByIdKey)).value;
 }
 
 export function listItemsByUser(
@@ -205,14 +198,9 @@ export async function deleteNotification(
   if (!res.ok) throw new Error("Failed to delete notification");
 }
 
-export async function getNotification(
-  notification: Pick<Notification, "id" | "userLogin">,
-) {
-  return await getValue<Notification>([
-    "notifications_by_user",
-    notification.userLogin,
-    notification.id,
-  ]);
+export async function getNotification(id: string) {
+  const notificationsByIdKey = ["notifications", id];
+  return (await kv.get<Notification>(notificationsByIdKey)).value;
 }
 
 export function listNotifications(
@@ -481,21 +469,22 @@ export async function deleteUserBySession(sessionId: string) {
 
 /** @todo Migrate to ["users", login] key */
 export async function getUser(login: string) {
-  return await getValue<User>(["users", login]);
+  const usersByLoginKey = ["users", login];
+  return (await kv.get<User>(usersByLoginKey)).value;
 }
 
 export async function getUserBySession(sessionId: string) {
   const usersBySessionKey = ["users_by_session", sessionId];
-  return await getValue<User>(usersBySessionKey, {
-    consistency: "eventual",
-  }) ?? await getValue<User>(usersBySessionKey);
+  return (await kv.get<User>(usersBySessionKey, { consistency: "eventual" }))
+    .value ?? (await kv.get<User>(usersBySessionKey)).value;
 }
 
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
-  return await getValue<User>([
+  const usersByStripeCustomerKey = [
     "users_by_stripe_customer",
     stripeCustomerId,
-  ]);
+  ];
+  return (await kv.get<User>(usersByStripeCustomerKey)).value;
 }
 
 export function listUsers(options?: Deno.KvListOptions) {
