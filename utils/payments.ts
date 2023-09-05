@@ -69,6 +69,8 @@ export function isProductWithPrice(product: Stripe.Product): product is StripPro
  *
  * const formattedAmount = formatAmountForDisplay(amount, currencyCode);
  * console.log(formattedAmount); // Output: "$1,235" (formatted as USD currency)
+ * 
+ * @see {@link https://developer.mozilla.org/en-US/search?q=NumberFormat%257CIntl.NumberFormat on MDN}
  */
 export function formatAmountForDisplay(amount: number, currency: string): string {
   const numberFormat = new Intl.NumberFormat(
