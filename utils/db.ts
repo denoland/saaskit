@@ -120,8 +120,7 @@ export async function deleteItem(item: Item) {
 }
 
 export async function getItem(id: string) {
-  const itemsByIdKey = ["items", id];
-  const res = await kv.get<Item>(itemsByIdKey);
+  const res = await kv.get<Item>(["items", id]);
   return res.value;
 }
 
