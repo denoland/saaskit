@@ -185,6 +185,10 @@ Deno.test("[db] comments", async () => {
 
   await deleteComment(comment1);
   await deleteComment(comment2);
+  await assertRejects(
+    async () => await deleteComment(comment1),
+    "Comment not found",
+  );
   assertEquals(await collectValues(listCommentsByItem(itemId)), []);
 });
 
