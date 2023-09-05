@@ -9,8 +9,8 @@ import CommentsList from "@/islands/CommentsList.tsx";
 
 function CommentInput(props: { itemId: string }) {
   return (
-    <form method="post" action={`/api/items/${props.itemId}/comments`}>
-      <input type="hidden" value={props.itemId} />
+    <form method="post" action="/api/comments">
+      <input type="hidden" name="item_id" value={props.itemId} />
       <textarea
         class={`${INPUT_STYLES} w-full`}
         type="text"
