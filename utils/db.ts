@@ -198,8 +198,14 @@ export async function deleteNotification(
   if (!res.ok) throw new Error("Failed to delete notification");
 }
 
-export async function getNotification(id: string) {
-  const notificationsByIdKey = ["notifications", id];
+export async function getNotification(
+  notification: Pick<Notification, "id" | "userLogin">,
+) {
+  const notificationsByIdKey = [
+    "notifications_by_user",
+    notification.userLogin,
+    notification.id,
+  ];
   return (await kv.get<Notification>(notificationsByIdKey)).value;
 }
 
