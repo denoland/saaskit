@@ -2,10 +2,10 @@
   "lock": false,
   "tasks": {
     "init:stripe": "deno run --allow-read --allow-env --allow-net tasks/init_stripe.ts",
-    "db:dump": "deno run --allow-read --allow-env --unstable tasks/dump_kv.ts",
-    "db:seed": "deno run --allow-read --allow-env --allow-net --unstable tasks/seed_submissions.ts",
+    "db:dump": "deno run --allow-read --allow-env --unstable tasks/db_dump.ts",
+    "db:seed": "deno run --allow-read --allow-env --allow-net --unstable tasks/db_seed.ts",
     "db:migrate": "deno run --allow-read --allow-env --allow-net --unstable tasks/db_migrate.ts",
-    "db:reset": "deno run --allow-read --allow-env --unstable tasks/reset_kv.ts",
+    "db:reset": "deno run --allow-read --allow-env --unstable tasks/db_reset.ts",
     "start": "deno run --unstable -A --watch=static/,routes/ dev.ts",
     "test": "KV_PATH=:memory: deno test -A --unstable --parallel --coverage=./cov --doc",
     "check:license": "deno run --allow-read --allow-write tasks/check_license.ts",
