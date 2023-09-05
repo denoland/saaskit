@@ -32,12 +32,24 @@ export type StripProductWithPrice = Stripe.Product & {
   default_price: Stripe.Price;
 };
 
+
+
 /**
- * Type guard function to check if a Stripe product has a valid price.
+ * Checks if a Stripe product has a valid price.
  *
- * @param {Stripe.Product} product - The Stripe product to be checked.
+ * @example
+ * const product = {
+ *   id: 'prod_123',
+ *   name: 'Example Product',
+ *   default_price: 1000, // A valid numeric price
+ *   // ... other product properties
+ * };
  *
- * @returns {product is StripProductWithPrice} A boolean value indicating whether the provided product meets the criteria for being a `StripProductWithPrice`.
+ * if (isProductWithPrice(product)) {
+ *   console.log('This product has a valid price.');
+ * } else {
+ *   console.log('This product does not have a valid price.');
+ * }
  */
 export function isProductWithPrice(product: Stripe.Product): product is StripProductWithPrice {
   return (
@@ -49,26 +61,26 @@ export function isProductWithPrice(product: Stripe.Product): product is StripPro
 
 
 /**
- * Format a numeric amount with a specified currency for display.
+ * Formats a numeric amount for display as a currency with the specified currency code.
  *
- * @param {number} amount - The numeric amount to be formatted.
- * @param {string} currency - The currency code (e.g., "USD", "EUR") for formatting.
+ * @example
+ * const amount = 1234.56; // Numeric amount
+ * const currencyCode = 'USD'; // Currency code
  *
- * @returns {string} A formatted string representing the amount with the currency symbol.
+ * const formattedAmount = formatAmountForDisplay(amount, currencyCode);
+ * console.log(formattedAmount); // Output: "$1,235" (formatted as USD currency)
  */
 export function formatAmountForDisplay(amount: number, currency: string): string {
-  // Create a new `Intl.NumberFormat` object with the specified options for formatting.
   const numberFormat = new Intl.NumberFormat(
-    navigator.language, // Use the user's preferred language for formatting.
+    navigator.language,
     {
-      style: "currency", // Format as currency.
-      currency, // Specify the currency code.
-      currencyDisplay: "symbol", // Display the currency symbol (e.g., $, €).
-      maximumFractionDigits: 0, // Maximum number of decimal places (0 for whole numbers).
+      style: "currency",
+      currency,
+      currencyDisplay: "symbol",
+      maximumFractionDigits: 0,
     },
   );
-
-  // Format the numeric `amount` using the `numberFormat` object and return the result as a string.
   return numberFormat.format(amount);
 }
+
 
