@@ -121,7 +121,8 @@ export async function deleteItem(item: Item) {
 
 export async function getItem(id: string) {
   const itemsByIdKey = ["items", id];
-  return (await kv.get<Item>(itemsByIdKey)).value;
+  const res = await kv.get<Item>(itemsByIdKey);
+  return res.value;
 }
 
 export function listItemsByUser(
@@ -206,7 +207,8 @@ export async function getNotification(
     notification.userLogin,
     notification.id,
   ];
-  return (await kv.get<Notification>(notificationsByIdKey)).value;
+  const res = await kv.get<Notification>(notificationsByIdKey);
+  return res.value;
 }
 
 export function listNotifications(
@@ -476,13 +478,17 @@ export async function deleteUserBySession(sessionId: string) {
 /** @todo Migrate to ["users", login] key */
 export async function getUser(login: string) {
   const usersByLoginKey = ["users", login];
-  return (await kv.get<User>(usersByLoginKey)).value;
+  const res = await kv.get<User>(usersByLoginKey);
+  return res.value;
 }
 
 export async function getUserBySession(sessionId: string) {
   const usersBySessionKey = ["users_by_session", sessionId];
-  return (await kv.get<User>(usersBySessionKey, { consistency: "eventual" }))
-    .value ?? (await kv.get<User>(usersBySessionKey)).value;
+  const eventualRes = await kv.get<User>(usersBySessionKey, {
+    consistency: "eventual",
+  });
+  const res = await kv.get<User>(usersBySessionKey);
+  return eventualRes.value ?? res.value;
 }
 
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
@@ -490,7 +496,8 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
     "users_by_stripe_customer",
     stripeCustomerId,
   ];
-  return (await kv.get<User>(usersByStripeCustomerKey)).value;
+  const res = await kv.get<User>(usersByStripeCustomerKey);
+  return res.value;
 }
 
 export function listUsers(options?: Deno.KvListOptions) {
