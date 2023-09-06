@@ -68,7 +68,7 @@ export default function Header(
         <a
           href="/dashboard"
           class={cx(
-            props.url.pathname.includes("/dashboard")
+            props.url.pathname.startsWith("/dashboard")
               ? ACTIVE_LINK_STYLES
               : LINK_STYLES,
             NAV_ITEM,
@@ -81,7 +81,7 @@ export default function Header(
             <a
               href="/pricing"
               class={cx(
-                props.url.pathname === "/pricing"
+                props.url.pathname.startsWith("/pricing")
                   ? ACTIVE_LINK_STYLES
                   : LINK_STYLES,
                 NAV_ITEM,
@@ -96,7 +96,7 @@ export default function Header(
             <a
               href="/account"
               class={cx(
-                props.url.pathname === "/account"
+                props.url.pathname.startsWith("/account")
                   ? ACTIVE_LINK_STYLES
                   : LINK_STYLES,
                 NAV_ITEM,
@@ -109,7 +109,7 @@ export default function Header(
         <a
           href="/notifications"
           class={cx(
-            props.url.pathname === "/notifications"
+            props.url.pathname.startsWith("/notifications")
               ? ACTIVE_LINK_STYLES
               : LINK_STYLES,
             NAV_ITEM,
