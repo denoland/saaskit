@@ -4,10 +4,10 @@ import {
   createItem,
   createUser,
   type Item,
-  newItemProps,
   newUserProps,
   User,
 } from "@/utils/db.ts";
+import { monotonicUlid } from "std/ulid/mod.ts";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
@@ -64,12 +64,11 @@ async function fetchTopStories(limit = 10) {
 async function seedSubmissions(stories: Story[]) {
   const items = stories.map(({ by: userLogin, title, url, score, time }) => {
     return {
-      ...newItemProps(),
+      id: monotonicUlid(time * 1000),
       userLogin,
       title,
       url,
       score,
-      createdAt: new Date(time * 1000),
     } as Item;
   }).filter(({ url }) => url);
   for (const batch of batchify(items)) {

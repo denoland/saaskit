@@ -12,10 +12,10 @@
  * deno task db:migrate
  * ```
  */
-import { type Comment, createComment, kv } from "@/utils/db.ts";
+import { createItem, type Item, kv } from "@/utils/db.ts";
 import { monotonicUlid } from "std/ulid/mod.ts";
 
-interface OldComment extends Comment {
+interface OldItem extends Item {
   createdAt: Date;
 }
 
@@ -23,17 +23,20 @@ if (!confirm("WARNING: The database will be migrated. Continue?")) Deno.exit();
 
 const promises = [];
 
-const iter = kv.list<OldComment>({ prefix: ["comments_by_item"] });
-for await (const { key, value } of iter) {
+const iter1 = kv.list<OldItem>({ prefix: ["items"] });
+for await (const { key, value } of iter1) {
   if (!value.createdAt) continue;
   promises.push(kv.delete(key));
-  promises.push(createComment({
+  promises.push(createItem({
     id: monotonicUlid(value.createdAt.getTime()),
     userLogin: value.userLogin,
-    itemId: value.itemId,
-    text: value.text,
+    url: value.url,
+    title: value.title,
+    score: value.score,
   }));
 }
+
+/** @todo(iuioiua) Voting data */
 
 const results = await Promise.allSettled(promises);
 results.forEach((result) => {
