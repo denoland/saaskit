@@ -12,7 +12,13 @@
  * deno task db:migrate
  * ```
  */
-import { createItem, type Item, kv } from "@/utils/db.ts";
+import {
+  createItem,
+  createVote,
+  deleteVote,
+  type Item,
+  kv,
+} from "@/utils/db.ts";
 import { monotonicUlid } from "std/ulid/mod.ts";
 
 interface OldItem extends Item {
@@ -36,7 +42,14 @@ for await (const { key, value } of iter1) {
   }));
 }
 
-/** @todo(iuioiua) Voting data */
+const iter2 = kv.list<OldItem>({ prefix: ["items_voted_by_user"] });
+for await (const { key, value } of iter2) {
+  if (!value.createdAt) continue;
+  const itemId = key[1] as string;
+  const userLogin = key[2] as string;
+  promises.push(deleteVote({ itemId, userLogin }));
+  promises.push(createVote({ itemId, userLogin, createdAt: new Date() }));
+}
 
 const results = await Promise.allSettled(promises);
 results.forEach((result) => {
