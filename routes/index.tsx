@@ -45,7 +45,7 @@ export default async function HomePage(
   _req: Request,
   ctx: RouteContext<undefined, State>,
 ) {
-  const isSignedIn = Boolean(ctx.state.sessionUser);
+  const isSignedIn = ctx.state.sessionUser !== undefined;
 
   return (
     <>

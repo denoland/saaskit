@@ -51,6 +51,7 @@ export default async function ItemsItemPage(
         <ItemSummary
           item={item}
           isVoted={isVoted}
+          isSignedIn={isSignedIn}
         />
         <CommentInput isSignedIn={isSignedIn} itemId={ctx.params.id} />
         <CommentsList itemId={ctx.params.id} />

@@ -44,7 +44,8 @@ export default async function UsersUserPage(
 ) {
   const { login } = ctx.params;
   const user = await getUser(login);
-  if (user === null) return await ctx.renderNotFound();
+  const isSignedIn = user !== null;
+  if (!isSignedIn) return await ctx.renderNotFound();
 
   return (
     <>
@@ -54,7 +55,10 @@ export default async function UsersUserPage(
           isSubscribed={user.isSubscribed}
           login={user.login}
         />
-        <ItemsList endpoint={`/api/users/${login}/items`} />
+        <ItemsList
+          endpoint={`/api/users/${login}/items`}
+          isSignedIn={isSignedIn}
+        />
       </main>
     </>
   );
