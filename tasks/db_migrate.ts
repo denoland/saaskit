@@ -20,7 +20,7 @@ import {
   kv,
   User,
 } from "@/utils/db.ts";
-import { monotonicUlid } from "std/ulid/mod.ts";
+import { ulid } from "std/ulid/mod.ts";
 
 interface OldItem extends Item {
   createdAt: Date;
@@ -32,7 +32,7 @@ const iter1 = kv.list<OldItem>({ prefix: ["items"] });
 for await (const oldItemEntry of iter1) {
   if (!oldItemEntry.value.createdAt) continue;
   const newItem = {
-    id: monotonicUlid(oldItemEntry.value.createdAt.getTime()),
+    id: ulid(oldItemEntry.value.createdAt.getTime()),
     userLogin: oldItemEntry.value.userLogin,
     url: oldItemEntry.value.url,
     title: oldItemEntry.value.title,
