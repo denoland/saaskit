@@ -7,7 +7,7 @@ import {
   newUserProps,
   User,
 } from "@/utils/db.ts";
-import { monotonicUlid } from "std/ulid/mod.ts";
+import { ulid } from "std/ulid/mod.ts";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
@@ -64,7 +64,7 @@ async function fetchTopStories(limit = 10) {
 async function seedSubmissions(stories: Story[]) {
   const items = stories.map(({ by: userLogin, title, url, score, time }) => {
     return {
-      id: monotonicUlid(time * 1000),
+      id: ulid(time * 1000),
       userLogin,
       title,
       url,

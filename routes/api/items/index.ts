@@ -5,7 +5,7 @@ import { createItem, type Item } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import { assertSignedIn, State } from "@/middleware/session.ts";
 import { errors } from "std/http/http_errors.ts";
-import { monotonicUlid } from "std/ulid/mod.ts";
+import { ulid } from "std/ulid/mod.ts";
 
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 export const handler: Handlers<undefined, State> = {
@@ -34,7 +34,7 @@ export const handler: Handlers<undefined, State> = {
     }
 
     const item: Item = {
-      id: monotonicUlid(),
+      id: ulid(),
       userLogin: ctx.state.sessionUser.login,
       title,
       url,

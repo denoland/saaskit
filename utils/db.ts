@@ -69,10 +69,10 @@ export interface Item {
  * @example
  * ```ts
  * import { createItem } from "@/utils/db.ts";
- * import { monotonicUlid } from "std/ulid/mod.ts";
+ * import { ulid } from "std/ulid/mod.ts";
  *
  * await createItem({
- *   id: monotonicUlid(),
+ *   id: ulid(),
  *   userLogin: "john_doe",
  *   title: "example-title",
  *   url: "https://example.com",
@@ -153,10 +153,10 @@ export interface Notification {
  * @example
  * ```ts
  * import { createNotification } from "@/utils/db.ts";
- * import { monotonicUlid } from "std/ulid/mod.ts";
+ * import { ulid } from "std/ulid/mod.ts";
  *
  * await createNotification({
- *   id: monotonicUlid(),
+ *   id: ulid(),
  *   userLogin: "john_doe",
  *   type: "example-type",
  *   text: "Hello, world!",

@@ -42,11 +42,11 @@ import {
   assertRejects,
 } from "std/assert/mod.ts";
 import { DAY } from "std/datetime/constants.ts";
-import { monotonicUlid } from "std/ulid/mod.ts";
+import { ulid } from "std/ulid/mod.ts";
 
 export function genNewComment(): Comment {
   return {
-    id: monotonicUlid(),
+    id: ulid(),
     itemId: crypto.randomUUID(),
     userLogin: crypto.randomUUID(),
     text: crypto.randomUUID(),
@@ -55,7 +55,7 @@ export function genNewComment(): Comment {
 
 export function genNewItem(): Item {
   return {
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
@@ -74,7 +74,7 @@ export function genNewUser(): User {
 
 export function genNewNotification(): Notification {
   return {
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     type: crypto.randomUUID(),
     text: crypto.randomUUID(),
@@ -86,12 +86,12 @@ Deno.test("[db] items", async () => {
   const user = genNewUser();
   const item1: Item = {
     ...genNewItem(),
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: user.login,
   };
   const item2: Item = {
     ...genNewItem(),
-    id: monotonicUlid(),
+    id: ulid(Date.now() + 1_000),
     userLogin: user.login,
   };
 
@@ -235,7 +235,11 @@ Deno.test("[db] getDatesSince()", () => {
 Deno.test("[db] notifications", async () => {
   const userLogin = crypto.randomUUID();
   const notification1 = { ...genNewNotification(), userLogin };
-  const notification2 = { ...genNewNotification(), userLogin };
+  const notification2 = {
+    ...genNewNotification(),
+    userLogin,
+    id: ulid(Date.now() + 1_000),
+  };
 
   assertEquals(await getNotification(notification1), null);
   assertEquals(await getNotification(notification2), null);
@@ -276,21 +280,21 @@ Deno.test("[db] notifications", async () => {
 
 Deno.test("[db] compareScore()", () => {
   const item1: Item = {
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
     score: 1,
   };
   const item2: Item = {
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
     score: 3,
   };
   const item3: Item = {
-    id: monotonicUlid(),
+    id: ulid(),
     userLogin: crypto.randomUUID(),
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
