@@ -45,12 +45,17 @@ export default async function HomePage(
   _req: Request,
   ctx: RouteContext<undefined, State>,
 ) {
+  const isSignedIn = Boolean(ctx.state.sessionUser);
+
   return (
     <>
       <Head href={ctx.url.href} />
       <main class="flex-1 p-4">
         {NEEDS_SETUP && <SetupInstruction />}
-        <ItemsList endpoint={"/api/items"} />
+        <ItemsList
+          endpoint={"/api/items"}
+          isSignedIn={isSignedIn}
+        />
       </main>
     </>
   );
