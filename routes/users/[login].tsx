@@ -44,8 +44,8 @@ export default async function UsersUserPage(
 ) {
   const { login } = ctx.params;
   const user = await getUser(login);
-  const isSignedIn = user !== null;
-  if (!isSignedIn) return await ctx.renderNotFound();
+  if (user === null) return await ctx.renderNotFound();
+  const isSignedIn = ctx.state.sessionUser !== undefined;
 
   return (
     <>
