@@ -50,7 +50,12 @@ export default async function HomePage(
   return (
     <>
       <Head href={ctx.url.href}>
-        <link as="fetch" crossOrigin="anonymous" href={endpoint} rel="preload"/>
+        <link
+          as="fetch"
+          crossOrigin="anonymous"
+          href={endpoint}
+          rel="preload"
+        />
       </Head>
       <main class="flex-1 p-4">
         {NEEDS_SETUP && <SetupInstruction />}

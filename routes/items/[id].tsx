@@ -48,7 +48,12 @@ export default async function ItemsItemPage(
   return (
     <>
       <Head title={item.title} href={ctx.url.href}>
-        <link as="fetch" crossOrigin="anonymous" href={endpoint} rel="preload"/>
+        <link
+          as="fetch"
+          crossOrigin="anonymous"
+          href={endpoint}
+          rel="preload"
+        />
       </Head>
       <main class="flex-1 p-4 space-y-8">
         <ItemSummary

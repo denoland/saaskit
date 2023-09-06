@@ -15,7 +15,12 @@ export default async function DashboardUsersPage(
   return (
     <>
       <Head title="Users" href={ctx.url.href}>
-        <link as="fetch" crossOrigin="anonymous" href={endpoint} rel="preload"/>
+        <link
+          as="fetch"
+          crossOrigin="anonymous"
+          href={endpoint}
+          rel="preload"
+        />
       </Head>
       <main class="flex-1 p-4">
         <h1 class={HEADING_WITH_MARGIN_STYLES}>Dashboard</h1>

@@ -49,7 +49,12 @@ export default async function UsersUserPage(
   return (
     <>
       <Head title={user.login} href={ctx.url.href}>
-        <link as="fetch" crossOrigin="anonymous" href={`/api/users/${login}/items`} rel="preload"/>
+        <link
+          as="fetch"
+          crossOrigin="anonymous"
+          href={`/api/users/${login}/items`}
+          rel="preload"
+        />
       </Head>
       <main class="flex-1 p-4">
         <Profile

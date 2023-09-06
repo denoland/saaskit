@@ -24,7 +24,7 @@ function NotificationSummary(props: Notification) {
   );
 }
 
-export default function NotificationsList({ endpoint }: { endpoint: string}) {
+export default function NotificationsList({ endpoint }: { endpoint: string }) {
   const notificationsSig = useSignal<Notification[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal(false);
