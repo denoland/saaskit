@@ -18,6 +18,7 @@ import {
   deleteVote,
   type Item,
   kv,
+  User,
 } from "@/utils/db.ts";
 import { monotonicUlid } from "std/ulid/mod.ts";
 
@@ -27,33 +28,32 @@ interface OldItem extends Item {
 
 if (!confirm("WARNING: The database will be migrated. Continue?")) Deno.exit();
 
-const promises = [];
-
 const iter1 = kv.list<OldItem>({ prefix: ["items"] });
-for await (const { key, value } of iter1) {
-  if (!value.createdAt) continue;
-  promises.push(kv.delete(key));
-  promises.push(createItem({
-    id: monotonicUlid(value.createdAt.getTime()),
-    userLogin: value.userLogin,
-    url: value.url,
-    title: value.title,
-    score: value.score,
-  }));
+for await (const oldItemEntry of iter1) {
+  if (!oldItemEntry.value.createdAt) continue;
+  await kv.delete(oldItemEntry.key);
+  const newItem = {
+    id: monotonicUlid(oldItemEntry.value.createdAt.getTime()),
+    userLogin: oldItemEntry.value.userLogin,
+    url: oldItemEntry.value.url,
+    title: oldItemEntry.value.title,
+    score: oldItemEntry.value.score,
+  };
+  await createItem(newItem);
+  const iter2 = kv.list<User>({
+    prefix: ["users_voted_for_item", oldItemEntry.value.id],
+  });
+  for await (const userEntry of iter2) {
+    await deleteVote({
+      itemId: oldItemEntry.value.id,
+      userLogin: userEntry.value.login,
+    });
+    await createVote({
+      itemId: newItem.id,
+      userLogin: userEntry.value.login,
+      createdAt: new Date(),
+    });
+  }
 }
-
-const iter2 = kv.list<OldItem>({ prefix: ["items_voted_by_user"] });
-for await (const { key, value } of iter2) {
-  if (!value.createdAt) continue;
-  const itemId = key[1] as string;
-  const userLogin = key[2] as string;
-  promises.push(deleteVote({ itemId, userLogin }));
-  promises.push(createVote({ itemId, userLogin, createdAt: new Date() }));
-}
-
-const results = await Promise.allSettled(promises);
-results.forEach((result) => {
-  if (result.status === "rejected") console.error(result);
-});
 
 kv.close();
