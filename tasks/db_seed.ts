@@ -1,11 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 // Description: Seeds the kv db with Hacker News stories
-import {
-  createItem,
-  createUser,
-  newItemProps,
-  newUserProps,
-} from "@/utils/db.ts";
+import { createItem, createUser, newUserProps } from "@/utils/db.ts";
 import { ulid } from "std/ulid/mod.ts";
 
 // Reference: https://github.com/HackerNews/API
@@ -37,7 +32,7 @@ const stories = await Promise.all(
   storiesResponses.map((r) => r.json()),
 ) as Story[];
 const items = stories.map(({ by: userLogin, title, url, score, time }) => ({
-  ...newItemProps(),
+  id: ulid(),
   userLogin,
   title,
   url,
