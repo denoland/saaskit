@@ -352,6 +352,7 @@ export async function deleteVote(vote: Omit<Vote, "createdAt">) {
   const user = userRes.value;
   if (item === null) throw new Deno.errors.NotFound("Item not found");
   if (user === null) throw new Deno.errors.NotFound("User not found");
+  /** @todo Uncomment after ULID-items migration */
   /* if (itemVotedByUserRes.value === null) {
     throw new Deno.errors.NotFound("Item voted by user not found");
   }
