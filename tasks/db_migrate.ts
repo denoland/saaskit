@@ -31,11 +31,6 @@ if (!confirm("WARNING: The database will be migrated. Continue?")) Deno.exit();
 const iter1 = kv.list<OldItem>({ prefix: ["items"] });
 for await (const oldItemEntry of iter1) {
   if (!oldItemEntry.value.createdAt) continue;
-  await kv.delete([
-    "items_by_user",
-    oldItemEntry.value.userLogin,
-    oldItemEntry.value.id,
-  ]);
   const newItem = {
     id: ulid(oldItemEntry.value.createdAt.getTime()),
     userLogin: oldItemEntry.value.userLogin,
@@ -64,5 +59,12 @@ for await (const oldItemEntry of iter1) {
   }
   await kv.delete(oldItemEntry.key);
 }
+
+const iter3 = kv.list<OldItem>({ prefix: ["items_by_user"] });
+const promises = [];
+for await (const { key, value } of iter3) {
+  if (value.createdAt) promises.push(kv.delete(key));
+}
+await Promise.all(promises);
 
 kv.close();
