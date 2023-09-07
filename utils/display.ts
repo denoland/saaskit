@@ -78,5 +78,6 @@ export function formatCurrency(
       currencyDisplay: "symbol",
       maximumFractionDigits: 0,
     },
-  ).format(amount);
+  ).format(amount)
+    .replace(" ", "");
 }
