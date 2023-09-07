@@ -18,7 +18,7 @@ export interface Post {
 
 /**
  * Returns a {@linkcode Post} object of by reading and parsing a file with the
- * given filename in the `./posts` folder. Returns `null` if the given file is
+ * given slug in the `./posts` folder. Returns `null` if the given file is
  * not a readable or parsable file.
  *
  * @see {@link https://deno.land/api?s=Deno.readTextFile}
@@ -27,7 +27,7 @@ export interface Post {
  * ```ts
  * import { getPost } from "@/utils/posts.ts";
  *
- * const post = await getPost("first-post.md")!;
+ * const post = await getPost("first-post")!;
  *
  * post?.title; // Returns "This is my first blog post!"
  * post?.publishedAt; // Returns 2022-11-04T15:00:00.000Z
@@ -35,14 +35,13 @@ export interface Post {
  * post?.content; // Returns '# Heading 1\n\nHello, world!\n\n```javascript\nconsole.log("Hello World");\n```\n'
  * ```
  */
-export async function getPost(filename: string): Promise<Post | null> {
+export async function getPost(slug: string): Promise<Post | null> {
   try {
-    const text = await Deno.readTextFile(join("./posts", filename));
+    const text = await Deno.readTextFile(join("./posts", `${slug}.md`));
     const { attrs, body } = extract<Post>(text);
     return {
       ...attrs,
-      // Remove the `.md` from the end of the filename
-      slug: filename.slice(0, -3),
+      slug,
       content: body,
     };
   } catch {
@@ -71,7 +70,10 @@ export async function getPost(filename: string): Promise<Post | null> {
 export async function getPosts(): Promise<Post[]> {
   const files = Deno.readDir("./posts");
   const promises = [];
-  for await (const file of files) promises.push(getPost(file.name));
+  for await (const file of files) {
+    const slug = file.name.replace(".md", "");
+    promises.push(getPost(slug));
+  }
   const posts = await Promise.all(promises) as Post[];
   posts.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
   return posts;
