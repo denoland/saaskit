@@ -352,12 +352,12 @@ export async function deleteVote(vote: Omit<Vote, "createdAt">) {
   const user = userRes.value;
   if (item === null) throw new Deno.errors.NotFound("Item not found");
   if (user === null) throw new Deno.errors.NotFound("User not found");
-  if (itemVotedByUserRes.value === null) {
+  /* if (itemVotedByUserRes.value === null) {
     throw new Deno.errors.NotFound("Item voted by user not found");
   }
   if (userVotedForItemRes.value === null) {
     throw new Deno.errors.NotFound("User voted for item not found");
-  }
+  } */
 
   const itemByUserKey = ["items_by_user", item.userLogin, item.id];
 

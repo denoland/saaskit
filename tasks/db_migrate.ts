@@ -52,6 +52,10 @@ for await (const oldItemEntry of iter1) {
       itemId: oldItemEntry.value.id,
       userLogin: userEntry.value.login,
     });
+    await deleteVote({
+      itemId: newItem.id,
+      userLogin: userEntry.value.login,
+    });
     await createVote({
       itemId: newItem.id,
       userLogin: userEntry.value.login,
