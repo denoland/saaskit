@@ -5,7 +5,7 @@ import {
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
-import { stripe } from "@/utils/payments.ts";
+import { isStripeEnabled } from "@/utils/stripe.ts";
 import IconX from "tabler_icons_tsx/x.tsx";
 import IconMenu from "tabler_icons_tsx/menu-2.tsx";
 import IconBell from "tabler_icons_tsx/bell.tsx";
@@ -68,7 +68,7 @@ export default function Header(
         <a
           href="/dashboard"
           class={cx(
-            props.url.pathname === "/dashboard"
+            props.url.pathname.startsWith("/dashboard")
               ? ACTIVE_LINK_STYLES
               : LINK_STYLES,
             NAV_ITEM,
@@ -76,8 +76,8 @@ export default function Header(
         >
           Dashboard
         </a>
-        {stripe
-          ? (
+        {isStripeEnabled() &&
+          (
             <a
               href="/pricing"
               class={cx(
@@ -89,8 +89,7 @@ export default function Header(
             >
               Pricing
             </a>
-          )
-          : null}
+          )}
         {props.sessionUser
           ? (
             <a
