@@ -61,7 +61,7 @@ export default async function UsersUserPage(
           isSubscribed={user.isSubscribed}
           login={user.login}
         />
-        <ItemsList endpoint={`/api/users/${login}/items`} />
+        <ItemsList endpoint={`/api/users/${login}/items`} isSignedIn={!!user} />
       </main>
     </>
   );
