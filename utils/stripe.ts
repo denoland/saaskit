@@ -8,12 +8,6 @@ export function isStripeEnabled() {
   return Deno.env.has("STRIPE_SECRET_KEY");
 }
 
-console.log(
-  isStripeEnabled()
-    ? "`STRIPE_SECRET_KEY` environment variable is defined. Stripe is enabled."
-    : "`STRIPE_SECRET_KEY` environment variable is not defined. Stripe is disabled.",
-);
-
 export const stripe = new Stripe(STRIPE_SECRET_KEY!, {
   apiVersion: "2022-11-15",
   // Use the Fetch API instead of Node's HTTP client.
