@@ -79,5 +79,7 @@ export function formatCurrency(
       maximumFractionDigits: 0,
     },
   ).format(amount)
-    .replace(" ", "");
+    // Issue: https://stackoverflow.com/questions/44533919/space-after-symbol-with-js-intl
+    .replace(/^(\D+)/, "$1")
+    .replace(/\s+/, "");
 }
