@@ -54,7 +54,10 @@ export function timeAgo(date: Date) {
 }
 
 /**
- * Returns a formatted string based on the given amount of currency.
+ * Returns a formatted string based on the given amount of currency and the
+ * machine's preferred language.
+ *
+ * @see {@linkcode Intl.NumberFormat}
  *
  * @example
  * ```ts
@@ -67,7 +70,7 @@ export function formatCurrency(
   amount: number,
   currency: string,
 ): string {
-  const numberFormat = new Intl.NumberFormat(
+  return new Intl.NumberFormat(
     navigator.language,
     {
       style: "currency",
@@ -75,6 +78,5 @@ export function formatCurrency(
       currencyDisplay: "symbol",
       maximumFractionDigits: 0,
     },
-  );
-  return numberFormat.format(amount);
+  ).format(amount);
 }
