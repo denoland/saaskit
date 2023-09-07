@@ -36,8 +36,8 @@ export function redirect(
  * ```ts
  * import { getCursor } from "@/utils/http.ts";
  *
- * getCursor("http://example.com?cursor=12345"); // Returns "12345"
- * getCursor("http://example.com"); // Returns ""
+ * getCursor(new URL("http://example.com?cursor=12345")); // Returns "12345"
+ * getCursor(new URL("http://example.com")); // Returns ""
  * ```
  */
 export function getCursor(url: URL) {
