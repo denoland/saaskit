@@ -30,34 +30,35 @@ if (!confirm("WARNING: The database will be migrated. Continue?")) Deno.exit();
 
 const iter1 = kv.list<OldItem>({ prefix: ["items"] });
 for await (const oldItemEntry of iter1) {
-  if (!oldItemEntry.value.createdAt) continue;
-  const newItem = {
-    id: ulid(oldItemEntry.value.createdAt.getTime()),
-    userLogin: oldItemEntry.value.userLogin,
-    url: oldItemEntry.value.url,
-    title: oldItemEntry.value.title,
-    score: oldItemEntry.value.score,
-  };
-  await createItem(newItem);
-  const iter2 = kv.list<User>({
-    prefix: ["users_voted_for_item", oldItemEntry.value.id],
-  });
-  for await (const userEntry of iter2) {
-    await deleteVote({
-      itemId: oldItemEntry.value.id,
-      userLogin: userEntry.value.login,
+  if (oldItemEntry.value.createdAt) {
+    const newItem = {
+      id: ulid(new Date(oldItemEntry.value.createdAt).getTime()),
+      userLogin: oldItemEntry.value.userLogin,
+      url: oldItemEntry.value.url,
+      title: oldItemEntry.value.title,
+      score: oldItemEntry.value.score,
+    };
+    await createItem(newItem);
+    const iter2 = kv.list<User>({
+      prefix: ["users_voted_for_item", oldItemEntry.value.id],
     });
-    await deleteVote({
-      itemId: newItem.id,
-      userLogin: userEntry.value.login,
-    });
-    await createVote({
-      itemId: newItem.id,
-      userLogin: userEntry.value.login,
-      createdAt: new Date(),
-    });
+    for await (const userEntry of iter2) {
+      await deleteVote({
+        itemId: oldItemEntry.value.id,
+        userLogin: userEntry.value.login,
+      });
+      await deleteVote({
+        itemId: newItem.id,
+        userLogin: userEntry.value.login,
+      });
+      await createVote({
+        itemId: newItem.id,
+        userLogin: userEntry.value.login,
+        createdAt: new Date(),
+      });
+    }
+    await kv.delete(oldItemEntry.key);
   }
-  await kv.delete(oldItemEntry.key);
 }
 
 const iter3 = kv.list<OldItem>({ prefix: ["items_by_user"] });
