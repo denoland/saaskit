@@ -47,7 +47,6 @@ export default async function HomePage(
 ) {
   const isSignedIn = ctx.state.sessionUser !== undefined;
   const endpoint = "/api/items";
-  const isSignedIn = ctx.state.sessionUser !== undefined;
 
   return (
     <>

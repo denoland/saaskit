@@ -73,7 +73,7 @@ export default function ItemsList(
         votedItemsIdsSig.value = votedItems.map(({ id }) => id)
       )
       .finally(() => loadMoreItems());
-  }, [props.isSignedIn]);
+  }, []);
 
   return (
     <div>
