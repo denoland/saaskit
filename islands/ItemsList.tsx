@@ -1,7 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-import type { Item } from "@/utils/db.ts";
+import type { Item, User } from "@/utils/db.ts";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import ItemSummary from "@/components/ItemSummary.tsx";
@@ -84,6 +84,7 @@ export default function ItemsList(
               key={item.id}
               item={item}
               isVoted={itemsAreVotedSig.value[id]}
+              isSignedIn={props.isSignedIn}
             />
           );
         })
