@@ -1,0 +1,1097 @@
+[
+  {
+    "key": [
+      "items",
+      "08460dd4-9ffa-42fb-a271-297ef03cfdaa"
+    ],
+    "value": {
+      "id": "08460dd4-9ffa-42fb-a271-297ef03cfdaa",
+      "score": 80,
+      "createdAt": "2023-09-07T19:34:41.000Z",
+      "userLogin": "buro9",
+      "title": "London Street Trees",
+      "url": "https://apps.london.gov.uk/street-trees/"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "09cca2fb-839a-4b66-94c2-d0ed51d54513"
+    ],
+    "value": {
+      "id": "09cca2fb-839a-4b66-94c2-d0ed51d54513",
+      "score": 33,
+      "createdAt": "2023-09-07T23:46:12.000Z",
+      "userLogin": "User23",
+      "title": "Mastering Emacs: What's new in Emacs 29.1",
+      "url": "https://www.masteringemacs.org/article/whats-new-in-emacs-29-1"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "49a26612-04c4-43b0-94ee-d3693d14c8f5"
+    ],
+    "value": {
+      "id": "49a26612-04c4-43b0-94ee-d3693d14c8f5",
+      "score": 22,
+      "createdAt": "2023-09-07T23:28:17.000Z",
+      "userLogin": "hhs",
+      "title": "Opposites don't actually attract: meta-analysis study",
+      "url": "https://www.colorado.edu/today/2023/08/31/news-flash-opposites-dont-actually-attract"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "602ef872-2e10-4ca1-95a2-5979583c0030"
+    ],
+    "value": {
+      "id": "602ef872-2e10-4ca1-95a2-5979583c0030",
+      "score": 55,
+      "createdAt": "2023-09-07T22:04:10.000Z",
+      "userLogin": "Jefrodey",
+      "title": "Searx is no longer maintained",
+      "url": "https://github.com/searx/searx/commit/276ffd3f01cdd823f75676c51231fad4040059d3"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "70aa0ef7-6f3d-49ce-b1fb-b43fef259229"
+    ],
+    "value": {
+      "id": "70aa0ef7-6f3d-49ce-b1fb-b43fef259229",
+      "score": 586,
+      "createdAt": "2023-09-07T20:21:01.000Z",
+      "userLogin": "ericzawo",
+      "title": "NSO group iPhone zero-click, zero-day exploit captured in the wild",
+      "url": "https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "758aac30-4d89-4259-b4b1-f34c0fcd6edc"
+    ],
+    "value": {
+      "id": "758aac30-4d89-4259-b4b1-f34c0fcd6edc",
+      "score": 99,
+      "createdAt": "2023-09-07T20:30:27.000Z",
+      "userLogin": "samvher",
+      "title": "A BERT for laptops, from scratch",
+      "url": "https://github.com/samvher/bert-for-laptops/blob/main/BERT_for_laptops.ipynb"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "933b7057-d26e-4b90-9575-43c8970d5615"
+    ],
+    "value": {
+      "id": "933b7057-d26e-4b90-9575-43c8970d5615",
+      "score": 50,
+      "createdAt": "2023-09-07T23:30:33.000Z",
+      "userLogin": "ukuina",
+      "title": "Show HN: HackYourNews – AI summaries of the top HN stories",
+      "url": "https://hackyournews.com/"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27"
+    ],
+    "value": {
+      "id": "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27",
+      "score": 93,
+      "createdAt": "2023-09-07T23:18:31.000Z",
+      "userLogin": "loganfrederick",
+      "title": "TEMU Is Cleverly Hidden Spyware That Poses an Urgent Security Threat to U.S.",
+      "url": "https://grizzlyreports.com/we-believe-pdd-is-a-dying-fraudulent-company-and-its-shopping-app-temu-is-cleverly-hidden-spyware-that-poses-an-urgent-security-threat-to-u-s-national-interests/"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3"
+    ],
+    "value": {
+      "id": "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3",
+      "score": 83,
+      "createdAt": "2023-09-07T23:41:24.000Z",
+      "userLogin": "edvinbesic",
+      "title": "Google gets its way, bakes a user-tracking ad platform directly into Chrome",
+      "url": "https://arstechnica.com/gadgets/2023/09/googles-widely-opposed-ad-platform-the-privacy-sandbox-launches-in-chrome/"
+    }
+  },
+  {
+    "key": [
+      "items",
+      "fbd47eef-87b1-4202-b44b-5c9883302548"
+    ],
+    "value": {
+      "id": "fbd47eef-87b1-4202-b44b-5c9883302548",
+      "score": 412,
+      "createdAt": "2023-09-07T15:53:23.000Z",
+      "userLogin": "todsacerdoti",
+      "title": "North Korean campaign targeting security researchers",
+      "url": "https://blog.google/threat-analysis-group/active-north-korean-campaign-targeting-security-researchers/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694102003000,
+      "fbd47eef-87b1-4202-b44b-5c9883302548"
+    ],
+    "value": {
+      "id": "fbd47eef-87b1-4202-b44b-5c9883302548",
+      "score": 412,
+      "createdAt": "2023-09-07T15:53:23.000Z",
+      "userLogin": "todsacerdoti",
+      "title": "North Korean campaign targeting security researchers",
+      "url": "https://blog.google/threat-analysis-group/active-north-korean-campaign-targeting-security-researchers/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694115281000,
+      "08460dd4-9ffa-42fb-a271-297ef03cfdaa"
+    ],
+    "value": {
+      "id": "08460dd4-9ffa-42fb-a271-297ef03cfdaa",
+      "score": 80,
+      "createdAt": "2023-09-07T19:34:41.000Z",
+      "userLogin": "buro9",
+      "title": "London Street Trees",
+      "url": "https://apps.london.gov.uk/street-trees/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694118061000,
+      "70aa0ef7-6f3d-49ce-b1fb-b43fef259229"
+    ],
+    "value": {
+      "id": "70aa0ef7-6f3d-49ce-b1fb-b43fef259229",
+      "score": 586,
+      "createdAt": "2023-09-07T20:21:01.000Z",
+      "userLogin": "ericzawo",
+      "title": "NSO group iPhone zero-click, zero-day exploit captured in the wild",
+      "url": "https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694118627000,
+      "758aac30-4d89-4259-b4b1-f34c0fcd6edc"
+    ],
+    "value": {
+      "id": "758aac30-4d89-4259-b4b1-f34c0fcd6edc",
+      "score": 99,
+      "createdAt": "2023-09-07T20:30:27.000Z",
+      "userLogin": "samvher",
+      "title": "A BERT for laptops, from scratch",
+      "url": "https://github.com/samvher/bert-for-laptops/blob/main/BERT_for_laptops.ipynb"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694124250000,
+      "602ef872-2e10-4ca1-95a2-5979583c0030"
+    ],
+    "value": {
+      "id": "602ef872-2e10-4ca1-95a2-5979583c0030",
+      "score": 55,
+      "createdAt": "2023-09-07T22:04:10.000Z",
+      "userLogin": "Jefrodey",
+      "title": "Searx is no longer maintained",
+      "url": "https://github.com/searx/searx/commit/276ffd3f01cdd823f75676c51231fad4040059d3"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694128711000,
+      "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27"
+    ],
+    "value": {
+      "id": "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27",
+      "score": 93,
+      "createdAt": "2023-09-07T23:18:31.000Z",
+      "userLogin": "loganfrederick",
+      "title": "TEMU Is Cleverly Hidden Spyware That Poses an Urgent Security Threat to U.S.",
+      "url": "https://grizzlyreports.com/we-believe-pdd-is-a-dying-fraudulent-company-and-its-shopping-app-temu-is-cleverly-hidden-spyware-that-poses-an-urgent-security-threat-to-u-s-national-interests/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694129297000,
+      "49a26612-04c4-43b0-94ee-d3693d14c8f5"
+    ],
+    "value": {
+      "id": "49a26612-04c4-43b0-94ee-d3693d14c8f5",
+      "score": 22,
+      "createdAt": "2023-09-07T23:28:17.000Z",
+      "userLogin": "hhs",
+      "title": "Opposites don't actually attract: meta-analysis study",
+      "url": "https://www.colorado.edu/today/2023/08/31/news-flash-opposites-dont-actually-attract"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694129433000,
+      "933b7057-d26e-4b90-9575-43c8970d5615"
+    ],
+    "value": {
+      "id": "933b7057-d26e-4b90-9575-43c8970d5615",
+      "score": 50,
+      "createdAt": "2023-09-07T23:30:33.000Z",
+      "userLogin": "ukuina",
+      "title": "Show HN: HackYourNews – AI summaries of the top HN stories",
+      "url": "https://hackyournews.com/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694130084000,
+      "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3"
+    ],
+    "value": {
+      "id": "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3",
+      "score": 83,
+      "createdAt": "2023-09-07T23:41:24.000Z",
+      "userLogin": "edvinbesic",
+      "title": "Google gets its way, bakes a user-tracking ad platform directly into Chrome",
+      "url": "https://arstechnica.com/gadgets/2023/09/googles-widely-opposed-ad-platform-the-privacy-sandbox-launches-in-chrome/"
+    }
+  },
+  {
+    "key": [
+      "items_by_time",
+      1694130372000,
+      "09cca2fb-839a-4b66-94c2-d0ed51d54513"
+    ],
+    "value": {
+      "id": "09cca2fb-839a-4b66-94c2-d0ed51d54513",
+      "score": 33,
+      "createdAt": "2023-09-07T23:46:12.000Z",
+      "userLogin": "User23",
+      "title": "Mastering Emacs: What's new in Emacs 29.1",
+      "url": "https://www.masteringemacs.org/article/whats-new-in-emacs-29-1"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "Jefrodey",
+      "602ef872-2e10-4ca1-95a2-5979583c0030"
+    ],
+    "value": {
+      "id": "602ef872-2e10-4ca1-95a2-5979583c0030",
+      "score": 55,
+      "createdAt": "2023-09-07T22:04:10.000Z",
+      "userLogin": "Jefrodey",
+      "title": "Searx is no longer maintained",
+      "url": "https://github.com/searx/searx/commit/276ffd3f01cdd823f75676c51231fad4040059d3"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "User23",
+      "09cca2fb-839a-4b66-94c2-d0ed51d54513"
+    ],
+    "value": {
+      "id": "09cca2fb-839a-4b66-94c2-d0ed51d54513",
+      "score": 33,
+      "createdAt": "2023-09-07T23:46:12.000Z",
+      "userLogin": "User23",
+      "title": "Mastering Emacs: What's new in Emacs 29.1",
+      "url": "https://www.masteringemacs.org/article/whats-new-in-emacs-29-1"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "buro9",
+      "08460dd4-9ffa-42fb-a271-297ef03cfdaa"
+    ],
+    "value": {
+      "id": "08460dd4-9ffa-42fb-a271-297ef03cfdaa",
+      "score": 80,
+      "createdAt": "2023-09-07T19:34:41.000Z",
+      "userLogin": "buro9",
+      "title": "London Street Trees",
+      "url": "https://apps.london.gov.uk/street-trees/"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "edvinbesic",
+      "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3"
+    ],
+    "value": {
+      "id": "be8b114e-6f7d-4af4-b4cf-f41c80a4edb3",
+      "score": 83,
+      "createdAt": "2023-09-07T23:41:24.000Z",
+      "userLogin": "edvinbesic",
+      "title": "Google gets its way, bakes a user-tracking ad platform directly into Chrome",
+      "url": "https://arstechnica.com/gadgets/2023/09/googles-widely-opposed-ad-platform-the-privacy-sandbox-launches-in-chrome/"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "ericzawo",
+      "70aa0ef7-6f3d-49ce-b1fb-b43fef259229"
+    ],
+    "value": {
+      "id": "70aa0ef7-6f3d-49ce-b1fb-b43fef259229",
+      "score": 586,
+      "createdAt": "2023-09-07T20:21:01.000Z",
+      "userLogin": "ericzawo",
+      "title": "NSO group iPhone zero-click, zero-day exploit captured in the wild",
+      "url": "https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "hhs",
+      "49a26612-04c4-43b0-94ee-d3693d14c8f5"
+    ],
+    "value": {
+      "id": "49a26612-04c4-43b0-94ee-d3693d14c8f5",
+      "score": 22,
+      "createdAt": "2023-09-07T23:28:17.000Z",
+      "userLogin": "hhs",
+      "title": "Opposites don't actually attract: meta-analysis study",
+      "url": "https://www.colorado.edu/today/2023/08/31/news-flash-opposites-dont-actually-attract"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "loganfrederick",
+      "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27"
+    ],
+    "value": {
+      "id": "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27",
+      "score": 93,
+      "createdAt": "2023-09-07T23:18:31.000Z",
+      "userLogin": "loganfrederick",
+      "title": "TEMU Is Cleverly Hidden Spyware That Poses an Urgent Security Threat to U.S.",
+      "url": "https://grizzlyreports.com/we-believe-pdd-is-a-dying-fraudulent-company-and-its-shopping-app-temu-is-cleverly-hidden-spyware-that-poses-an-urgent-security-threat-to-u-s-national-interests/"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "samvher",
+      "758aac30-4d89-4259-b4b1-f34c0fcd6edc"
+    ],
+    "value": {
+      "id": "758aac30-4d89-4259-b4b1-f34c0fcd6edc",
+      "score": 99,
+      "createdAt": "2023-09-07T20:30:27.000Z",
+      "userLogin": "samvher",
+      "title": "A BERT for laptops, from scratch",
+      "url": "https://github.com/samvher/bert-for-laptops/blob/main/BERT_for_laptops.ipynb"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "todsacerdoti",
+      "fbd47eef-87b1-4202-b44b-5c9883302548"
+    ],
+    "value": {
+      "id": "fbd47eef-87b1-4202-b44b-5c9883302548",
+      "score": 412,
+      "createdAt": "2023-09-07T15:53:23.000Z",
+      "userLogin": "todsacerdoti",
+      "title": "North Korean campaign targeting security researchers",
+      "url": "https://blog.google/threat-analysis-group/active-north-korean-campaign-targeting-security-researchers/"
+    }
+  },
+  {
+    "key": [
+      "items_by_user",
+      "ukuina",
+      "933b7057-d26e-4b90-9575-43c8970d5615"
+    ],
+    "value": {
+      "id": "933b7057-d26e-4b90-9575-43c8970d5615",
+      "score": 50,
+      "createdAt": "2023-09-07T23:30:33.000Z",
+      "userLogin": "ukuina",
+      "title": "Show HN: HackYourNews – AI summaries of the top HN stories",
+      "url": "https://hackyournews.com/"
+    }
+  },
+  {
+    "key": [
+      "items_count",
+      "2023-09-07"
+    ],
+    "value": {
+      "value": "10"
+    }
+  },
+  {
+    "key": [
+      "items_voted_by_user",
+      "iuioiua",
+      "08460dd4-9ffa-42fb-a271-297ef03cfdaa"
+    ],
+    "value": {
+      "id": "08460dd4-9ffa-42fb-a271-297ef03cfdaa",
+      "score": 80,
+      "createdAt": "2023-09-07T19:34:41.000Z",
+      "userLogin": "buro9",
+      "title": "London Street Trees",
+      "url": "https://apps.london.gov.uk/street-trees/"
+    }
+  },
+  {
+    "key": [
+      "items_voted_by_user",
+      "iuioiua",
+      "09cca2fb-839a-4b66-94c2-d0ed51d54513"
+    ],
+    "value": {
+      "id": "09cca2fb-839a-4b66-94c2-d0ed51d54513",
+      "score": 33,
+      "createdAt": "2023-09-07T23:46:12.000Z",
+      "userLogin": "User23",
+      "title": "Mastering Emacs: What's new in Emacs 29.1",
+      "url": "https://www.masteringemacs.org/article/whats-new-in-emacs-29-1"
+    }
+  },
+  {
+    "key": [
+      "items_voted_by_user",
+      "iuioiua",
+      "758aac30-4d89-4259-b4b1-f34c0fcd6edc"
+    ],
+    "value": {
+      "id": "758aac30-4d89-4259-b4b1-f34c0fcd6edc",
+      "score": 99,
+      "createdAt": "2023-09-07T20:30:27.000Z",
+      "userLogin": "samvher",
+      "title": "A BERT for laptops, from scratch",
+      "url": "https://github.com/samvher/bert-for-laptops/blob/main/BERT_for_laptops.ipynb"
+    }
+  },
+  {
+    "key": [
+      "items_voted_by_user",
+      "iuioiua",
+      "933b7057-d26e-4b90-9575-43c8970d5615"
+    ],
+    "value": {
+      "id": "933b7057-d26e-4b90-9575-43c8970d5615",
+      "score": 50,
+      "createdAt": "2023-09-07T23:30:33.000Z",
+      "userLogin": "ukuina",
+      "title": "Show HN: HackYourNews – AI summaries of the top HN stories",
+      "url": "https://hackyournews.com/"
+    }
+  },
+  {
+    "key": [
+      "items_voted_by_user",
+      "iuioiua",
+      "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27"
+    ],
+    "value": {
+      "id": "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27",
+      "score": 93,
+      "createdAt": "2023-09-07T23:18:31.000Z",
+      "userLogin": "loganfrederick",
+      "title": "TEMU Is Cleverly Hidden Spyware That Poses an Urgent Security Threat to U.S.",
+      "url": "https://grizzlyreports.com/we-believe-pdd-is-a-dying-fraudulent-company-and-its-shopping-app-temu-is-cleverly-hidden-spyware-that-poses-an-urgent-security-threat-to-u-s-national-interests/"
+    }
+  },
+  {
+    "key": [
+      "notifications_by_user",
+      "User23",
+      "01H9S5EAKZHWQN1AW8XGVKXQ8R"
+    ],
+    "value": {
+      "id": "01H9S5EAKZHWQN1AW8XGVKXQ8R",
+      "userLogin": "User23",
+      "type": "vote",
+      "text": "iuioiua upvoted your post: Mastering Emacs: What's new in Emacs 29.1",
+      "originUrl": "/items/09cca2fb-839a-4b66-94c2-d0ed51d54513"
+    }
+  },
+  {
+    "key": [
+      "notifications_by_user",
+      "buro9",
+      "01H9S5EDJNFRMRGNZ5WJ8QQDA6"
+    ],
+    "value": {
+      "id": "01H9S5EDJNFRMRGNZ5WJ8QQDA6",
+      "userLogin": "buro9",
+      "type": "vote",
+      "text": "iuioiua upvoted your post: London Street Trees",
+      "originUrl": "/items/08460dd4-9ffa-42fb-a271-297ef03cfdaa"
+    }
+  },
+  {
+    "key": [
+      "notifications_by_user",
+      "loganfrederick",
+      "01H9S5EC6WPZKBY9Q0NX479TGV"
+    ],
+    "value": {
+      "id": "01H9S5EC6WPZKBY9Q0NX479TGV",
+      "userLogin": "loganfrederick",
+      "type": "vote",
+      "text": "iuioiua upvoted your post: TEMU Is Cleverly Hidden Spyware That Poses an Urgent Security Threat to U.S.",
+      "originUrl": "/items/a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27"
+    }
+  },
+  {
+    "key": [
+      "notifications_by_user",
+      "samvher",
+      "01H9S5ECTXT5WZBNJ7PJCC1Y4Y"
+    ],
+    "value": {
+      "id": "01H9S5ECTXT5WZBNJ7PJCC1Y4Y",
+      "userLogin": "samvher",
+      "type": "vote",
+      "text": "iuioiua upvoted your post: A BERT for laptops, from scratch",
+      "originUrl": "/items/758aac30-4d89-4259-b4b1-f34c0fcd6edc"
+    }
+  },
+  {
+    "key": [
+      "notifications_by_user",
+      "ukuina",
+      "01H9S5EBFEN7ZM8KK6AS85GQ6Q"
+    ],
+    "value": {
+      "id": "01H9S5EBFEN7ZM8KK6AS85GQ6Q",
+      "userLogin": "ukuina",
+      "type": "vote",
+      "text": "iuioiua upvoted your post: Show HN: HackYourNews – AI summaries of the top HN stories",
+      "originUrl": "/items/933b7057-d26e-4b90-9575-43c8970d5615"
+    }
+  },
+  {
+    "key": [
+      "tokens",
+      "d4dcc3fc-fa16-4321-8d62-17345a78673a"
+    ],
+    "value": {
+      "accessToken": "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",
+      "tokenType": "bearer",
+      "scope": [
+        "read:user"
+      ]
+    }
+  },
+  {
+    "key": [
+      "users",
+      "Jefrodey"
+    ],
+    "value": {
+      "login": "Jefrodey",
+      "stripeCustomerId": "ced8a839-aea1-4ca4-a301-7ec723d13814",
+      "sessionId": "d8a704ce-2367-4e32-af46-b43d8e4338a9",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "User23"
+    ],
+    "value": {
+      "login": "User23",
+      "stripeCustomerId": "a629e194-1ef3-4cbe-bffc-12a2be0380a7",
+      "sessionId": "c2e77847-e0a5-4b19-8367-4edbb137a9ec",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "buro9"
+    ],
+    "value": {
+      "login": "buro9",
+      "stripeCustomerId": "07852252-36f1-4181-8b43-3818f1dc6842",
+      "sessionId": "8549683e-d02a-41da-bfd5-8e163edbc9d8",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "edvinbesic"
+    ],
+    "value": {
+      "login": "edvinbesic",
+      "stripeCustomerId": "646dde9b-e673-4b34-8e3b-4d638d5154de",
+      "sessionId": "6e6e2c54-ab7c-456f-8c0c-8badd90a1583",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "ericzawo"
+    ],
+    "value": {
+      "login": "ericzawo",
+      "stripeCustomerId": "95911f9e-440e-4144-982c-f02880a0d7a3",
+      "sessionId": "2d555a92-012d-4555-ac32-87784198c41b",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "hhs"
+    ],
+    "value": {
+      "login": "hhs",
+      "stripeCustomerId": "77a96d81-5625-4cde-9db2-66f1778ea38d",
+      "sessionId": "de0a2557-ffa4-4e4e-b50d-5f042b31ad65",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "loganfrederick"
+    ],
+    "value": {
+      "login": "loganfrederick",
+      "stripeCustomerId": "9ddd79ab-59b9-4c23-82dc-168866eb65b5",
+      "sessionId": "70fbf331-9c3a-4e1f-a89f-f5f084b055c4",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "samvher"
+    ],
+    "value": {
+      "login": "samvher",
+      "stripeCustomerId": "9aed43c5-f136-4ccd-a1be-30dfb2536b7e",
+      "sessionId": "683d4d18-1818-49f3-9ced-8463fb7665ee",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "todsacerdoti"
+    ],
+    "value": {
+      "login": "todsacerdoti",
+      "stripeCustomerId": "f170ac80-80a1-47c0-b438-b5d127d657a3",
+      "sessionId": "37259028-a73b-4623-9262-89fede478475",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users",
+      "ukuina"
+    ],
+    "value": {
+      "login": "ukuina",
+      "stripeCustomerId": "a40ce7db-9466-4b8f-908d-871e614d106b",
+      "sessionId": "3ef36d41-8a26-43a1-a8d0-d57652c91aa2",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "2d555a92-012d-4555-ac32-87784198c41b"
+    ],
+    "value": {
+      "login": "ericzawo",
+      "stripeCustomerId": "95911f9e-440e-4144-982c-f02880a0d7a3",
+      "sessionId": "2d555a92-012d-4555-ac32-87784198c41b",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "37259028-a73b-4623-9262-89fede478475"
+    ],
+    "value": {
+      "login": "todsacerdoti",
+      "stripeCustomerId": "f170ac80-80a1-47c0-b438-b5d127d657a3",
+      "sessionId": "37259028-a73b-4623-9262-89fede478475",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "3ef36d41-8a26-43a1-a8d0-d57652c91aa2"
+    ],
+    "value": {
+      "login": "ukuina",
+      "stripeCustomerId": "a40ce7db-9466-4b8f-908d-871e614d106b",
+      "sessionId": "3ef36d41-8a26-43a1-a8d0-d57652c91aa2",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "683d4d18-1818-49f3-9ced-8463fb7665ee"
+    ],
+    "value": {
+      "login": "samvher",
+      "stripeCustomerId": "9aed43c5-f136-4ccd-a1be-30dfb2536b7e",
+      "sessionId": "683d4d18-1818-49f3-9ced-8463fb7665ee",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "6e6e2c54-ab7c-456f-8c0c-8badd90a1583"
+    ],
+    "value": {
+      "login": "edvinbesic",
+      "stripeCustomerId": "646dde9b-e673-4b34-8e3b-4d638d5154de",
+      "sessionId": "6e6e2c54-ab7c-456f-8c0c-8badd90a1583",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "70fbf331-9c3a-4e1f-a89f-f5f084b055c4"
+    ],
+    "value": {
+      "login": "loganfrederick",
+      "stripeCustomerId": "9ddd79ab-59b9-4c23-82dc-168866eb65b5",
+      "sessionId": "70fbf331-9c3a-4e1f-a89f-f5f084b055c4",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "8549683e-d02a-41da-bfd5-8e163edbc9d8"
+    ],
+    "value": {
+      "login": "buro9",
+      "stripeCustomerId": "07852252-36f1-4181-8b43-3818f1dc6842",
+      "sessionId": "8549683e-d02a-41da-bfd5-8e163edbc9d8",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "c2e77847-e0a5-4b19-8367-4edbb137a9ec"
+    ],
+    "value": {
+      "login": "User23",
+      "stripeCustomerId": "a629e194-1ef3-4cbe-bffc-12a2be0380a7",
+      "sessionId": "c2e77847-e0a5-4b19-8367-4edbb137a9ec",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "d4dcc3fc-fa16-4321-8d62-17345a78673a"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "d8a704ce-2367-4e32-af46-b43d8e4338a9"
+    ],
+    "value": {
+      "login": "Jefrodey",
+      "stripeCustomerId": "ced8a839-aea1-4ca4-a301-7ec723d13814",
+      "sessionId": "d8a704ce-2367-4e32-af46-b43d8e4338a9",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_session",
+      "de0a2557-ffa4-4e4e-b50d-5f042b31ad65"
+    ],
+    "value": {
+      "login": "hhs",
+      "stripeCustomerId": "77a96d81-5625-4cde-9db2-66f1778ea38d",
+      "sessionId": "de0a2557-ffa4-4e4e-b50d-5f042b31ad65",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "07852252-36f1-4181-8b43-3818f1dc6842"
+    ],
+    "value": {
+      "login": "buro9",
+      "stripeCustomerId": "07852252-36f1-4181-8b43-3818f1dc6842",
+      "sessionId": "8549683e-d02a-41da-bfd5-8e163edbc9d8",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "646dde9b-e673-4b34-8e3b-4d638d5154de"
+    ],
+    "value": {
+      "login": "edvinbesic",
+      "stripeCustomerId": "646dde9b-e673-4b34-8e3b-4d638d5154de",
+      "sessionId": "6e6e2c54-ab7c-456f-8c0c-8badd90a1583",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "77a96d81-5625-4cde-9db2-66f1778ea38d"
+    ],
+    "value": {
+      "login": "hhs",
+      "stripeCustomerId": "77a96d81-5625-4cde-9db2-66f1778ea38d",
+      "sessionId": "de0a2557-ffa4-4e4e-b50d-5f042b31ad65",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "95911f9e-440e-4144-982c-f02880a0d7a3"
+    ],
+    "value": {
+      "login": "ericzawo",
+      "stripeCustomerId": "95911f9e-440e-4144-982c-f02880a0d7a3",
+      "sessionId": "2d555a92-012d-4555-ac32-87784198c41b",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "9aed43c5-f136-4ccd-a1be-30dfb2536b7e"
+    ],
+    "value": {
+      "login": "samvher",
+      "stripeCustomerId": "9aed43c5-f136-4ccd-a1be-30dfb2536b7e",
+      "sessionId": "683d4d18-1818-49f3-9ced-8463fb7665ee",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "9ddd79ab-59b9-4c23-82dc-168866eb65b5"
+    ],
+    "value": {
+      "login": "loganfrederick",
+      "stripeCustomerId": "9ddd79ab-59b9-4c23-82dc-168866eb65b5",
+      "sessionId": "70fbf331-9c3a-4e1f-a89f-f5f084b055c4",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "a40ce7db-9466-4b8f-908d-871e614d106b"
+    ],
+    "value": {
+      "login": "ukuina",
+      "stripeCustomerId": "a40ce7db-9466-4b8f-908d-871e614d106b",
+      "sessionId": "3ef36d41-8a26-43a1-a8d0-d57652c91aa2",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "a629e194-1ef3-4cbe-bffc-12a2be0380a7"
+    ],
+    "value": {
+      "login": "User23",
+      "stripeCustomerId": "a629e194-1ef3-4cbe-bffc-12a2be0380a7",
+      "sessionId": "c2e77847-e0a5-4b19-8367-4edbb137a9ec",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "ced8a839-aea1-4ca4-a301-7ec723d13814"
+    ],
+    "value": {
+      "login": "Jefrodey",
+      "stripeCustomerId": "ced8a839-aea1-4ca4-a301-7ec723d13814",
+      "sessionId": "d8a704ce-2367-4e32-af46-b43d8e4338a9",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "cus_Ob5OatIfVCbeCP"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_by_stripe_customer",
+      "f170ac80-80a1-47c0-b438-b5d127d657a3"
+    ],
+    "value": {
+      "login": "todsacerdoti",
+      "stripeCustomerId": "f170ac80-80a1-47c0-b438-b5d127d657a3",
+      "sessionId": "37259028-a73b-4623-9262-89fede478475",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_count",
+      "2023-09-08"
+    ],
+    "value": {
+      "value": "11"
+    }
+  },
+  {
+    "key": [
+      "users_voted_for_item",
+      "08460dd4-9ffa-42fb-a271-297ef03cfdaa",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_voted_for_item",
+      "09cca2fb-839a-4b66-94c2-d0ed51d54513",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_voted_for_item",
+      "758aac30-4d89-4259-b4b1-f34c0fcd6edc",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_voted_for_item",
+      "933b7057-d26e-4b90-9575-43c8970d5615",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "users_voted_for_item",
+      "a9bce10b-dfa0-41bb-a0f8-9dc8087dbf27",
+      "iuioiua"
+    ],
+    "value": {
+      "login": "iuioiua",
+      "stripeCustomerId": "cus_Ob5OatIfVCbeCP",
+      "sessionId": "d4dcc3fc-fa16-4321-8d62-17345a78673a",
+      "isSubscribed": false
+    }
+  },
+  {
+    "key": [
+      "visits_count",
+      "2023-09-08"
+    ],
+    "value": {
+      "value": "20"
+    }
+  },
+  {
+    "key": [
+      "votes_count",
+      "2023-09-08"
+    ],
+    "value": {
+      "value": "5"
+    }
+  }
+]
