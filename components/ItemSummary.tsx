@@ -3,6 +3,7 @@ import VoteButton from "@/islands/VoteButton.tsx";
 import type { Item } from "@/utils/db.ts";
 import UserPostedAt from "./UserPostedAt.tsx";
 import StaticVoteButton from "./StaticVoteButton.tsx";
+import { decodeTime } from "std/ulid/mod.ts";
 
 export interface ItemSummaryProps {
   item: Item;
@@ -39,7 +40,7 @@ export default function ItemSummary(props: ItemSummaryProps) {
         </p>
         <UserPostedAt
           userLogin={props.item.userLogin}
-          createdAt={props.item.createdAt}
+          createdAt={new Date(decodeTime(props.item.id))}
         />
       </div>
     </div>

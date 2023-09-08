@@ -3,6 +3,7 @@
   "tasks": {
     "init:stripe": "deno run --allow-read --allow-env --allow-net tasks/init_stripe.ts",
     "db:dump": "deno run --allow-read --allow-env --unstable tasks/db_dump.ts",
+    "db:restore": "deno run --allow-read --allow-env --unstable tasks/db_restore.ts",
     "db:seed": "deno run --allow-read --allow-env --allow-net --unstable tasks/db_seed.ts",
     "db:migrate": "deno run --allow-read --allow-env --allow-net --unstable tasks/db_migrate.ts",
     "db:reset": "deno run --allow-read --allow-env --unstable tasks/db_reset.ts",
@@ -22,7 +23,7 @@
   },
   "imports": {
     "@/": "./",
-    "$fresh/": "https://deno.land/x/fresh@1.4.2/",
+    "$fresh/": "https://deno.land/x/fresh@1.4.3/",
     "$gfm": "https://deno.land/x/gfm@0.2.4/mod.ts",
     "preact": "https://esm.sh/preact@10.15.1",
     "preact/": "https://esm.sh/preact@10.15.1/",
@@ -32,8 +33,8 @@
     "twind-preset-tailwind/": "https://esm.sh/@twind/preset-tailwind@1.1.4/",
     "twind-preset-ext": "https://esm.sh/@twind/preset-ext@1.0.7/",
     "std/": "https://raw.githubusercontent.com/lino-levan/deno_std/feat-ulid/",
-    "stripe": "./stripe.ts",
-    "feed": "https://esm.sh/feed@4.2.2",
+    "stripe": "npm:/stripe@12.6.0",
+    "feed": "npm:/feed@4.2.2",
     "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.6.1/mod.ts",
     "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/",
     "@twind/core": "https://esm.sh/@twind/core@1.1.3",
