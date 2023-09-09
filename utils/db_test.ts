@@ -31,7 +31,6 @@ import {
   listItemsVotedByUser,
   listNotifications,
   newUserProps,
-  newVoteProps,
   Notification,
   updateUser,
   type User,
@@ -188,22 +187,31 @@ Deno.test("[db] votes", async () => {
   const vote = {
     itemId: item.id,
     userLogin: user.login,
-    ...newVoteProps(),
+    createdAt: new Date(),
   };
 
   const dates = [vote.createdAt];
   assertEquals(await getManyMetrics("votes_count", dates), [0n]);
   assertEquals(await collectValues(listItemsVotedByUser(user.login)), []);
 
-  // await assertRejects(async () => await createVote(vote));
+  await assertRejects(
+    async () => await createVote(vote),
+    Deno.errors.NotFound,
+    "Item not found",
+  );
   await createItem(item);
+  await assertRejects(
+    async () => await createVote(vote),
+    Deno.errors.NotFound,
+    "User not found",
+  );
   await createUser(user);
   await createVote(vote);
   item.score++;
 
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
   assertEquals(await collectValues(listItemsVotedByUser(user.login)), [item]);
-  // await assertRejects(async () => await createVote(vote));
+  await assertRejects(async () => await createVote(vote));
 
   await deleteVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
@@ -313,7 +321,7 @@ Deno.test("[db] getAreVotedByUser()", async () => {
   const vote = {
     itemId: item.id,
     userLogin: user.login,
-    ...newVoteProps(),
+    createdAt: new Date(),
   };
 
   assertEquals(await getItem(item.id), null);
