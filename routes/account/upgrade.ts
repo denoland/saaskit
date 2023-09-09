@@ -1,14 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import type { RouteContext } from "$fresh/server.ts";
+import type { SignedInState } from "@/middleware/session.ts";
+import { redirect } from "@/utils/http.ts";
 import {
   getStripePremiumPlanPriceId,
   isStripeEnabled,
   stripe,
 } from "@/utils/stripe.ts";
-import type { SignedInState } from "@/middleware/session.ts";
-import { redirect } from "@/utils/http.ts";
-import { createHttpError } from "std/http/http_errors.ts";
-import { Status } from "std/http/http_status.ts";
 
 export default async function AccountUpgradePage(
   _req: Request,
@@ -35,7 +33,9 @@ export default async function AccountUpgradePage(
     ],
     mode: "subscription",
   });
-  if (url === null) throw createHttpError(Status.NotFound);
+  if (url === null) {
+    return ctx.renderNotFound();
+  }
 
   return redirect(url);
 }
