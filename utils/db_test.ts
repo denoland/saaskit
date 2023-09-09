@@ -25,6 +25,7 @@ import {
   ifUserHasNotifications,
   incrVisitsCountByDay,
   type Item,
+  kv,
   listCommentsByItem,
   listItems,
   listItemsByUser,
@@ -212,6 +213,40 @@ Deno.test("[db] votes", async () => {
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
   assertEquals(await collectValues(listItemsVotedByUser(user.login)), [item]);
   await assertRejects(async () => await createVote(vote));
+
+  await deleteItem(item);
+  await assertRejects(
+    async () => await deleteVote(vote),
+    Deno.errors.NotFound,
+    "Item not found",
+  );
+  await createItem(item);
+
+  /** @todo(iuioiua) Replace with `deleteUser()` once implemented */
+  await kv.delete(["users", user.login]);
+  await assertRejects(
+    async () => await deleteVote(vote),
+    Deno.errors.NotFound,
+    "User not found",
+  );
+  /** @todo(iuioiua) Replace with `createUser()` once `deleteUser()` is implemented */
+  await kv.set(["users", user.login], user);
+
+  await kv.delete(["items_voted_by_user", user.login, item.id]);
+  await assertRejects(
+    async () => await deleteVote(vote),
+    Deno.errors.NotFound,
+    "Item voted by user not found",
+  );
+  await kv.set(["items_voted_by_user", user.login, item.id], item);
+
+  await kv.delete(["users_voted_for_item", item.id, user.login]);
+  await assertRejects(
+    async () => await deleteVote(vote),
+    Deno.errors.NotFound,
+    "User voted for item not found",
+  );
+  await kv.set(["users_voted_for_item", item.id, user.login], user);
 
   await deleteVote(vote);
   assertEquals(await getManyMetrics("votes_count", dates), [1n]);
