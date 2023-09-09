@@ -17,8 +17,19 @@ export const handler: Handlers = {
     if (!isStripeEnabled()) throw createHttpError(Status.NotFound);
 
     const body = await req.text();
-    const signature = req.headers.get("stripe-signature")!;
-    const signingSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
+    const signature = req.headers.get("stripe-signature");
+    if (signature === null) {
+      throw createHttpError(
+        Status.BadRequest,
+        "`Stripe-Signature` header is missing",
+      );
+    }
+    const signingSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+    if (signingSecret === undefined) {
+      throw new Error(
+        "`STRIPE_WEBHOOK_SECRET` environment variable is not set",
+      );
+    }
 
     let event!: Stripe.Event;
     try {
