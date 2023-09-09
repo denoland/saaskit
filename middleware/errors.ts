@@ -17,8 +17,16 @@ export async function handleWebPageErrors(
 }
 
 /**
- * Returns the converted HTTP error response from the given HTTP-flavored
- * error.
+ * Returns the converted HTTP error response from the given error. If the error
+ * is an instance of {@linkcode Deno.errors.NotFound}, a HTTP 404 Not Found
+ * error response is returned. This is done to translate errors thrown from
+ * logic that's separated by concerns.
+ *
+ * If the error is a HTTP-flavored error, the corresponding HTTP error response
+ * is returned.
+ *
+ * If the error is a generic error, a HTTP 500 Internal Server error response
+ * is returned.
  *
  * @see {@link https://deno.land/std/http/http_errors.ts}
  *
