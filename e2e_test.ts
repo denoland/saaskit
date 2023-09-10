@@ -624,3 +624,36 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
     assertResponseNotFound(resp);
   });
 });
+
+Deno.test("[e2e] GET /items/[id]", async (test) => {
+  await test.step("returns HTTP 404 Not Found response if the item does not exist", async () => {
+    const resp = await handler(new Request("http://localhost/items/1"));
+
+    assertFalse(resp.ok);
+    assertResponseNotFound(resp);
+  });
+
+  const user = genNewUser();
+  await createUser(user);
+  const item: Item = {
+    ...genNewItem(),
+    userLogin: user.login,
+  };
+  await createItem(item);
+  const url = `http://localhost/items/${item.id}`;
+
+  await test.step("renders the item page with commenting enabled for signed in user", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertFalse((await resp.text()).includes("Sign in to comment"));
+  });
+
+  await test.step("renders the item page directing an anonymous user to sign in to comment", async () => {
+    const resp = await handler(new Request(url));
+    assertStringIncludes(await resp.text(), "Sign in to comment");
+  });
+});
