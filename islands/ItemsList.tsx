@@ -81,7 +81,7 @@ export default function ItemsList(
 
   return (
     <div>
-      {itemsSig.value.length > 0
+      {itemsSig.value.length
         ? itemsSig.value.map((item, id) => {
           return (
             <ItemSummary
