@@ -583,7 +583,7 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
   await createNotification(notification);
   const url = `http://localhost/notifications/${notification.id}`;
 
-  await test.step("returns HTTP 500 Interal Server Error response if the db throws an error while deleting notification key", async () => {
+  await test.step("returns HTTP 500 Internal Server Error response if the db throws an error while deleting notification key", async () => {
     const kvAtomicStub = stub(
       kv,
       "atomic",
