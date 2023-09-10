@@ -12,9 +12,7 @@ export default async function AccountUpgradePage(
   _req: Request,
   ctx: RouteContext<undefined, SignedInState>,
 ) {
-  if (!isStripeEnabled()) {
-    return ctx.renderNotFound();
-  }
+  if (!isStripeEnabled()) return ctx.renderNotFound();
   const stripePremiumPlanPriceId = getStripePremiumPlanPriceId();
   if (stripePremiumPlanPriceId === undefined) {
     throw new Error(
@@ -33,9 +31,7 @@ export default async function AccountUpgradePage(
     ],
     mode: "subscription",
   });
-  if (url === null) {
-    return ctx.renderNotFound();
-  }
+  if (url === null) return ctx.renderNotFound();
 
   return redirect(url);
 }

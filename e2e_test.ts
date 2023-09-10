@@ -82,7 +82,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     assertEquals(resp.status, 303);
   });
 
-  await test.step("returns HTTP 404 Not Found response if user does not have a stripeCustomerId", async () => {
+  await test.step("returns HTTP 404 Not Found response if the session user does not have a Stripe customer ID", async () => {
     const user = genNewUser();
     await createUser({ ...user, stripeCustomerId: undefined });
     const resp = await handler(
@@ -95,7 +95,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     assertEquals(resp.status, Status.NotFound);
   });
 
-  await test.step("returns redirect response to the url returned by stripe after creating a billing portal session", async () => {
+  await test.step("returns redirect response to the URL returned by Stripe after creating a billing portal session", async () => {
     const user = genNewUser();
     await createUser(user);
 
@@ -166,7 +166,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     assertEquals(resp.status, Status.NotFound);
   });
 
-  await test.step("returns HTTP 404 Not Found response if stripe returns a null url", async () => {
+  await test.step("returns HTTP 404 Not Found response if Stripe returns a `null` URL", async () => {
     Deno.env.set("STRIPE_PREMIUM_PLAN_PRICE_ID", crypto.randomUUID());
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
 
@@ -190,7 +190,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     sessionsCreateStub.restore();
   });
 
-  await test.step("returns redirect response to the url returned by stripe after creating a checkout session", async () => {
+  await test.step("returns redirect response to the URL returned by Stripe after creating a checkout session", async () => {
     const priceId = crypto.randomUUID();
     Deno.env.set("STRIPE_PREMIUM_PLAN_PRICE_ID", priceId);
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
