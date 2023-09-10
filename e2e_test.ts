@@ -72,12 +72,15 @@ Deno.test("[e2e] GET /account", async () => {
 
 Deno.test("[e2e] GET /account/manage", async (test) => {
   const url = "http://localhost/account/manage";
+  Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
 
-  const resp1 = await handler(new Request(url));
-  assertFalse(resp1.ok);
-  assertFalse(resp1.body);
-  assertEquals(resp1.headers.get("location"), "/signin");
-  assertEquals(resp1.status, 303);
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+    assertFalse(resp.ok);
+    assertFalse(resp.body);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, 303);
+  });
 
   await test.step("returns HTTP 404 Not Found response if user does not have a stripeCustomerId", async () => {
     const user = genNewUser();
@@ -121,16 +124,43 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     });
     sessionsCreateStub.restore();
   });
+
+  /* An open question here, should we hit Stripes live API just to test that it fails
+  await test.step("returns an error as the Stripe API fails to authenticate", async () => {
+    const user = genNewUser();
+    await createUser(user);
+
+    const sessionsCreateSpy = spy(stripe.billingPortal.sessions, "create");
+
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertFalse(resp.ok);
+    assertEquals(resp.status, Status.InternalServerError);
+    assertSpyCall(sessionsCreateSpy, 0, {
+      args: [{
+        customer: user.stripeCustomerId!,
+        return_url: "http://localhost/account",
+      }],
+    });
+    sessionsCreateSpy.restore();
+  });
+  */
 });
 
 Deno.test("[e2e] GET /account/upgrade", async (test) => {
   const url = "http://localhost/account/upgrade";
 
-  const resp1 = await handler(new Request(url));
-  assertFalse(resp1.ok);
-  assertFalse(resp1.body);
-  assertEquals(resp1.headers.get("location"), "/signin");
-  assertEquals(resp1.status, 303);
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+    assertFalse(resp.ok);
+    assertFalse(resp.body);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, 303);
+  });
 
   const user = genNewUser();
   await createUser(user);
