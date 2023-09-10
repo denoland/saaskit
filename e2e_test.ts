@@ -8,8 +8,10 @@ import {
   createItem,
   createNotification,
   createUser,
+  ifUserHasNotifications,
   type Item,
   kv,
+  listCommentsByItem,
   type Notification,
 } from "@/utils/db.ts";
 import {
@@ -26,15 +28,10 @@ import {
   assertFalse,
   assertInstanceOf,
   assertNotEquals,
+  assertObjectMatch,
   assertStringIncludes,
 } from "std/assert/mod.ts";
-import {
-  assertSpyCall,
-  assertSpyCalls,
-  resolvesNext,
-  spy,
-  stub,
-} from "std/testing/mock.ts";
+import { assertSpyCall, resolvesNext, stub } from "std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
 
@@ -691,12 +688,11 @@ Deno.test("[e2e] POST /api/comments", async (test) => {
 
   await test.step("creates a comment but not a new notification if for one's own item", async () => {
     const item = { ...genNewItem(), userLogin: user.login };
+    const comment = { text: "Comment text", itemId: item.id };
     await createItem(item);
     const body = new FormData();
-    body.set("text", "Comment text");
-    body.set("item_id", item.id);
-    const createCommentSpy = spy(createComment);
-    const createNotificationSpy = spy(createNotification);
+    body.set("text", comment.text);
+    body.set("item_id", comment.itemId);
     const resp = await handler(
       new Request(url, {
         method: "POST",
@@ -704,20 +700,27 @@ Deno.test("[e2e] POST /api/comments", async (test) => {
         body,
       }),
     );
+    const kvEntries = [];
+    for await (const c of listCommentsByItem(item.id)) kvEntries.push(c);
 
     assertEquals(resp.status, Status.SeeOther);
-    assertSpyCalls(createCommentSpy, 1);
-    assertSpyCalls(createNotificationSpy, 0);
+    assertEquals(await ifUserHasNotifications(user.login), false);
+    // Deep partial match since the comment ID is a ulid generated at runtime
+    assertObjectMatch({ kvEntries }, {
+      kvEntries: [{
+        key: ["comments_by_item", comment.itemId],
+        value: comment,
+      }],
+    });
   });
 
   await test.step("creates a comment and notification if for someone elses item", async () => {
     const item = genNewItem();
+    const comment = { text: "Comment text", itemId: item.id };
     await createItem(item);
     const body = new FormData();
-    body.set("text", "Comment text");
-    body.set("item_id", item.id);
-    const createCommentSpy = spy(createComment);
-    const createNotificationSpy = spy(createNotification);
+    body.set("text", comment.text);
+    body.set("item_id", comment.itemId);
     const resp = await handler(
       new Request(url, {
         method: "POST",
@@ -725,9 +728,18 @@ Deno.test("[e2e] POST /api/comments", async (test) => {
         body,
       }),
     );
+    const kvEntries = [];
+    for await (const c of listCommentsByItem(item.id)) kvEntries.push(c);
 
     assertEquals(resp.status, Status.SeeOther);
-    assertSpyCalls(createCommentSpy, 1);
-    assertSpyCalls(createNotificationSpy, 1);
+    assertEquals(await ifUserHasNotifications(item.userLogin), true);
+    assertEquals(await ifUserHasNotifications(user.login), false);
+    // Deep partial match since the comment ID is a ulid generated at runtime
+    assertObjectMatch({ kvEntries }, {
+      kvEntries: [{
+        key: ["comments_by_item", comment.itemId],
+        value: comment,
+      }],
+    });
   });
 });
