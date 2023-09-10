@@ -75,22 +75,24 @@ export default function ItemsList(
       .finally(() => loadMoreItems());
   }, []);
 
+  if (isLoadingSig.value === undefined || isLoadingSig.value === true) {
+    return <>█</>;
+  }
+
   return (
     <div>
-      {isLoadingSig.value !== undefined && !isLoadingSig.value
-        ? itemsSig.value.length > 0
-          ? itemsSig.value.map((item, id) => {
-            return (
-              <ItemSummary
-                key={item.id}
-                item={item}
-                isVoted={itemsAreVotedSig.value[id]}
-                isSignedIn={props.isSignedIn}
-              />
-            );
-          })
-          : <EmptyItemsList />
-        : "█"}
+      {itemsSig.value.length > 0
+        ? itemsSig.value.map((item, id) => {
+          return (
+            <ItemSummary
+              key={item.id}
+              item={item}
+              isVoted={itemsAreVotedSig.value[id]}
+              isSignedIn={props.isSignedIn}
+            />
+          );
+        })
+        : <EmptyItemsList />}
       {cursorSig.value !== "" && (
         <button onClick={loadMoreItems} class={LINK_STYLES}>
           {isLoadingSig.value ? "Loading..." : "Load more"}
