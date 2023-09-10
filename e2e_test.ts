@@ -3,6 +3,7 @@
 import { createHandler, Status } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
 import {
+  collectValues,
   type Comment,
   createComment,
   createItem,
@@ -700,18 +701,12 @@ Deno.test("[e2e] POST /api/comments", async (test) => {
         body,
       }),
     );
-    const kvEntries = [];
-    for await (const c of listCommentsByItem(item.id)) kvEntries.push(c);
+    const comments = await collectValues(listCommentsByItem(item.id));
 
     assertEquals(resp.status, Status.SeeOther);
     assertEquals(await ifUserHasNotifications(user.login), false);
-    // Deep partial match since the comment ID is a ulid generated at runtime
-    assertObjectMatch({ kvEntries }, {
-      kvEntries: [{
-        key: ["comments_by_item", comment.itemId],
-        value: comment,
-      }],
-    });
+    // Deep partial match since the comment ID is a ULID generated at runtime
+    assertObjectMatch(comments[0], comment);
   });
 
   await test.step("creates a comment and notification if for someone elses item", async () => {
@@ -728,18 +723,12 @@ Deno.test("[e2e] POST /api/comments", async (test) => {
         body,
       }),
     );
-    const kvEntries = [];
-    for await (const c of listCommentsByItem(item.id)) kvEntries.push(c);
+    const comments = await collectValues(listCommentsByItem(item.id));
 
     assertEquals(resp.status, Status.SeeOther);
     assertEquals(await ifUserHasNotifications(item.userLogin), true);
     assertEquals(await ifUserHasNotifications(user.login), false);
-    // Deep partial match since the comment ID is a ulid generated at runtime
-    assertObjectMatch({ kvEntries }, {
-      kvEntries: [{
-        key: ["comments_by_item", comment.itemId],
-        value: comment,
-      }],
-    });
+    // Deep partial match since the comment ID is a ULID generated at runtime
+    assertObjectMatch(comments[0], comment);
   });
 });
