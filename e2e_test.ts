@@ -28,7 +28,14 @@ import {
   assertNotEquals,
   assertStringIncludes,
 } from "std/assert/mod.ts";
-import { assertSpyCall, resolvesNext, stub } from "std/testing/mock.ts";
+import {
+  assertSpyCall,
+  assertSpyCallAsync,
+  assertSpyCalls,
+  resolvesNext,
+  spy,
+  stub,
+} from "std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
 
@@ -622,5 +629,103 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
 
     assertFalse(resp.ok);
     assertResponseNotFound(resp);
+  });
+});
+
+Deno.test("[e2e] POST /api/comments", async (test) => {
+  const url = "http://localhost/api/comments";
+  const item = genNewItem();
+  await createItem(item);
+
+  const formData = new FormData();
+  formData.append("text", "Comment text");
+  formData.append("item_id", item.id);
+
+  await test.step("returns HTTP 401 Unauthorized response if the session user is not signed in", async () => {
+    const resp = await handler(
+      new Request(url, { method: "POST" }),
+    );
+    assertFalse(resp.ok);
+    assertEquals(resp.status, Status.Unauthorized);
+  });
+
+  const user = genNewUser();
+  await createUser(user);
+
+  await test.step("returns HTTP 400 Bad Request response if comment is missing text", async () => {
+    const invalidFormData = new FormData();
+    invalidFormData.append("item_id", item.id);
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { cookie: "site-session=" + user.sessionId },
+        body: invalidFormData,
+      }),
+    );
+
+    assertEquals(resp.status, Status.BadRequest);
+  });
+
+  await test.step("returns HTTP 400 Bad Request response if comment is missing item_id", async () => {
+    const invalidFormData = new FormData();
+    invalidFormData.append("text", "Comment text");
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { cookie: "site-session=" + user.sessionId },
+        body: invalidFormData,
+      }),
+    );
+
+    assertEquals(resp.status, Status.BadRequest);
+  });
+
+  await test.step("returns HTTP 404 Not Found response if the item is not found", async () => {
+    formData.set("item_id", "not-found-item-id");
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { cookie: "site-session=" + user.sessionId },
+        body: formData,
+      }),
+    );
+
+    assertEquals(resp.status, Status.NotFound);
+  });
+
+  await test.step("a comment is created by the same session user, a new notification is not created", async () => {
+    formData.set("item_id", item.id);
+    const createCommentSpy = spy(createComment);
+    const createNotificationSpy = spy(createNotification);
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { cookie: "site-session=" + user.sessionId },
+        body: formData,
+      }),
+    );
+
+    assertEquals(resp.status, Status.SeeOther);
+    assertSpyCallAsync(createCommentSpy, 0);
+    assertSpyCalls(createNotificationSpy, 0);
+  });
+
+  await test.step("a comment is created by the session user, a new notification is created for the item userLogin", async () => {
+    const item = genNewItem();
+    await createItem({ ...item, userLogin: "some-other-user-login" });
+    formData.set("item_id", item.id);
+    const createCommentSpy = spy(createComment);
+    const createNotificationSpy = spy(createNotification);
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { cookie: "site-session=" + user.sessionId },
+        body: formData,
+      }),
+    );
+
+    assertEquals(resp.status, Status.SeeOther);
+    assertSpyCallAsync(createCommentSpy, 0);
+    assertSpyCallAsync(createNotificationSpy, 0);
   });
 });
