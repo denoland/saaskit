@@ -124,31 +124,6 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     });
     sessionsCreateStub.restore();
   });
-
-  /* An open question here, should we hit Stripes live API just to test that it fails
-  await test.step("returns an error as the Stripe API fails to authenticate", async () => {
-    const user = genNewUser();
-    await createUser(user);
-
-    const sessionsCreateSpy = spy(stripe.billingPortal.sessions, "create");
-
-    const resp = await handler(
-      new Request(url, {
-        headers: { cookie: "site-session=" + user.sessionId },
-      }),
-    );
-
-    assertFalse(resp.ok);
-    assertEquals(resp.status, Status.InternalServerError);
-    assertSpyCall(sessionsCreateSpy, 0, {
-      args: [{
-        customer: user.stripeCustomerId!,
-        return_url: "http://localhost/account",
-      }],
-    });
-    sessionsCreateSpy.restore();
-  });
-  */
 });
 
 Deno.test("[e2e] GET /account/upgrade", async (test) => {
