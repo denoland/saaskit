@@ -12,13 +12,13 @@ function Profile(
   props: { login: string; isSubscribed: boolean },
 ) {
   return (
-    <div class="flex flex-wrap py-8">
-      <GitHubAvatarImg login={props.login} size={48} />
+    <div class="flex-none w-[16rem] items-center justify-center flex flex-col">
+      <GitHubAvatarImg login={props.login} size={200} />
       <div class="px-4">
         <div class="flex gap-x-2">
-          <span>
-            <strong>{props.login}</strong>
-          </span>
+          <div class="font-semibold text-xl">
+            {props.login}
+          </div>
           {props.isSubscribed && (
             <span title="Deno Hunt premium user">🦕{" "}</span>
           )}
@@ -57,11 +57,14 @@ export default async function UsersUserPage(
           rel="preload"
         />
       </Head>
-      <main class="flex-1 p-4">
-        <Profile
-          isSubscribed={user.isSubscribed}
-          login={user.login}
-        />
+      <main class="flex-1 p-4 flex flex-col md:flex-row gap-y-8 gap-x-8">
+        <div class="flex items-start justify-center p-4">
+          <Profile
+            isSubscribed={user.isSubscribed}
+            login={user.login}
+          />
+        </div>
+
         <ItemsList
           endpoint={`/api/users/${login}/items`}
           isSignedIn={isSignedIn}
