@@ -76,7 +76,7 @@ export default function ItemsList(
   }, []);
 
   if (isLoadingSig.value === undefined) {
-    return <>Loading...</>;
+    return <p class={LINK_STYLES}>Loading...</p>;
   }
 
   return (
