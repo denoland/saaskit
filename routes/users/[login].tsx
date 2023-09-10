@@ -12,27 +12,23 @@ function Profile(
   props: { login: string; isSubscribed: boolean },
 ) {
   return (
-    <div class="flex-none w-[16rem] items-center justify-center flex flex-col">
+    <div class="flex flex-col items-center w-[16rem]">
       <GitHubAvatarImg login={props.login} size={200} />
-      <div class="px-4">
-        <div class="flex gap-x-2">
-          <div class="font-semibold text-xl">
-            {props.login}
-          </div>
-          {props.isSubscribed && (
-            <span title="Deno Hunt premium user">🦕{" "}</span>
-          )}
-          <span>
-            <a
-              href={`https://github.com/${props.login}`}
-              aria-label={`${props.login}'s GitHub profile`}
-              class={LINK_STYLES}
-              target="_blank"
-            >
-              <IconBrandGithub class="text-sm w-6" />
-            </a>
-          </span>
+      <div class="flex gap-x-2 px-4 mt-4">
+        <div class="font-semibold text-xl">
+          {props.login}
         </div>
+        {props.isSubscribed && (
+          <span title="Deno Hunt premium user">🦕{" "}</span>
+        )}
+        <a
+          href={`https://github.com/${props.login}`}
+          aria-label={`${props.login}'s GitHub profile`}
+          class={LINK_STYLES}
+          target="_blank"
+        >
+          <IconBrandGithub class="w-6" />
+        </a>
       </div>
     </div>
   );
@@ -57,16 +53,12 @@ export default async function UsersUserPage(
           rel="preload"
         />
       </Head>
-      <main class="flex-1 p-4 flex flex-col md:flex-row gap-y-8 gap-x-8">
-        <div class="flex items-start justify-center p-4">
-          <Profile
-            isSubscribed={user.isSubscribed}
-            login={user.login}
-          />
+      <main class="flex-1 p-4 flex flex-col md:flex-row gap-8">
+        <div class="flex justify-center p-4">
+          <Profile isSubscribed={user.isSubscribed} login={user.login} />
         </div>
-
         <ItemsList
-          endpoint={`/api/users/${login}/items`}
+          endpoint={`/api/users/${user.login}/items`}
           isSignedIn={isSignedIn}
         />
       </main>
