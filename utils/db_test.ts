@@ -30,7 +30,6 @@ import {
   listItemsByUser,
   listItemsVotedByUser,
   listNotifications,
-  newUserProps,
   Notification,
   updateUser,
   type User,
@@ -66,8 +65,8 @@ export function genNewUser(): User {
   return {
     login: crypto.randomUUID(),
     sessionId: crypto.randomUUID(),
+    isSubscribed: false,
     stripeCustomerId: crypto.randomUUID(),
-    ...newUserProps(),
   };
 }
 

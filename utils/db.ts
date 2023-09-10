@@ -427,7 +427,7 @@ export interface User {
 }
 
 /**
- * Creates a new user in KV. Throws if the user already exists.
+ * Creates a new user. Throws if the user already exists.
  *
  * @example
  * ```ts
@@ -463,15 +463,28 @@ export async function createUser(user: User) {
   }
 
   const res = await atomicOp.commit();
-
   if (!res.ok) throw new Error("Failed to create user");
 }
 
+/**
+ * Creates a user, overwriting any previous data.
+ *
+ * @example
+ * ```ts
+ * import { updateUser } from "@/utils/db.ts";
+ *
+ * await updateUser({
+ *   login: "john",
+ *   sessionId: crypto.randomUUID(),
+ *   isSubscribed: false,
+ * });
+ * ```
+ */
 export async function updateUser(user: User) {
   const usersKey = ["users", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
-  const atomicOp = await kv.atomic()
+  const atomicOp = kv.atomic()
     .set(usersKey, user)
     .set(usersBySessionKey, user);
 
@@ -485,16 +498,25 @@ export async function updateUser(user: User) {
   }
 
   const res = await atomicOp.commit();
-
   if (!res.ok) throw new Error("Failed to update user");
 }
 
+/**
+ * Delete the user with the given session ID.
+ *
+ * @example
+ * ```ts
+ * import { deleteUserBySession } from "@/utils/db.ts";
+ *
+ * await deleteUserBySession("jack");
+ * ```
+ */
 export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
 
 /**
- * Gets a user.
+ * Gets the user with the given login.
  *
  * @example
  * ```ts
@@ -509,6 +531,20 @@ export async function getUser(login: string) {
   return res.value;
 }
 
+/**
+ * Gets the user with the given session ID. The first attempt is done with
+ * eventual consistency. If that returns `null`, the second attempt is done
+ * with strong consistency. This is done for performance reasons, as this
+ * function is called in every route request for checking whether the session
+ * user is signed in.
+ *
+ * @example
+ * ```ts
+ * import { getUserBySession } from "@/utils/db.ts";
+ *
+ * await getUserBySession("xxx"); // Returns { login: "jack", sessionId: "xxx", isSubscribed: false }
+ * ```
+ */
 export async function getUserBySession(sessionId: string) {
   const key = ["users_by_session", sessionId];
   const eventualRes = await kv.get<User>(key, {
@@ -536,10 +572,52 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
   return res.value;
 }
 
+/**
+ * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
+ * the users in the database.
+ *
+ * @example
+ * ```
+ * import { listUsers } from "@/utils/db.ts";
+ *
+ * for await (const entry of listUsers()) {
+ *   entry.value.login; // Returns "jack"
+ *   entry.value.sessionId; // Returns "xxx"
+ *   entry.value.isSubscribed; // Returns false
+ * }
+ * ```
+ */
 export function listUsers(options?: Deno.KvListOptions) {
   return kv.list<User>({ prefix: ["users"] }, options);
 }
 
+/**
+ * Returns a boolean array indicating whether the given items have been voted
+ * for by the given user.
+ *
+ * @example
+ * ```ts
+ * import { getAreVotedByUser } from "@/utils/db.ts";
+ *
+ * const items = [
+ *   {
+ *     id: "123",
+ *     userLogin: "jack",
+ *     title: "Jack voted for this",
+ *     url: "http://example.com",
+ *     score: 1,
+ *   },
+ *   {
+ *     id: "124",
+ *     userLogin: "jill",
+ *     title: "Jack didn't vote for this",
+ *     url: "http://youtube.com",
+ *     score: 0,
+ *   }
+ * ];
+ * await getAreVotedByUser(items, "jack"); // Returns [true, false]
+ * ```
+ */
 export async function getAreVotedByUser(items: Item[], userLogin: string) {
   const votedItems = await collectValues(listItemsVotedByUser(userLogin));
   const votedItemsIds = votedItems.map((item) => item.id);
