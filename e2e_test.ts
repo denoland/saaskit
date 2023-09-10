@@ -128,37 +128,78 @@ Deno.test("[e2e] GET /signout", async () => {
   assertEquals(resp.status, 302);
 });
 
-Deno.test("[e2e] GET /dashboard", async () => {
-  const resp = await handler(
-    new Request("http://localhost/dashboard"),
-  );
+Deno.test("[e2e] GET /dashboard", async (test) => {
+  const url = "http://localhost/dashboard";
+  const user = genNewUser();
+  await createUser(user);
 
-  assertFalse(resp.ok);
-  assertFalse(resp.body);
-  assertEquals(resp.headers.get("location"), "/signin");
-  assertEquals(resp.status, 303);
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+
+    assertFalse(resp.ok);
+    assertEquals(resp.body, null);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, Status.SeeOther);
+  });
+
+  await test.step("returns redirect response to /dashboard/stats from root route when the session user is signed in", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertFalse(resp.ok);
+    assertEquals(resp.body, null);
+    assertEquals(resp.headers.get("location"), "/dashboard/stats");
+    assertEquals(resp.status, Status.SeeOther);
+  });
 });
 
-Deno.test("[e2e] GET /dashboard/stats", async () => {
-  const resp = await handler(
-    new Request("http://localhost/dashboard/stats"),
-  );
+Deno.test("[e2e] GET /dashboard/stats", async (test) => {
+  const url = "http://localhost/dashboard/stats";
+  const user = genNewUser();
+  await createUser(user);
 
-  assertFalse(resp.ok);
-  assertFalse(resp.body);
-  assertEquals(resp.headers.get("location"), "/signin");
-  assertEquals(resp.status, 303);
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+    assertFalse(resp.ok);
+    assertEquals(resp.body, null);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, Status.SeeOther);
+  });
+
+  await test.step("renders dashboard stats chart for a user who is signed in", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+    assertStringIncludes(await resp.text(), "<!--frsh-chart_default");
+  });
 });
 
-Deno.test("[e2e] GET /dashboard/users", async () => {
-  const resp = await handler(
-    new Request("http://localhost/dashboard/users"),
-  );
+Deno.test("[e2e] GET /dashboard/users", async (test) => {
+  const url = "http://localhost/dashboard/users";
+  const user = genNewUser();
+  await createUser(user);
 
-  assertFalse(resp.ok);
-  assertFalse(resp.body);
-  assertEquals(resp.headers.get("location"), "/signin");
-  assertEquals(resp.status, 303);
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+    assertFalse(resp.ok);
+    assertEquals(resp.body, null);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, Status.SeeOther);
+  });
+
+  await test.step("renders dashboard stats table for a user who is signed in", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+    assertStringIncludes(await resp.text(), "<!--frsh-userstable_default");
+  });
 });
 
 Deno.test("[e2e] GET /submit", async () => {
