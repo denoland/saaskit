@@ -9,7 +9,7 @@ export default async function AccountManagePage(
   ctx: RouteContext<undefined, SignedInState>,
 ) {
   const { sessionUser } = ctx.state;
-  if (stripe === undefined || sessionUser.stripeCustomerId === undefined) {
+  if (!isStripeEnabled() || sessionUser.stripeCustomerId === undefined) {
     return ctx.renderNotFound();
   }
 

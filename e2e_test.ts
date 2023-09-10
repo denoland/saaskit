@@ -135,7 +135,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
   const user = genNewUser();
   await createUser(user);
 
-  await test.step("returns HTTP 500 Internal Server Error response if stripe premium plan price id is not set", async () => {
+  await test.step("returns HTTP 500 Internal Server Error response if the `STRIPE_PREMIUM_PLAN_PRICE_ID` environment variable is not set", async () => {
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
     Deno.env.delete("STRIPE_PREMIUM_PLAN_PRICE_ID");
     const resp = await handler(
@@ -148,7 +148,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     assertEquals(resp.status, Status.InternalServerError);
   });
 
-  await test.step("returns HTTP 404 Not Found response if stripe is not enabled", async () => {
+  await test.step("returns HTTP 404 Not Found response if Stripe is disabled", async () => {
     Deno.env.set("STRIPE_PREMIUM_PLAN_PRICE_ID", crypto.randomUUID());
     Deno.env.delete("STRIPE_SECRET_KEY");
     const resp = await handler(
@@ -222,9 +222,6 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     });
     sessionsCreateStub.restore();
   });
-
-  Deno.env.delete("STRIPE_SECRET_KEY");
-  Deno.env.delete("STRIPE_PREMIUM_PLAN_PRICE_ID");
 });
 
 Deno.test("[e2e] GET /callback", async () => {
