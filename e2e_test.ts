@@ -9,6 +9,7 @@ import {
   createNotification,
   createUser,
   type Item,
+  kv,
   type Notification,
 } from "@/utils/db.ts";
 import {
@@ -551,10 +552,10 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
 });
 
 Deno.test("[e2e] GET /notifications/[id]", async (test) => {
-  const url = "http://localhost/notifications/1";
+  const notificationNotFoundUrl = "http://localhost/notifications/1";
 
   await test.step("returns redirect response if the session user is not signed in", async () => {
-    const resp = await handler(new Request(url));
+    const resp = await handler(new Request(notificationNotFoundUrl));
     assertFalse(resp.ok);
     assertFalse(resp.body);
     assertEquals(resp.headers.get("location"), "/signin");
@@ -566,7 +567,7 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
 
   await test.step("returns HTTP 404 Not Found response if the notification does not exist", async () => {
     const resp = await handler(
-      new Request(url, {
+      new Request(notificationNotFoundUrl, {
         headers: { cookie: "site-session=" + user.sessionId },
       }),
     );
@@ -575,14 +576,34 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
     assertResponseNotFound(resp);
   });
 
-  await test.step("returns redirect response to the notification that was found", async () => {
-    const notification: Notification = {
-      ...genNewNotification(),
-      userLogin: user.login,
-    };
-    const url = `http://localhost/notifications/${notification.id}`;
+  const notification: Notification = {
+    ...genNewNotification(),
+    userLogin: user.login,
+  };
+  await createNotification(notification);
+  const url = `http://localhost/notifications/${notification.id}`;
 
-    await createNotification(notification);
+  await test.step("returns HTTP 500 Interal Server Error response if the db throws an error while deleting notification key", async () => {
+    const kvAtomicStub = stub(
+      kv,
+      "atomic",
+      () => {
+        throw new Error(
+          "Stubbed error thrown when KV attempts to delete notification",
+        );
+      },
+    );
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertEquals(resp.status, 500);
+    kvAtomicStub.restore();
+  });
+
+  await test.step("returns redirect response to the notification that was found", async () => {
     const resp = await handler(
       new Request(url, {
         headers: { cookie: "site-session=" + user.sessionId },
@@ -590,5 +611,16 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
     );
     assertEquals(resp.headers.get("location"), notification.originUrl);
     assertEquals(resp.status, 303);
+  });
+
+  await test.step("returns HTTP 404 Not Found response after the notification was visited and the key was deleted", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertFalse(resp.ok);
+    assertResponseNotFound(resp);
   });
 });
