@@ -75,8 +75,8 @@ export default function ItemsList(
       .finally(() => loadMoreItems());
   }, []);
 
-  if (isLoadingSig.value === undefined || isLoadingSig.value === true) {
-    return <>█</>;
+  if (isLoadingSig.value === undefined) {
+    return <>Loading...</>;
   }
 
   return (
