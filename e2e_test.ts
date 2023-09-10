@@ -557,9 +557,9 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(notificationNotFoundUrl));
     assertFalse(resp.ok);
-    assertFalse(resp.body);
+    assertEquals(resp.body, null);
     assertEquals(resp.headers.get("location"), "/signin");
-    assertEquals(resp.status, 303);
+    assertEquals(resp.status, Status.SeeOther);
   });
 
   const user = genNewUser();
@@ -599,7 +599,7 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
       }),
     );
 
-    assertEquals(resp.status, 500);
+    assertEquals(resp.status, Status.InternalServerError);
     kvAtomicStub.restore();
   });
 
@@ -610,7 +610,7 @@ Deno.test("[e2e] GET /notifications/[id]", async (test) => {
       }),
     );
     assertEquals(resp.headers.get("location"), notification.originUrl);
-    assertEquals(resp.status, 303);
+    assertEquals(resp.status, Status.SeeOther);
   });
 
   await test.step("returns HTTP 404 Not Found response after the notification was visited and the key was deleted", async () => {
