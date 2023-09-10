@@ -549,3 +549,46 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     assertEquals(resp.status, Status.BadRequest);
   });
 });
+
+Deno.test("[e2e] GET /notifications/[id]", async (test) => {
+  const url = "http://localhost/notifications/1";
+
+  await test.step("returns redirect response if the session user is not signed in", async () => {
+    const resp = await handler(new Request(url));
+    assertFalse(resp.ok);
+    assertFalse(resp.body);
+    assertEquals(resp.headers.get("location"), "/signin");
+    assertEquals(resp.status, 303);
+  });
+
+  const user = genNewUser();
+  await createUser(user);
+
+  await test.step("returns HTTP 404 Not Found response if the notification does not exist", async () => {
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+
+    assertFalse(resp.ok);
+    assertResponseNotFound(resp);
+  });
+
+  await test.step("returns redirect response to the notification that was found", async () => {
+    const notification: Notification = {
+      ...genNewNotification(),
+      userLogin: user.login,
+    };
+    const url = `http://localhost/notifications/${notification.id}`;
+
+    await createNotification(notification);
+    const resp = await handler(
+      new Request(url, {
+        headers: { cookie: "site-session=" + user.sessionId },
+      }),
+    );
+    assertEquals(resp.headers.get("location"), notification.originUrl);
+    assertEquals(resp.status, 303);
+  });
+});
