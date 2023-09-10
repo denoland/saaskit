@@ -418,15 +418,12 @@ export interface User {
   // AKA username
   login: string;
   sessionId: string;
-  stripeCustomerId?: string;
-  // The below properties can be automatically generated upon comment creation
+  /**
+   * Whether the user is subscribed to the "Premium Plan".
+   * @default {false}
+   */
   isSubscribed: boolean;
-}
-
-export function newUserProps(): Pick<User, "isSubscribed"> {
-  return {
-    isSubscribed: false,
-  };
+  stripeCustomerId?: string;
 }
 
 /**
@@ -434,12 +431,12 @@ export function newUserProps(): Pick<User, "isSubscribed"> {
  *
  * @example
  * ```ts
- * import { createUser, newUserProps } from "@/utils/db.ts";
+ * import { createUser } from "@/utils/db.ts";
  *
  * await createUser({
- *   login: "john-doe",
+ *   login: "john",
  *   sessionId: crypto.randomUUID(),
- *   ...newUserProps(),
+ *   isSubscribed: false,
  * });
  * ```
  */
@@ -448,7 +445,12 @@ export async function createUser(user: User) {
   const usersBySessionKey = ["users_by_session", user.sessionId];
   const usersCountKey = ["users_count", formatDate(new Date())];
 
-  const atomicOp = kv.atomic();
+  const atomicOp = kv.atomic()
+    .check({ key: usersKey, versionstamp: null })
+    .check({ key: usersBySessionKey, versionstamp: null })
+    .set(usersKey, user)
+    .set(usersBySessionKey, user)
+    .sum(usersCountKey, 1n);
 
   if (user.stripeCustomerId !== undefined) {
     const usersByStripeCustomerKey = [
@@ -460,22 +462,18 @@ export async function createUser(user: User) {
       .set(usersByStripeCustomerKey, user);
   }
 
-  const res = await atomicOp
-    .check({ key: usersKey, versionstamp: null })
-    .check({ key: usersBySessionKey, versionstamp: null })
-    .set(usersKey, user)
-    .set(usersBySessionKey, user)
-    .sum(usersCountKey, 1n)
-    .commit();
+  const res = await atomicOp.commit();
 
-  if (!res.ok) throw new Error(`Failed to create user: ${user}`);
+  if (!res.ok) throw new Error("Failed to create user");
 }
 
 export async function updateUser(user: User) {
   const usersKey = ["users", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
-  const atomicOp = kv.atomic();
+  const atomicOp = await kv.atomic()
+    .set(usersKey, user)
+    .set(usersBySessionKey, user);
 
   if (user.stripeCustomerId !== undefined) {
     const usersByStripeCustomerKey = [
@@ -486,19 +484,26 @@ export async function updateUser(user: User) {
       .set(usersByStripeCustomerKey, user);
   }
 
-  const res = await atomicOp
-    .set(usersKey, user)
-    .set(usersBySessionKey, user)
-    .commit();
+  const res = await atomicOp.commit();
 
-  if (!res.ok) throw new Error(`Failed to update user: ${user}`);
+  if (!res.ok) throw new Error("Failed to update user");
 }
 
 export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
 
-/** @todo Migrate to ["users", login] key */
+/**
+ * Gets a user.
+ *
+ * @example
+ * ```ts
+ * import { getUser } from "@/utils/db.ts";
+ *
+ * await getUser("jack"); // Returns { login: "jack", sessionId: "xxx", isSubscribed: false }
+ * await getUser("jill"); // Returns null
+ * ```
+ */
 export async function getUser(login: string) {
   const res = await kv.get<User>(["users", login]);
   return res.value;
@@ -514,6 +519,15 @@ export async function getUserBySession(sessionId: string) {
   return res.value;
 }
 
+/**
+ * Gets a user by their given Stripe customer ID.
+ *
+ * @example
+ * ```ts
+ * import { getUserByStripeCustomer } from "@/utils/db.ts";
+ *
+ * await getUserByStripeCustomer("123"); // Returns { login: "jack", sessionId: "xxx", isSubscribed: false, stripeCustomerId: "123" }
+ */
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
   const res = await kv.get<User>([
     "users_by_stripe_customer",
