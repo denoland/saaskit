@@ -1,15 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { RouteContext } from "$fresh/server.ts";
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
 import { HEADING_WITH_MARGIN_STYLES } from "@/utils/constants.ts";
 import UsersTable from "@/islands/UsersTable.tsx";
+import { defineRoute } from "$fresh/src/server/defines.ts";
 
-// deno-lint-ignore require-await
-export default async function DashboardUsersPage(
-  _req: Request,
-  ctx: RouteContext,
-) {
+export default defineRoute((_req, ctx) => {
   const endpoint = "/api/users";
 
   return (
@@ -25,17 +21,20 @@ export default async function DashboardUsersPage(
       <main class="flex-1 p-4">
         <h1 class={HEADING_WITH_MARGIN_STYLES}>Dashboard</h1>
         <TabsBar
-          links={[{
-            path: "/dashboard/stats",
-            innerText: "Stats",
-          }, {
-            path: "/dashboard/users",
-            innerText: "Users",
-          }]}
+          links={[
+            {
+              path: "/dashboard/stats",
+              innerText: "Stats",
+            },
+            {
+              path: "/dashboard/users",
+              innerText: "Users",
+            },
+          ]}
           currentPath={ctx.url.pathname}
         />
         <UsersTable endpoint={endpoint} />
       </main>
     </>
   );
-}
+});
