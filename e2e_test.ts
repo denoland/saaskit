@@ -23,7 +23,12 @@ import {
   assertObjectMatch,
   assertStringIncludes,
 } from "std/assert/mod.ts";
-import { assertSpyCall, resolvesNext, stub } from "std/testing/mock.ts";
+import {
+  assertSpyCall,
+  assertSpyCalls,
+  resolvesNext,
+  stub,
+} from "std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
 
@@ -465,6 +470,13 @@ Deno.test("[e2e] POST /api/items/[id]/vote", async (test) => {
 
 Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
   const url = "http://localhost/api/stripe-webhooks";
+  const user = genNewUser();
+  await createUser({ ...user, stripeCustomerId: "stripe-bob-ross" });
+
+  const buildStripeEvent = (type: string, customer: string) => ({
+    type,
+    data: { object: { customer } },
+  } as unknown as Stripe.Event);
 
   await test.step("returns HTTP 404 Not Found response if Stripe is disabled", async () => {
     Deno.env.delete("STRIPE_SECRET_KEY");
@@ -516,6 +528,126 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       "No webhook payload was provided.",
     );
     assertEquals(resp.status, Status.BadRequest);
+  });
+
+  await test.step("returns HTTP 404 Not Found response if the Stripe 'customer' is not found as a user during a subscription created webhook", async () => {
+    Deno.env.set("STRIPE_WEBHOOK_SECRET", crypto.randomUUID());
+    const stripeEventStub = stub(
+      stripe.webhooks,
+      "constructEventAsync",
+      resolvesNext([
+        buildStripeEvent("customer.subscription.created", "not-found-user-id"),
+      ]),
+    );
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { "Stripe-Signature": crypto.randomUUID() },
+      }),
+    );
+    stripeEventStub.restore();
+
+    assertFalse(resp.ok);
+    assertEquals(
+      await resp.text(),
+      "User not found",
+    );
+    assertEquals(resp.status, Status.NotFound);
+    assertSpyCalls(stripeEventStub, 1);
+  });
+
+  await test.step("returns HTTP 201 Created response if the Stripe 'customer' is found as a user and updated during a subscription created webhook", async () => {
+    Deno.env.set("STRIPE_WEBHOOK_SECRET", crypto.randomUUID());
+    const stripeEventStub = stub(
+      stripe.webhooks,
+      "constructEventAsync",
+      resolvesNext([
+        buildStripeEvent("customer.subscription.created", "stripe-bob-ross"),
+      ]),
+    );
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { "Stripe-Signature": crypto.randomUUID() },
+      }),
+    );
+    stripeEventStub.restore();
+
+    assertEquals(resp.status, Status.Created);
+    assertSpyCalls(stripeEventStub, 1);
+  });
+
+  await test.step("returns HTTP 404 Not Found response if the Stripe 'customer' is not found as a user during a subscription deleted webhook", async () => {
+    Deno.env.set("STRIPE_WEBHOOK_SECRET", crypto.randomUUID());
+    const stripeEventStub = stub(
+      stripe.webhooks,
+      "constructEventAsync",
+      resolvesNext([
+        buildStripeEvent("customer.subscription.deleted", "not-found-user-id"),
+      ]),
+    );
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { "Stripe-Signature": crypto.randomUUID() },
+      }),
+    );
+    stripeEventStub.restore();
+
+    assertFalse(resp.ok);
+    assertEquals(
+      await resp.text(),
+      "User not found",
+    );
+    assertEquals(resp.status, Status.NotFound);
+    assertSpyCalls(stripeEventStub, 1);
+  });
+
+  await test.step("returns HTTP 202 Accepted response if the Stripe 'customer' is found as a user and updated during a subscription deleted webhook", async () => {
+    Deno.env.set("STRIPE_WEBHOOK_SECRET", crypto.randomUUID());
+    const stripeEventStub = stub(
+      stripe.webhooks,
+      "constructEventAsync",
+      resolvesNext([
+        buildStripeEvent("customer.subscription.deleted", "stripe-bob-ross"),
+      ]),
+    );
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { "Stripe-Signature": crypto.randomUUID() },
+      }),
+    );
+    stripeEventStub.restore();
+
+    assertEquals(resp.status, Status.Accepted);
+    assertSpyCalls(stripeEventStub, 1);
+  });
+
+  await test.step("returns HTTP 400 Bad Request response if the Stripe webhook is not handled", async () => {
+    Deno.env.set("STRIPE_WEBHOOK_SECRET", crypto.randomUUID());
+    const stripeEventStub = stub(
+      stripe.webhooks,
+      "constructEventAsync",
+      resolvesNext([
+        buildStripeEvent("some.unhandled.stripe.event", "not-found-user-id"),
+      ]),
+    );
+    const resp = await handler(
+      new Request(url, {
+        method: "POST",
+        headers: { "Stripe-Signature": crypto.randomUUID() },
+      }),
+    );
+    stripeEventStub.restore();
+
+    assertFalse(resp.ok);
+    assertEquals(
+      await resp.text(),
+      "Event type not supported",
+    );
+    assertEquals(resp.status, Status.BadRequest);
+    assertSpyCalls(stripeEventStub, 1);
   });
 });
 
