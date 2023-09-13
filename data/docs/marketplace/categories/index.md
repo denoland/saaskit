@@ -24,7 +24,6 @@ feed. This is **not mandatory** of course -- we can map any category to ours as
 long as it's used consistently.
 
 - Accessories
-- Aprons
 - Babywear
 - Bags
 - Beachwear
@@ -35,7 +34,6 @@ long as it's used consistently.
 - Clothing Accessories
 - Coats
 - Dresses
-- Facemasks
 - Footwear
 - Home & Garden
 - Hosiery
@@ -44,10 +42,8 @@ long as it's used consistently.
 - Outdoor Jackets
 - Pants
 - Rainwear
-- Shapewear
 - Shirts
 - Skirts
-- Sportswear
 - Suits
 - Sweaters
 - Swimwear
