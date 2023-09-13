@@ -19,7 +19,7 @@ interface Story {
 }
 
 const resp = await fetch(API_TOP_STORIES_URL);
-const allTopStories = await resp.json() as number[];
+const allTopStories = (await resp.json()) as number[];
 const topStories = allTopStories.slice(0, TOP_STORIES_COUNT);
 const storiesPromises = [];
 
@@ -28,19 +28,21 @@ for (const id of topStories) {
 }
 
 const storiesResponses = await Promise.all(storiesPromises);
-const stories = await Promise.all(
+const stories = (await Promise.all(
   storiesResponses.map((r) => r.json()),
-) as Story[];
-const items = stories.map(({ by: userLogin, title, url, score, time }) => ({
-  id: ulid(),
-  userLogin,
-  title,
-  url,
-  score,
-  createdAt: new Date(time * 1000),
-})).filter(({ url }) => url);
+)) as Story[];
+const items = stories
+  .map(({ by: userLogin, title, url, score, time }) => ({
+    id: ulid(),
+    userLogin,
+    title,
+    url,
+    score,
+    createdAt: new Date(time * 1000),
+  }))
+  .filter(({ url }) => url);
 
-const users = Array.from(new Set(items.map((user) => user.userLogin)));
+const users = new Set(items.map((user) => user.userLogin));
 
 const itemPromises = [];
 for (const item of items) {
