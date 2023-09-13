@@ -81,6 +81,14 @@ For a step-by-step instruction on how to generate your first product feed,
 For a step-by-step instruction on how to export Shopify product CSV’s,
 [click here](https://help.shopify.com/en/manual/products/import-export/export-products%23export-your-products).
 
+### Shopware 6
+
+Shopware 6 is an open-source e-commerce platform designed to create customizable and scalable online stores. To export your data in CSV format, navigate to the Export tab within your Shopware 6 dashboard.
+
+-   For comprehensive guidelines on exporting your product feed, [click here](https://docs.shopware.com/en/shopware-en/settings/importexport?category=shopware-6-en/settings/shop#export).
+-   If you prefer a visual tutorial, [watch this step-by-step video guide](https://youtu.be/rQKIgxSemHM?si=ZaXtF8TTayd4gTom&t=446).
+-   To include all [the required fields](https://developer.fashionunited.com/docs/marketplace/getting-started#fields) in your product feed export, you can create new database mappings by following [these instructions](https://docs.shopware.com/en/shopware-en/settings/importexport?category=shopware-6-en/settings/shop#mappings).
+
 ### PrestaShop
 
 Free eCommerce platform. It is a B2C eCommerce platform first and foremost, but
