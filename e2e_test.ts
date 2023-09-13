@@ -55,38 +55,25 @@ Deno.test("[e2e] GET /", async () => {
 
   assert(resp.ok);
   assertInstanceOf(resp.body, ReadableStream);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/html; charset=utf-8",
-  );
+  assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
   assertEquals(resp.status, 200);
 });
 
 Deno.test("[e2e] GET /callback", async () => {
-  const resp = await handler(
-    new Request("http://localhost/callback"),
-  );
+  const resp = await handler(new Request("http://localhost/callback"));
 
   assertFalse(resp.ok);
   assertInstanceOf(resp.body, ReadableStream);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/html; charset=utf-8",
-  );
+  assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
   assertEquals(resp.status, 500);
 });
 
 Deno.test("[e2e] GET /blog", async () => {
-  const resp = await handler(
-    new Request("http://localhost/blog"),
-  );
+  const resp = await handler(new Request("http://localhost/blog"));
 
   assert(resp.ok);
   assertInstanceOf(resp.body, ReadableStream);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/html; charset=utf-8",
-  );
+  assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
   assertEquals(resp.status, 200);
 });
 
@@ -97,18 +84,13 @@ Deno.test("[e2e] GET /pricing", async () => {
   const resp = await handler(req);
 
   assertFalse(resp.ok);
-  assertEquals(typeof await resp.text(), "string");
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/html; charset=utf-8",
-  );
+  assertEquals(typeof (await resp.text()), "string");
+  assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
   assertEquals(resp.status, 404);
 });
 
 Deno.test("[e2e] GET /signin", async () => {
-  const resp = await handler(
-    new Request("http://localhost/signin"),
-  );
+  const resp = await handler(new Request("http://localhost/signin"));
 
   assertFalse(resp.ok);
   assertFalse(resp.body);
@@ -120,9 +102,7 @@ Deno.test("[e2e] GET /signin", async () => {
 });
 
 Deno.test("[e2e] GET /signout", async () => {
-  const resp = await handler(
-    new Request("http://localhost/signout"),
-  );
+  const resp = await handler(new Request("http://localhost/signout"));
 
   assertFalse(resp.ok);
   assertFalse(resp.body);
@@ -205,9 +185,7 @@ Deno.test("[e2e] GET /dashboard/users", async (test) => {
 });
 
 Deno.test("[e2e] GET /submit", async () => {
-  const resp = await handler(
-    new Request("http://localhost/submit"),
-  );
+  const resp = await handler(new Request("http://localhost/submit"));
 
   assertFalse(resp.ok);
   assertFalse(resp.body);
@@ -216,9 +194,7 @@ Deno.test("[e2e] GET /submit", async () => {
 });
 
 Deno.test("[e2e] GET /feed", async () => {
-  const resp = await handler(
-    new Request("http://localhost/feed"),
-  );
+  const resp = await handler(new Request("http://localhost/feed"));
 
   assert(resp.ok);
   assertInstanceOf(resp.body, ReadableStream);
@@ -314,7 +290,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     const items = await collectValues(listItemsByUser(user.login));
 
     assertEquals(resp.status, Status.SeeOther);
-    assertEquals(resp.headers.get("location"), `/items/${items[0].id}`);
+    assertEquals(resp.headers.get("location"), `/`);
     // Deep partial match since the item ID is a ULID generated at runtime
     assertObjectMatch(items[0], item);
   });
@@ -539,10 +515,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     );
 
     assertFalse(resp.ok);
-    assertEquals(
-      await resp.text(),
-      "No webhook payload was provided.",
-    );
+    assertEquals(await resp.text(), "No webhook payload was provided.");
     assertEquals(resp.status, Status.BadRequest);
   });
 
@@ -550,9 +523,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
-      returnsNext([
-        createStripeEvent("customer.subscription.created", "x"),
-      ]),
+      returnsNext([createStripeEvent("customer.subscription.created", "x")]),
     );
 
     const resp = await handler(
@@ -603,9 +574,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
-      returnsNext([
-        createStripeEvent("customer.subscription.deleted", "x"),
-      ]),
+      returnsNext([createStripeEvent("customer.subscription.deleted", "x")]),
     );
 
     const resp = await handler(
@@ -656,9 +625,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
-      returnsNext([
-        createStripeEvent("account.application.authorized", "x"),
-      ]),
+      returnsNext([createStripeEvent("account.application.authorized", "x")]),
     );
 
     const resp = await handler(
@@ -743,9 +710,9 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     const user = genNewUser();
     await createUser(user);
 
-    const session = { url: "https://stubbing-returned-url" } as Stripe.Response<
-      Stripe.BillingPortal.Session
-    >;
+    const session = {
+      url: "https://stubbing-returned-url",
+    } as Stripe.Response<Stripe.BillingPortal.Session>;
     const sessionsCreateStub = stub(
       stripe.billingPortal.sessions,
       "create",
@@ -761,10 +728,12 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     assertFalse(resp.ok);
     assertEquals(resp.status, Status.SeeOther);
     assertSpyCall(sessionsCreateStub, 0, {
-      args: [{
-        customer: user.stripeCustomerId!,
-        return_url: "http://localhost/account",
-      }],
+      args: [
+        {
+          customer: user.stripeCustomerId!,
+          return_url: "http://localhost/account",
+        },
+      ],
     });
     sessionsCreateStub.restore();
   });
@@ -814,9 +783,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     Deno.env.set("STRIPE_PREMIUM_PLAN_PRICE_ID", crypto.randomUUID());
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
 
-    const session = { url: null } as Stripe.Response<
-      Stripe.Checkout.Session
-    >;
+    const session = { url: null } as Stripe.Response<Stripe.Checkout.Session>;
     const sessionsCreateStub = stub(
       stripe.checkout.sessions,
       "create",
@@ -839,9 +806,9 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     Deno.env.set("STRIPE_PREMIUM_PLAN_PRICE_ID", priceId);
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
 
-    const session = { url: "https://stubbing-returned-url" } as Stripe.Response<
-      Stripe.Checkout.Session
-    >;
+    const session = {
+      url: "https://stubbing-returned-url",
+    } as Stripe.Response<Stripe.Checkout.Session>;
     const sessionsCreateStub = stub(
       stripe.checkout.sessions,
       "create",
@@ -857,17 +824,19 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     assertFalse(resp.ok);
     assertEquals(resp.status, Status.SeeOther);
     assertSpyCall(sessionsCreateStub, 0, {
-      args: [{
-        customer: user.stripeCustomerId!,
-        success_url: "http://localhost/account",
-        mode: "subscription",
-        line_items: [
-          {
-            price: priceId,
-            quantity: 1,
-          },
-        ],
-      }],
+      args: [
+        {
+          customer: user.stripeCustomerId!,
+          success_url: "http://localhost/account",
+          mode: "subscription",
+          line_items: [
+            {
+              price: priceId,
+              quantity: 1,
+            },
+          ],
+        },
+      ],
     });
     sessionsCreateStub.restore();
   });
@@ -894,5 +863,8 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
     }),
   );
   const body = await resp.json();
-  assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
+  assertArrayIncludes(body, [
+    { ...item1, score: 1 },
+    { ...item2, score: 1 },
+  ]);
 });
