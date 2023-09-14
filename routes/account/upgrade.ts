@@ -13,7 +13,7 @@ export default defineRoute<SignedInState>(async (_req, ctx) => {
   const stripePremiumPlanPriceId = getStripePremiumPlanPriceId();
   if (stripePremiumPlanPriceId === undefined) {
     throw new Error(
-      '"STRIPE_PREMIUM_PLAN_PRICE_ID" environment variable not set'
+      '"STRIPE_PREMIUM_PLAN_PRICE_ID" environment variable not set',
     );
   }
 
