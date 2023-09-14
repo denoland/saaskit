@@ -3,7 +3,7 @@ import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
 import { HEADING_WITH_MARGIN_STYLES } from "@/utils/constants.ts";
 import UsersTable from "@/islands/UsersTable.tsx";
-import { defineRoute } from "$fresh/src/server/defines.ts";
+import { defineRoute } from "$fresh/server.ts";
 
 export default defineRoute((_req, ctx) => {
   const endpoint = "/api/users";
