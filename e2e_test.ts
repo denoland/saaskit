@@ -299,7 +299,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     assertEquals(resp2.status, Status.BadRequest);
   });
 
-  await test.step("creates an item and redirects to the item page", async () => {
+  await test.step("creates an item and redirects to the home page", async () => {
     const item = { title: "Title text", url: "http://bobross.com" };
     const body = new FormData();
     body.set("title", item.title);
