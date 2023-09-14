@@ -2,7 +2,7 @@
 import Header from "@/components/Header.tsx";
 import Footer from "@/components/Footer.tsx";
 import type { State } from "@/middleware/session.ts";
-import { defineApp } from "$fresh/src/server/defines.ts";
+import { defineApp } from "$fresh/server.ts";
 
 export default defineApp<State>((_, ctx) => {
   return (

@@ -2,7 +2,7 @@
 import type { State } from "@/middleware/session.ts";
 import Head from "@/components/Head.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
-import { defineRoute } from "$fresh/src/server/defines.ts";
+import { defineRoute } from "$fresh/server.ts";
 
 const NEEDS_SETUP = Deno.env.get("GITHUB_CLIENT_ID") === undefined ||
   Deno.env.get("GITHUB_CLIENT_SECRET") === undefined;

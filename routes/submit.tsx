@@ -3,7 +3,7 @@ import { HEADING_STYLES, INPUT_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
 import IconCircleX from "tabler_icons_tsx/circle-x.tsx";
-import { defineRoute } from "$fresh/src/server/defines.ts";
+import { defineRoute } from "$fresh/server.ts";
 
 export default defineRoute((_req, ctx) => {
   return (
