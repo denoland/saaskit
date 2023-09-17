@@ -5,13 +5,11 @@ export async function hardenHeaders(
   req: Request,
   ctx: MiddlewareHandlerContext,
 ) {
+  if (
+    ctx.destination !== "route" || new URL(req.url).pathname.startsWith("/api")
+  ) return await ctx.next();
+  
   const response = await ctx.next();
-  const path = new URL(req.url).pathname.split("/")[1] || "/";
-  const blacklist = [/api/];
-
-  if (blacklist.some((regex) => regex.test(path))) {
-    return response;
-  }
 
   const contentSecurityPolicy = [
     "default-src 'self'",
