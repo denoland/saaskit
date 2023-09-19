@@ -49,5 +49,8 @@
   },
   "system-requirements-and-browsers": {
     "title": "System Requirements and Browsers"
+  },
+  "cloudflare": {
+    "title": "Cloudflare"
   }
 }
