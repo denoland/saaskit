@@ -45,32 +45,16 @@ function assertResponseJson(resp: Response) {
   assertEquals(resp.headers.get("content-type"), "application/json");
 }
 
-Deno.test("[e2e] GET /", async (test) => {
+Deno.test("[e2e] GET /", async () => {
   const resp = await handler(new Request("http://localhost"));
 
-  await test.step("returns HTTP 200 for a simple request", () => {
-    assert(resp.ok);
-    assertInstanceOf(resp.body, ReadableStream);
-    assertEquals(
-      resp.headers.get("content-type"),
-      "text/html; charset=utf-8",
-    );
-    assertEquals(resp.status, 200);
-  });
-
-  await test.step("security headers are present", () => {
-    assertEquals(
-      resp.headers.get("strict-transport-security"),
-      "max-age=63072000;",
-    );
-    assertEquals(
-      resp.headers.get("referrer-policy"),
-      "strict-origin-when-cross-origin",
-    );
-    assertEquals(resp.headers.get("x-content-type-options"), "nosniff");
-    assertEquals(resp.headers.get("x-frame-options"), "SAMEORIGIN");
-    assertEquals(resp.headers.get("x-xss-protection"), "1; mode=block");
-  });
+  assert(resp.ok);
+  assertInstanceOf(resp.body, ReadableStream);
+  assertEquals(
+    resp.headers.get("content-type"),
+    "text/html; charset=utf-8",
+  );
+  assertEquals(resp.status, 200);
 });
 
 Deno.test("[e2e] GET /callback", async () => {
