@@ -1,3 +1,4 @@
+// Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { createHandler } from "$fresh/server.ts";
 import { assertEquals } from "std/assert/assert_equals.ts";
 import manifest from "@/fresh.gen.ts";
