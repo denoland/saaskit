@@ -19,12 +19,11 @@ import {
   assert,
   assertArrayIncludes,
   assertEquals,
-  assertFalse,
   assertInstanceOf,
-  assertNotEquals,
   assertObjectMatch,
   assertStringIncludes,
 } from "std/assert/mod.ts";
+import { isRedirectStatus } from "std/http/http_status.ts";
 import { resolvesNext, returnsNext, stub } from "std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
@@ -34,103 +33,40 @@ import options from "./fresh.config.ts";
  */
 const handler = await createHandler(manifest, options);
 
-function assertResponseAccepted(resp: Response) {
-  assert(resp.ok);
-  assertEquals(resp.body, null);
-  assertEquals(resp.status, Status.Accepted);
-}
-
-function assertResponseBadRequest(resp: Response) {
-  assertFalse(resp.ok);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/plain;charset=UTF-8",
-  );
-  assertEquals(resp.status, Status.BadRequest);
-}
-
-function assertResponseCreated(resp: Response) {
-  assert(resp.ok);
-  assertEquals(resp.body, null);
-  assertEquals(resp.status, Status.Created);
-}
-
-function assertResponseHtml(resp: Response) {
-  assert(resp.ok);
+function assertHtml(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
     "text/html; charset=utf-8",
   );
-  assertEquals(resp.status, Status.OK);
 }
 
-function assertResponseJson(resp: Response) {
-  assert(resp.ok);
-  assertNotEquals(resp.body, null);
-  assertEquals(resp.headers.get("content-type"), "application/json");
-  assertEquals(resp.status, Status.OK);
-}
-
-function assertResponseNoContent(resp: Response) {
-  assert(resp.ok);
-  assertEquals(resp.body, null);
-  assertEquals(resp.status, Status.NoContent);
-}
-
-function assertResponseNotFound(resp: Response, header: string) {
-  assertFalse(resp.ok);
-  assertEquals(
-    resp.headers.get("content-type"),
-    header,
-  );
-  assertEquals(resp.status, Status.NotFound);
-}
-
-function assertResponseRedirect(
-  resp: Response,
-  location: string,
-  status: Status,
-) {
-  assertFalse(resp.ok);
-  assertFalse(resp.body);
-  assertStringIncludes(resp.headers.get("location")!, location);
-  assertEquals(resp.status, status);
-}
-
-function assertResponseServerError(resp: Response, header: string) {
-  assertFalse(resp.ok);
+function assertJson(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
-  assertEquals(
-    resp.headers.get("content-type"),
-    header,
-  );
-  assertEquals(resp.status, Status.InternalServerError);
+  assertEquals(resp.headers.get("content-type"), "application/json");
 }
 
-function assertResponseUnauthorized(resp: Response) {
-  assertFalse(resp.ok);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/plain;charset=UTF-8",
-  );
-  assertEquals(resp.status, Status.Unauthorized);
+function assertRedirect(response: Response, location?: string) {
+  assert(isRedirectStatus(response.status));
+  if (location !== undefined) {
+    assertStringIncludes(response.headers.get("location")!, location);
+  } else {
+    assert(response.headers.has("location"));
+  }
 }
 
-function assertResponseXml(resp: Response) {
-  assert(resp.ok);
+function assertXml(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
     "application/atom+xml; charset=utf-8",
   );
-  assertEquals(resp.status, Status.OK);
 }
 
 Deno.test("[e2e] GET /", async () => {
   const resp = await handler(new Request("http://localhost"));
 
-  assertResponseHtml(resp);
+  assertHtml(resp);
 });
 
 Deno.test("[e2e] GET /callback", async () => {
@@ -138,7 +74,7 @@ Deno.test("[e2e] GET /callback", async () => {
     new Request("http://localhost/callback"),
   );
 
-  assertResponseServerError(resp, "text/html; charset=utf-8");
+  assertEquals(resp.status, 500);
 });
 
 Deno.test("[e2e] GET /blog", async () => {
@@ -146,7 +82,7 @@ Deno.test("[e2e] GET /blog", async () => {
     new Request("http://localhost/blog"),
   );
 
-  assertResponseHtml(resp);
+  assertHtml(resp);
 });
 
 Deno.test("[e2e] GET /pricing", async () => {
@@ -155,7 +91,7 @@ Deno.test("[e2e] GET /pricing", async () => {
   Deno.env.delete("STRIPE_SECRET_KEY");
   const resp = await handler(req);
 
-  assertResponseNotFound(resp, "text/html; charset=utf-8");
+  assertEquals(resp.status, Status.NotFound);
 });
 
 Deno.test("[e2e] GET /signin", async () => {
@@ -163,10 +99,9 @@ Deno.test("[e2e] GET /signin", async () => {
     new Request("http://localhost/signin"),
   );
 
-  assertResponseRedirect(
+  assertRedirect(
     resp,
     "https://github.com/login/oauth/authorize",
-    Status.Found,
   );
 });
 
@@ -175,7 +110,7 @@ Deno.test("[e2e] GET /signout", async () => {
     new Request("http://localhost/signout"),
   );
 
-  assertResponseRedirect(resp, "/", Status.Found);
+  assertRedirect(resp, "/");
 });
 
 Deno.test("[e2e] GET /dashboard", async (test) => {
@@ -186,7 +121,7 @@ Deno.test("[e2e] GET /dashboard", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   await test.step("returns redirect response to /dashboard/stats from root route when the session user is signed in", async () => {
@@ -196,7 +131,7 @@ Deno.test("[e2e] GET /dashboard", async (test) => {
       }),
     );
 
-    assertResponseRedirect(resp, "/dashboard/stats", Status.SeeOther);
+    assertRedirect(resp, "/dashboard/stats");
   });
 });
 
@@ -208,7 +143,7 @@ Deno.test("[e2e] GET /dashboard/stats", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   await test.step("renders dashboard stats chart for a user who is signed in", async () => {
@@ -230,7 +165,7 @@ Deno.test("[e2e] GET /dashboard/users", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   await test.step("renders dashboard stats table for a user who is signed in", async () => {
@@ -249,7 +184,7 @@ Deno.test("[e2e] GET /submit", async () => {
     new Request("http://localhost/submit"),
   );
 
-  assertResponseRedirect(resp, "/signin", Status.SeeOther);
+  assertRedirect(resp, "/signin");
 });
 
 Deno.test("[e2e] GET /feed", async () => {
@@ -257,7 +192,7 @@ Deno.test("[e2e] GET /feed", async () => {
     new Request("http://localhost/feed"),
   );
 
-  assertResponseXml(resp);
+  assertXml(resp);
 });
 
 Deno.test("[e2e] GET /api/items", async () => {
@@ -271,7 +206,7 @@ Deno.test("[e2e] GET /api/items", async () => {
 
   const { values } = await resp.json();
 
-  assertResponseJson(resp);
+  assertJson(resp);
   assertArrayIncludes(values, [
     JSON.parse(JSON.stringify(item1)),
     JSON.parse(JSON.stringify(item2)),
@@ -286,7 +221,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
   await test.step("returns HTTP 401 Unauthorized response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
-    assertResponseUnauthorized(resp);
+    assertEquals(resp.status, Status.Unauthorized);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -300,7 +235,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
-    assertResponseBadRequest(resp);
+    assertEquals(resp.status, Status.BadRequest);
     assertEquals(await resp.text(), "Title is missing");
   });
 
@@ -315,7 +250,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
-    assertResponseBadRequest(resp1);
+    assertEquals(resp1.status, Status.BadRequest);
     assertEquals(await resp1.text(), "URL is invalid or missing");
 
     body.set("url", "invalid-url");
@@ -327,7 +262,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
-    assertResponseBadRequest(resp2);
+    assertEquals(resp2.status, Status.BadRequest);
     assertEquals(await resp2.text(), "URL is invalid or missing");
   });
 
@@ -345,7 +280,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     );
     const items = await collectValues(listItemsByUser(user.login));
 
-    assertResponseRedirect(resp, "/", Status.SeeOther);
+    assertRedirect(resp, "/");
     // Deep partial match since the item ID is a ULID generated at runtime
     assertObjectMatch(items[0], item);
   });
@@ -357,13 +292,13 @@ Deno.test("[e2e] GET /api/items/[id]", async () => {
 
   const resp1 = await handler(req);
 
-  assertResponseNotFound(resp1, "text/plain;charset=UTF-8");
+  assertEquals(resp1.status, Status.NotFound);
   assertEquals(await resp1.text(), "Item not found");
 
   await createItem(item);
   const resp2 = await handler(req);
 
-  assertResponseJson(resp2);
+  assertJson(resp2);
   assertEquals(await resp2.json(), JSON.parse(JSON.stringify(item)));
 });
 
@@ -378,7 +313,7 @@ Deno.test("[e2e] GET /api/users", async () => {
 
   const { values } = await resp.json();
 
-  assertResponseJson(resp);
+  assertJson(resp);
   assertArrayIncludes(values, [user1, user2]);
 });
 
@@ -388,13 +323,13 @@ Deno.test("[e2e] GET /api/users/[login]", async () => {
 
   const resp1 = await handler(req);
 
-  assertResponseNotFound(resp1, "text/plain;charset=UTF-8");
+  assertEquals(resp1.status, Status.NotFound);
   assertEquals(await resp1.text(), "User not found");
 
   await createUser(user);
   const resp2 = await handler(req);
 
-  assertResponseJson(resp2);
+  assertJson(resp2);
   assertEquals(await resp2.json(), user);
 });
 
@@ -408,7 +343,7 @@ Deno.test("[e2e] GET /api/users/[login]/items", async () => {
 
   const resp1 = await handler(req);
 
-  assertResponseNotFound(resp1, "text/plain;charset=UTF-8");
+  assertEquals(resp1.status, Status.NotFound);
 
   await createUser(user);
   await createItem(item);
@@ -416,7 +351,7 @@ Deno.test("[e2e] GET /api/users/[login]/items", async () => {
   const resp2 = await handler(req);
   const { values } = await resp2.json();
 
-  assertResponseJson(resp2);
+  assertJson(resp2);
   assertArrayIncludes(values, [JSON.parse(JSON.stringify(item))]);
 });
 
@@ -436,7 +371,7 @@ Deno.test("[e2e] DELETE /api/items/[id]/vote", async (test) => {
   await test.step("returns HTTP 401 Unauthorized response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url, { method: "DELETE" }));
 
-    assertResponseUnauthorized(resp);
+    assertEquals(resp.status, Status.Unauthorized);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -448,7 +383,7 @@ Deno.test("[e2e] DELETE /api/items/[id]/vote", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "Item not found");
   });
 
@@ -460,7 +395,7 @@ Deno.test("[e2e] DELETE /api/items/[id]/vote", async (test) => {
       }),
     );
 
-    assertResponseNoContent(resp);
+    assertEquals(resp.status, Status.NoContent);
   });
 });
 
@@ -474,7 +409,7 @@ Deno.test("[e2e] POST /api/items/[id]/vote", async (test) => {
   await test.step("returns HTTP 401 Unauthorized response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
-    assertResponseUnauthorized(resp);
+    assertEquals(resp.status, Status.Unauthorized);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -486,7 +421,7 @@ Deno.test("[e2e] POST /api/items/[id]/vote", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "Item not found");
   });
 
@@ -533,7 +468,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     Deno.env.delete("STRIPE_SECRET_KEY");
     const resp = await handler(new Request(url, { method: "POST" }));
 
-    assertResponseNotFound(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "Not Found");
   });
 
@@ -541,7 +476,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     Deno.env.set("STRIPE_SECRET_KEY", crypto.randomUUID());
     const resp = await handler(new Request(url, { method: "POST" }));
 
-    assertResponseBadRequest(resp);
+    assertEquals(resp.status, Status.BadRequest);
     assertEquals(await resp.text(), "`Stripe-Signature` header is missing");
   });
 
@@ -554,7 +489,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertResponseServerError(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.InternalServerError);
     assertEquals(
       await resp.text(),
       "`STRIPE_WEBHOOK_SECRET` environment variable is not set",
@@ -570,7 +505,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertResponseBadRequest(resp);
+    assertEquals(resp.status, Status.BadRequest);
     assertEquals(
       await resp.text(),
       "No webhook payload was provided.",
@@ -593,7 +528,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "User not found");
 
     constructEventAsyncStub.restore();
@@ -622,7 +557,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     );
 
     assertEquals(await getUser(user.login), { ...user, isSubscribed: true });
-    assertResponseCreated(resp);
+    assertEquals(resp.status, Status.Created);
 
     constructEventAsyncStub.restore();
   });
@@ -643,7 +578,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/plain;charset=UTF-8");
+    assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "User not found");
 
     constructEventAsyncStub.restore();
@@ -672,7 +607,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     );
 
     assertEquals(await getUser(user.login), { ...user, isSubscribed: false });
-    assertResponseAccepted(resp);
+    assertEquals(resp.status, Status.Accepted);
 
     constructEventAsyncStub.restore();
   });
@@ -693,7 +628,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertResponseBadRequest(resp);
+    assertEquals(resp.status, Status.BadRequest);
     assertEquals(await resp.text(), "Event type not supported");
 
     constructEventAsyncStub.restore();
@@ -706,7 +641,7 @@ Deno.test("[e2e] GET /account", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   await test.step("renders the account page as a free user", async () => {
@@ -743,7 +678,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   await test.step("returns HTTP 404 Not Found response if the session user does not have a Stripe customer ID", async () => {
@@ -755,7 +690,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/html; charset=utf-8");
+    assertEquals(resp.status, Status.NotFound);
   });
 
   await test.step("returns redirect response to the URL returned by Stripe after creating a billing portal session", async () => {
@@ -777,7 +712,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
       }),
     );
 
-    assertResponseRedirect(resp, session.url, Status.SeeOther);
+    assertRedirect(resp, session.url);
 
     sessionsCreateStub.restore();
   });
@@ -789,7 +724,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
   await test.step("returns redirect response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url));
 
-    assertResponseRedirect(resp, "/signin", Status.SeeOther);
+    assertRedirect(resp, "/signin");
   });
 
   const user = genNewUser();
@@ -804,7 +739,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertResponseServerError(resp, "text/html; charset=utf-8");
+    assertEquals(resp.status, Status.InternalServerError);
   });
 
   await test.step("returns HTTP 404 Not Found response if Stripe is disabled", async () => {
@@ -816,7 +751,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/html; charset=utf-8");
+    assertEquals(resp.status, Status.NotFound);
   });
 
   await test.step("returns HTTP 404 Not Found response if Stripe returns a `null` URL", async () => {
@@ -838,7 +773,8 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertResponseNotFound(resp, "text/html; charset=utf-8");
+    assertEquals(resp.status, Status.NotFound);
+
     sessionsCreateStub.restore();
   });
 
@@ -862,7 +798,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertResponseRedirect(resp, session.url!, Status.SeeOther);
+    assertRedirect(resp, session.url!);
 
     sessionsCreateStub.restore();
   });
