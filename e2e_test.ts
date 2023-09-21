@@ -300,7 +300,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
-    assertEquals(resp.status, Status.BadRequest);
+    assertResponseBadRequest(resp);
     assertEquals(await resp.text(), "Title is missing");
   });
 
@@ -315,8 +315,8 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
+    assertResponseBadRequest(resp1);
     assertEquals(await resp1.text(), "URL is invalid or missing");
-    assertEquals(resp1.status, Status.BadRequest);
 
     body.set("url", "invalid-url");
     const resp2 = await handler(
@@ -327,8 +327,8 @@ Deno.test("[e2e] POST /api/items", async (test) => {
       }),
     );
 
+    assertResponseBadRequest(resp2);
     assertEquals(await resp2.text(), "URL is invalid or missing");
-    assertEquals(resp2.status, Status.BadRequest);
   });
 
   await test.step("creates an item and redirects to the home page", async () => {
@@ -356,11 +356,13 @@ Deno.test("[e2e] GET /api/items/[id]", async () => {
   const req = new Request("http://localhost/api/items/" + item.id);
 
   const resp1 = await handler(req);
+
   assertResponseNotFound(resp1, "text/plain;charset=UTF-8");
   assertEquals(await resp1.text(), "Item not found");
 
   await createItem(item);
   const resp2 = await handler(req);
+
   assertResponseJson(resp2);
   assertEquals(await resp2.json(), JSON.parse(JSON.stringify(item)));
 });
@@ -887,5 +889,6 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
     }),
   );
   const body = await resp.json();
+
   assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
 });
