@@ -25,7 +25,7 @@
   },
   "imports": {
     "@/": "./",
-    "$fresh/": "https://deno.land/x/fresh@1.4.3/",
+    "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/738a51ad526e4d5cc74871927a4888bda54f897c/",
     "$gfm": "https://deno.land/x/gfm@0.2.4/mod.ts",
     "preact": "https://esm.sh/preact@10.15.1",
     "preact/": "https://esm.sh/preact@10.15.1/",
@@ -34,7 +34,7 @@
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.2.3",
     "twind-preset-tailwind/": "https://esm.sh/@twind/preset-tailwind@1.1.4/",
     "twind-preset-ext": "https://esm.sh/@twind/preset-ext@1.0.7/",
-    "std/": "https://raw.githubusercontent.com/lino-levan/deno_std/feat-ulid/",
+    "std/": "https://deno.land/std@0.202.0/",
     "stripe": "npm:/stripe@13.5.0",
     "feed": "npm:/feed@4.2.2",
     "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.7.0/mod.ts",

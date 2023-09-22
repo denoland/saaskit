@@ -1,10 +1,11 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { defineRoute } from "$fresh/server.ts";
 import type { SignedInState } from "@/plugins/session.ts";
-import { BUTTON_STYLES } from "@/utils/constants.ts";
+import { BUTTON_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 import { isStripeEnabled } from "@/utils/stripe.ts";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
+import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 export default defineRoute<SignedInState>((_req, ctx) => {
   const { sessionUser } = ctx.state;
@@ -13,45 +14,52 @@ export default defineRoute<SignedInState>((_req, ctx) => {
   return (
     <>
       <Head title="Account" href={ctx.url.href} />
-      <main class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center">
+      <main class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center gap-8">
         <GitHubAvatarImg
           login={sessionUser.login}
           size={240}
-          class="m-auto"
+          class="mx-auto"
         />
-        <ul>
-          <li class="py-4">
-            <p>
-              <strong>Username</strong>
-            </p>
-            <p>
-              {sessionUser.login}
-            </p>
-          </li>
-          <li class="py-4">
+        <ul class="space-y-4">
+          <li>
+            <strong>Username</strong>
             <p class="flex flex-wrap justify-between">
               <span>
-                <strong>Subscription</strong>
+                {sessionUser.login}
+              </span>
+              <a href={`/users/${sessionUser.login}`} class={LINK_STYLES}>
+                Go to my profile &#8250;
+              </a>
+            </p>
+          </li>
+          <li>
+            <strong>Subscription</strong>
+            <p class="flex flex-wrap justify-between">
+              <span>
+                {sessionUser.isSubscribed
+                  ? (
+                    <>
+                      Premium <PremiumBadge class="w-5 h-5 inline" />
+                    </>
+                  )
+                  : "Free"}
               </span>
               {isStripeEnabled() && (
                 <span>
                   <a
-                    class="underline"
+                    class={LINK_STYLES}
                     href={`/account/${action.toLowerCase()}`}
                   >
-                    {action}
+                    {action} &#8250;
                   </a>
                 </span>
               )}
-            </p>
-            <p>
-              {sessionUser.isSubscribed ? "Premium 🦕" : "Free"}
             </p>
           </li>
         </ul>
         <a
           href="/signout?success_url=/"
-          class={`${BUTTON_STYLES} block text-center mt-8`}
+          class={`${BUTTON_STYLES} block text-center`}
         >
           Sign out
         </a>
