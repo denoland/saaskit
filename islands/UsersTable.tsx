@@ -5,6 +5,7 @@ import type { User } from "@/utils/db.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import { fetchValues } from "@/utils/http.ts";
+import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 const TH_STYLES = "p-4 text-left";
 const TD_STYLES = "p-4";
@@ -25,11 +26,8 @@ function UserTableRow(props: User) {
         {props.isSubscribed
           ? (
             <>
-              "Premium "<img
-                alt="Deno Hunt premium user"
-                src="./deno-badge.svg"
-                class="w-5 h-5 inline"
-              />
+              "Premium "
+              <PremiumBadge class="w-5 h-5 inline" />
             </>
           )
           : "Basic"}

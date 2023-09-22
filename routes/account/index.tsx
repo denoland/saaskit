@@ -5,6 +5,7 @@ import { BUTTON_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 import { isStripeEnabled } from "@/utils/stripe.ts";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
+import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 export default defineRoute<SignedInState>((_req, ctx) => {
   const { sessionUser } = ctx.state;
@@ -38,12 +39,7 @@ export default defineRoute<SignedInState>((_req, ctx) => {
                 {sessionUser.isSubscribed
                   ? (
                     <>
-                      Premium{" "}
-                      <img
-                        alt="Deno Hunt premium user"
-                        src="./deno-badge.svg"
-                        class="w-5 h-5 inline"
-                      />
+                      Premium <PremiumBadge class="w-5 h-5 inline" />
                     </>
                   )
                   : "Free"}
