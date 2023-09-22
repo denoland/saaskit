@@ -32,13 +32,14 @@ import options from "./fresh.config.ts";
 
 /**
  * These tests are end-to-end tests, which follow this rule-set:
- * 1. `Response.status` is checked first by using the `Status` enum.
- *    It's the primary indicator of whether the request was successful or not.
- * 2. `Response.header`'s `content-type` is checked next to ensure the response is of the expected type.
- *    This is where custom assertions are used.
- * 3. `Response.body` is checked last, if needed.
- *    This is where the actual content of the response is checked.
- *    Here, we're checking if the body is instance of a specific type, equals a specific string, contains a specific string or is empty.
+ * 1. `Response.status` is checked first by using the `Status` enum. It's the
+ * primary indicator of whether the request was successful or not.
+ * 2. `Response.header`'s `content-type` is checked next to ensure the
+ * response is of the expected type. This is where custom assertions are used.
+ * 3. `Response.body` is checked last, if needed. This is where the actual
+ * content of the response is checked. Here, we're checking if the body is
+ * instance of a specific type, equals a specific string, contains a specific
+ * string or is empty.
  */
 
 /**
@@ -47,7 +48,6 @@ import options from "./fresh.config.ts";
 const handler = await createHandler(manifest, options);
 
 function assertHtml(resp: Response) {
-  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
@@ -56,7 +56,6 @@ function assertHtml(resp: Response) {
 }
 
 function assertJson(resp: Response) {
-  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(resp.headers.get("content-type"), "application/json");
 }
@@ -71,7 +70,6 @@ function assertRedirect(response: Response, location?: string) {
 }
 
 function assertXml(resp: Response) {
-  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
@@ -82,6 +80,7 @@ function assertXml(resp: Response) {
 Deno.test("[e2e] GET /", async () => {
   const resp = await handler(new Request("http://localhost"));
 
+  assertEquals(resp.status, Status.OK);
   assertHtml(resp);
 });
 
@@ -98,13 +97,13 @@ Deno.test("[e2e] GET /blog", async () => {
     new Request("http://localhost/blog"),
   );
 
+  assertEquals(resp.status, Status.OK);
   assertHtml(resp);
 });
 
 Deno.test("[e2e] GET /pricing", async () => {
-  const req = new Request("http://localhost/pricing");
-
   Deno.env.delete("STRIPE_SECRET_KEY");
+  const req = new Request("http://localhost/pricing");
   const resp = await handler(req);
 
   assertEquals(resp.status, Status.NotFound);
@@ -169,6 +168,7 @@ Deno.test("[e2e] GET /dashboard/stats", async (test) => {
       }),
     );
 
+    assertEquals(resp.status, Status.OK);
     assertStringIncludes(await resp.text(), "<!--frsh-chart_default");
   });
 });
@@ -191,6 +191,7 @@ Deno.test("[e2e] GET /dashboard/users", async (test) => {
       }),
     );
 
+    assertEquals(resp.status, Status.OK);
     assertStringIncludes(await resp.text(), "<!--frsh-userstable_default");
   });
 });
@@ -208,6 +209,7 @@ Deno.test("[e2e] GET /feed", async () => {
     new Request("http://localhost/feed"),
   );
 
+  assertEquals(resp.status, Status.OK);
   assertXml(resp);
 });
 
@@ -222,6 +224,7 @@ Deno.test("[e2e] GET /api/items", async () => {
 
   const { values } = await resp.json();
 
+  assertEquals(resp.status, Status.OK);
   assertJson(resp);
   assertArrayIncludes(values, [
     JSON.parse(JSON.stringify(item1)),
@@ -314,6 +317,7 @@ Deno.test("[e2e] GET /api/items/[id]", async () => {
   await createItem(item);
   const resp2 = await handler(req);
 
+  assertEquals(resp2.status, Status.OK);
   assertJson(resp2);
   assertEquals(await resp2.json(), JSON.parse(JSON.stringify(item)));
 });
@@ -329,6 +333,7 @@ Deno.test("[e2e] GET /api/users", async () => {
 
   const { values } = await resp.json();
 
+  assertEquals(resp.status, Status.OK);
   assertJson(resp);
   assertArrayIncludes(values, [user1, user2]);
 });
@@ -345,6 +350,7 @@ Deno.test("[e2e] GET /api/users/[login]", async () => {
   await createUser(user);
   const resp2 = await handler(req);
 
+  assertEquals(resp2.status, Status.OK);
   assertJson(resp2);
   assertEquals(await resp2.json(), user);
 });
@@ -367,6 +373,7 @@ Deno.test("[e2e] GET /api/users/[login]/items", async () => {
   const resp2 = await handler(req);
   const { values } = await resp2.json();
 
+  assertEquals(resp2.status, Status.OK);
   assertJson(resp2);
   assertArrayIncludes(values, [JSON.parse(JSON.stringify(item))]);
 });
@@ -572,10 +579,10 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertEquals(await getUser(user.login), { ...user, isSubscribed: true });
-    assertEquals(resp.status, Status.Created);
-
     constructEventAsyncStub.restore();
+
+    assertEquals(resp.status, Status.Created);
+    assertEquals(await getUser(user.login), { ...user, isSubscribed: true });
   });
 
   await test.step("returns HTTP 404 Not Found response if the user is not found for subscription deletion", async () => {
@@ -594,10 +601,10 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
+    constructEventAsyncStub.restore();
+
     assertEquals(resp.status, Status.NotFound);
     assertEquals(await resp.text(), "User not found");
-
-    constructEventAsyncStub.restore();
   });
 
   await test.step("returns HTTP 202 Accepted response if the subscription is deleted", async () => {
@@ -622,10 +629,10 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
+    constructEventAsyncStub.restore();
+
     assertEquals(await getUser(user.login), { ...user, isSubscribed: false });
     assertEquals(resp.status, Status.Accepted);
-
-    constructEventAsyncStub.restore();
   });
 
   await test.step("returns HTTP 400 Bad Request response if the event type is not supported", async () => {
@@ -644,10 +651,10 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
+    constructEventAsyncStub.restore();
+
     assertEquals(resp.status, Status.BadRequest);
     assertEquals(await resp.text(), "Event type not supported");
-
-    constructEventAsyncStub.restore();
   });
 });
 
@@ -670,6 +677,7 @@ Deno.test("[e2e] GET /account", async (test) => {
       }),
     );
 
+    assertEquals(resp.status, Status.OK);
     assertStringIncludes(await resp.text(), 'href="/account/upgrade"');
   });
 
@@ -683,6 +691,7 @@ Deno.test("[e2e] GET /account", async (test) => {
       }),
     );
 
+    assertEquals(resp.status, Status.OK);
     assertStringIncludes(await resp.text(), 'href="/account/manage"');
   });
 });
@@ -728,9 +737,9 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
       }),
     );
 
-    assertRedirect(resp, session.url);
-
     sessionsCreateStub.restore();
+
+    assertRedirect(resp, session.url);
   });
 });
 
@@ -789,9 +798,9 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertEquals(resp.status, Status.NotFound);
-
     sessionsCreateStub.restore();
+
+    assertEquals(resp.status, Status.NotFound);
   });
 
   await test.step("returns redirect response to the URL returned by Stripe after creating a checkout session", async () => {
@@ -814,9 +823,9 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
       }),
     );
 
-    assertRedirect(resp, session.url!);
-
     sessionsCreateStub.restore();
+
+    assertRedirect(resp, session.url!);
   });
 });
 
@@ -842,5 +851,6 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
   );
   const body = await resp.json();
 
+  assertEquals(resp.status, Status.OK);
   assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
 });
