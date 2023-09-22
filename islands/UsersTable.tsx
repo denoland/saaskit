@@ -22,7 +22,17 @@ function UserTableRow(props: User) {
         </a>
       </td>
       <td scope="col" class={TD_STYLES + " text-gray-500"}>
-        {props.isSubscribed ? "Premium 🦕" : "Basic"}
+        {props.isSubscribed
+          ? (
+            <>
+              "Premium "<img
+                alt="Deno Hunt premium user"
+                src="./deno-badge.svg"
+                class="w-5 h-5 inline"
+              />
+            </>
+          )
+          : "Basic"}
       </td>
       <td scope="col" class={TD_STYLES + " text-gray-500"}>
         ${(Math.random() * 100).toFixed(2)}

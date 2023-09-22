@@ -17,12 +17,16 @@ function UserProfile(props: UserProfileProps) {
   return (
     <div class="flex flex-col items-center w-[16rem]">
       <GitHubAvatarImg login={props.login} size={200} />
-      <div class="flex gap-x-2 px-4 mt-4">
+      <div class="flex gap-x-2 px-4 mt-4 items-center">
         <div class="font-semibold text-xl">
           {props.login}
         </div>
         {props.isSubscribed && (
-          <span title="Deno Hunt premium user">🦕{" "}</span>
+          <img
+            alt="Deno Hunt premium user"
+            src="/deno-badge.svg"
+            class="w-6 h-6 inline"
+          />
         )}
         <a
           href={`https://github.com/${props.login}`}

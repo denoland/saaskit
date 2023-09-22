@@ -34,7 +34,20 @@ export default defineRoute<SignedInState>((_req, ctx) => {
           <li>
             <strong>Subscription</strong>
             <p class="flex flex-wrap justify-between">
-              <span>{sessionUser.isSubscribed ? "Premium 🦕" : "Free"}</span>
+              <span>
+                {sessionUser.isSubscribed
+                  ? (
+                    <>
+                      Premium{" "}
+                      <img
+                        alt="Deno Hunt premium user"
+                        src="./deno-badge.svg"
+                        class="w-5 h-5 inline"
+                      />
+                    </>
+                  )
+                  : "Free"}
+              </span>
               {isStripeEnabled() && (
                 <span>
                   <a

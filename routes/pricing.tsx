@@ -90,7 +90,12 @@ function PremiumPlanCard(props: PremiumCardPlanProps) {
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
-          Official pro user badge 🦕
+          Official pro user badge{" "}
+          <img
+            src="./deno-badge.svg"
+            alt="Deno Hunt premium user"
+            class="w-5 h-5 inline"
+          />
         </p>
       </div>
 
