@@ -1,101 +1,79 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { RouteContext } from "$fresh/server.ts";
-import type { State } from "@/routes/_middleware.ts";
-import ItemSummary from "@/components/ItemSummary.tsx";
-import { calcLastPage, calcPageNum, PAGE_LENGTH } from "@/utils/pagination.ts";
-import PageSelector from "@/components/PageSelector.tsx";
-import {
-  compareScore,
-  getAreVotedBySessionId,
-  getItemsByUser,
-  getUser,
-} from "@/utils/db.ts";
-import { pluralize } from "@/utils/display.ts";
+import type { State } from "@/plugins/session.ts";
+import { getUser } from "@/utils/db.ts";
 import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
 import { LINK_STYLES } from "@/utils/constants.ts";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
+import ItemsList from "@/islands/ItemsList.tsx";
+import { defineRoute } from "$fresh/server.ts";
 
-function Profile(
-  props: { login: string; itemsCount: number; isSubscribed: boolean },
-) {
+interface UserProfileProps {
+  login: string;
+  isSubscribed: boolean;
+}
+
+function UserProfile(props: UserProfileProps) {
   return (
-    <div class="flex flex-wrap py-8">
-      <GitHubAvatarImg login={props.login} size={48} />
-      <div class="px-4">
-        <div class="flex gap-x-2">
-          <span>
-            <strong>{props.login}</strong>
-          </span>
-          {props.isSubscribed && (
-            <span title="Deno Hunt premium user">🦕{" "}</span>
-          )}
-          <span>
-            <a
-              href={`https://github.com/${props.login}`}
-              aria-label={`${props.login}'s GitHub profile`}
-              class={LINK_STYLES}
-              target="_blank"
-            >
-              <IconBrandGithub class="text-sm w-6" />
-            </a>
-          </span>
+    <div class="flex flex-col items-center w-[16rem]">
+      <GitHubAvatarImg login={props.login} size={200} />
+      <div class="flex gap-x-2 px-4 mt-4">
+        <div class="font-semibold text-xl">
+          {props.login}
         </div>
-        <p>
-          {pluralize(props.itemsCount, "submission")}
-        </p>
+        {props.isSubscribed && (
+          <span title="Deno Hunt premium user">🦕{" "}</span>
+        )}
+        <a
+          href={`https://github.com/${props.login}`}
+          aria-label={`${props.login}'s GitHub profile`}
+          class={LINK_STYLES}
+          target="_blank"
+        >
+          <IconBrandGithub class="w-6" />
+        </a>
       </div>
     </div>
   );
 }
 
-export default async function UsersUserPage(
-  _req: Request,
-  ctx: RouteContext<undefined, State>,
-) {
-  const { login } = ctx.params;
-  const user = await getUser(login);
-  if (user === null) return await ctx.renderNotFound();
+export default defineRoute<State>(
+  async (_req, ctx) => {
+    const { login } = ctx.params;
+    const user = await getUser(login);
+    if (user === null) return await ctx.renderNotFound();
 
-  const pageNum = calcPageNum(ctx.url);
+    const isSignedIn = ctx.state.sessionUser !== undefined;
+    const endpoint = `/api/users/${login}/items`;
 
-  const allItems = await getItemsByUser(login);
-  const itemsCount = allItems.length;
-
-  const items = allItems.sort(compareScore).slice(
-    (pageNum - 1) * PAGE_LENGTH,
-    pageNum * PAGE_LENGTH,
-  );
-
-  const areVoted = await getAreVotedBySessionId(
-    items,
-    ctx.state.sessionId,
-  );
-
-  const lastPage = calcLastPage(allItems.length, PAGE_LENGTH);
-
-  return (
-    <>
-      <Head title={user.login} href={ctx.url.href} />
-      <main class="flex-1 p-4">
-        <Profile
-          isSubscribed={user.isSubscribed}
-          login={user.login}
-          itemsCount={itemsCount}
-        />
-        {items.map((item, index) => (
-          <ItemSummary
-            item={item}
-            isVoted={areVoted[index]}
+    return (
+      <>
+        <Head title={user.login} href={ctx.url.href}>
+          <link
+            as="fetch"
+            crossOrigin="anonymous"
+            href={endpoint}
+            rel="preload"
           />
-        ))}
-        {lastPage > 1 && (
-          <PageSelector
-            currentPage={calcPageNum(ctx.url)}
-            lastPage={lastPage}
+          {isSignedIn && (
+            <link
+              as="fetch"
+              crossOrigin="anonymous"
+              href="/api/me/votes"
+              rel="preload"
+            />
+          )}
+        </Head>
+        <main class="flex-1 p-4 flex flex-col md:flex-row gap-8">
+          <div class="flex justify-center p-4">
+            <UserProfile {...user} />
+          </div>
+          <ItemsList
+            endpoint={endpoint}
+            isSignedIn={isSignedIn}
           />
-        )}
-      </main>
-    </>
-  );
-}
+        </main>
+      </>
+    );
+  },
+);

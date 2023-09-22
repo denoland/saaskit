@@ -1,18 +1,13 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { RouteContext } from "$fresh/server.ts";
+import { defineRoute } from "$fresh/server.ts";
 import { CSS, render } from "$gfm";
 import { getPost } from "@/utils/posts.ts";
 import Head from "@/components/Head.tsx";
 import Share from "@/components/Share.tsx";
 
-export default async function BlogPostPage(_req: Request, ctx: RouteContext) {
+export default defineRoute(async (_req, ctx) => {
   const post = await getPost(ctx.params.slug);
   if (post === null) return await ctx.renderNotFound();
-
-  const date = post.publishedAt.toString() !== "Invalid Date" &&
-    new Date(post.publishedAt).toLocaleDateString("en-US", {
-      dateStyle: "long",
-    });
 
   return (
     <>
@@ -21,9 +16,14 @@ export default async function BlogPostPage(_req: Request, ctx: RouteContext) {
       </Head>
       <main class="p-4 flex-1">
         <h1 class="text-4xl font-bold">{post.title}</h1>
-        {date && (
-          <time class="text-gray-500">
-            {date}
+        {post.publishedAt.toString() !== "Invalid Date" && (
+          <time
+            dateTime={post.publishedAt.toISOString()}
+            class="text-gray-500"
+          >
+            {post.publishedAt.toLocaleDateString("en-US", {
+              dateStyle: "long",
+            })}
           </time>
         )}
         <Share url={ctx.url} title={post.title} />
@@ -37,4 +37,4 @@ export default async function BlogPostPage(_req: Request, ctx: RouteContext) {
       </main>
     </>
   );
-}
+});

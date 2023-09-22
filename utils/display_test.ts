@@ -1,8 +1,7 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { getToggledStyles, pluralize, timeAgo } from "./display.ts";
+import { formatCurrency, pluralize, timeAgo } from "./display.ts";
 import { DAY, HOUR, MINUTE, SECOND } from "std/datetime/constants.ts";
-import { assertEquals } from "std/testing/asserts.ts";
-import { ACTIVE_LINK_STYLES, LINK_STYLES } from "@/utils/constants.ts";
+import { assertEquals, assertThrows } from "std/assert/mod.ts";
 
 Deno.test("[display] pluralize()", () => {
   assertEquals(pluralize(0, "item"), "0 items");
@@ -11,26 +10,27 @@ Deno.test("[display] pluralize()", () => {
 });
 
 Deno.test("[display] timeAgo()", () => {
-  assertEquals(timeAgo(Date.now()), "0 minutes");
-  assertEquals(timeAgo(Date.now() - SECOND * 30), "0 minutes");
-  assertEquals(timeAgo(Date.now() - MINUTE), "1 minute");
-  assertEquals(timeAgo(Date.now() - MINUTE * 2), "2 minutes");
-  assertEquals(timeAgo(Date.now() - MINUTE * 59), "59 minutes");
-  assertEquals(timeAgo(Date.now() - HOUR), "1 hour");
-  assertEquals(timeAgo(Date.now() - HOUR - MINUTE * 35), "1 hour");
-  assertEquals(timeAgo(Date.now() - HOUR * 2), "2 hours");
-  assertEquals(timeAgo(Date.now() - DAY), "1 day");
-  assertEquals(timeAgo(Date.now() - DAY - HOUR * 12), "1 day");
-  assertEquals(timeAgo(Date.now() - DAY * 5), "5 days");
+  assertEquals(timeAgo(new Date(Date.now())), "just now");
+  assertEquals(timeAgo(new Date(Date.now() - SECOND * 30)), "30 seconds ago");
+  assertEquals(timeAgo(new Date(Date.now() - MINUTE)), "1 minute ago");
+  assertEquals(timeAgo(new Date(Date.now() - MINUTE * 2)), "2 minutes ago");
+  assertEquals(timeAgo(new Date(Date.now() - MINUTE * 59)), "59 minutes ago");
+  assertEquals(timeAgo(new Date(Date.now() - HOUR)), "1 hour ago");
+  assertEquals(
+    timeAgo(new Date(Date.now() - HOUR - MINUTE * 35)),
+    "1 hour ago",
+  );
+  assertEquals(timeAgo(new Date(Date.now() - HOUR * 2)), "2 hours ago");
+  assertEquals(timeAgo(new Date(Date.now() - DAY)), "1 day ago");
+  assertEquals(timeAgo(new Date(Date.now() - DAY - HOUR * 12)), "1 day ago");
+  assertEquals(timeAgo(new Date(Date.now() - DAY * 5)), "5 days ago");
+  assertThrows(
+    () => timeAgo(new Date(Date.now() + 1)),
+    Error,
+    "Timestamp must be in the past",
+  );
 });
 
-Deno.test("[display] getToggledStyles()", () => {
-  assertEquals(
-    getToggledStyles(LINK_STYLES, ACTIVE_LINK_STYLES, false),
-    LINK_STYLES,
-  );
-  assertEquals(
-    getToggledStyles(LINK_STYLES, ACTIVE_LINK_STYLES, true),
-    LINK_STYLES + " " + ACTIVE_LINK_STYLES,
-  );
+Deno.test("[display] formatCurrency()", () => {
+  assertEquals(formatCurrency(5, "USD"), "$5");
 });

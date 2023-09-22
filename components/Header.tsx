@@ -5,15 +5,23 @@ import {
   SITE_BAR_STYLES,
   SITE_NAME,
 } from "@/utils/constants.ts";
-import { stripe } from "@/utils/payments.ts";
+import { isStripeEnabled } from "@/utils/stripe.ts";
 import IconX from "tabler_icons_tsx/x.tsx";
 import IconMenu from "tabler_icons_tsx/menu-2.tsx";
-import IconBell from "tabler_icons_tsx/bell.tsx";
 import { cx } from "@twind/core";
+import { User } from "@/utils/db.ts";
 
-export default function Header(
-  props: { sessionId?: string; hasNotifications: boolean; url: URL },
-) {
+export interface HeaderProps {
+  /** Currently signed-in user */
+  sessionUser?: User;
+  /**
+   * URL of the current page. This is used for highlighting the currently
+   * active page in navigation.
+   */
+  url: URL;
+}
+
+export default function Header(props: HeaderProps) {
   const NAV_ITEM = "text-gray-500 px-3 py-4 sm:py-2";
   return (
     <header
@@ -67,7 +75,7 @@ export default function Header(
         <a
           href="/dashboard"
           class={cx(
-            props.url.pathname === "/dashboard"
+            props.url.pathname.startsWith("/dashboard")
               ? ACTIVE_LINK_STYLES
               : LINK_STYLES,
             NAV_ITEM,
@@ -75,8 +83,8 @@ export default function Header(
         >
           Dashboard
         </a>
-        {stripe
-          ? (
+        {isStripeEnabled() &&
+          (
             <a
               href="/pricing"
               class={cx(
@@ -88,9 +96,8 @@ export default function Header(
             >
               Pricing
             </a>
-          )
-          : null}
-        {props.sessionId
+          )}
+        {props.sessionUser
           ? (
             <a
               href="/account"
@@ -105,27 +112,6 @@ export default function Header(
             </a>
           )
           : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>}
-        <a
-          href="/notifications"
-          class={cx(
-            props.url.pathname === "/notifications"
-              ? ACTIVE_LINK_STYLES
-              : LINK_STYLES,
-            NAV_ITEM,
-            "relative flex gap-2 items-center",
-          )}
-          aria-label="Notifications"
-        >
-          <IconBell class="hidden sm:block w-6 h-6" />
-          <div class="sm:hidden">
-            Notifications
-          </div>
-          {props.hasNotifications && (
-            <span class="absolute top-0.5 right-0.5 text-primary w-2 h-2">
-              ●
-            </span>
-          )}
-        </a>
         <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
           <a
             href="/submit"

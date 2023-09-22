@@ -1,25 +1,12 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import type { RouteContext } from "$fresh/server.ts";
-import type { State } from "@/routes/_middleware.ts";
+import type { State } from "@/plugins/session.ts";
 import { BUTTON_STYLES } from "@/utils/constants.ts";
-import {
-  formatAmountForDisplay,
-  isProductWithPrice,
-  stripe,
-  StripProductWithPrice,
-} from "@/utils/payments.ts";
+import { assertIsPrice, isStripeEnabled, stripe } from "@/utils/stripe.ts";
+import { formatCurrency } from "@/utils/display.ts";
 import Stripe from "stripe";
-import { getUserBySession } from "@/utils/db.ts";
 import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
 import Head from "@/components/Head.tsx";
-
-function comparePrices(
-  productA: StripProductWithPrice,
-  productB: StripProductWithPrice,
-) {
-  return (productA.default_price.unit_amount || 0) -
-    (productB.default_price.unit_amount || 0);
-}
+import { defineRoute } from "$fresh/server.ts";
 
 const CARD_STYLES =
   "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
@@ -66,10 +53,13 @@ function FreePlanCard() {
   );
 }
 
-function PremiumPlanCard(
-  props: { product: Stripe.Product; isSubscribed?: boolean },
-) {
-  const defaultPrice = props.product.default_price as Stripe.Price;
+interface PremiumCardPlanProps {
+  product: Stripe.Product;
+  isSubscribed?: boolean;
+}
+
+function PremiumPlanCard(props: PremiumCardPlanProps) {
+  assertIsPrice(props.product.default_price);
   return (
     <div class={CARD_STYLES + " border-primary border"}>
       <div class="flex-1 space-y-4">
@@ -83,12 +73,12 @@ function PremiumPlanCard(
         </div>
         <p>
           <span class="text-4xl font-bold">
-            {formatAmountForDisplay(
-              defaultPrice.unit_amount! / 100,
-              defaultPrice?.currency,
+            {formatCurrency(
+              props.product.default_price.unit_amount! / 100,
+              props.product.default_price?.currency,
             )}
           </span>
-          <span>{" "}/ {defaultPrice.recurring?.interval}</span>
+          <span>{" "}/ {props.product.default_price.recurring?.interval}</span>
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
@@ -170,30 +160,13 @@ function EnterprisePricingCard() {
   );
 }
 
-export default async function PricingPage(
-  _req: Request,
-  ctx: RouteContext<undefined, State>,
-) {
-  if (stripe === undefined) return await ctx.renderNotFound();
+export default defineRoute<State>(async (_req, ctx) => {
+  if (!isStripeEnabled()) return await ctx.renderNotFound();
 
   const { data } = await stripe.products.list({
     expand: ["data.default_price"],
     active: true,
   });
-
-  const productsWithPrice = data.filter(isProductWithPrice);
-  if (productsWithPrice.length !== data.length) {
-    throw new Error(
-      "Not all products have a default price. Please run the `deno task init:stripe` as the README instructs.",
-    );
-  }
-
-  /** @todo Maybe just retrieve a single product within the handler. Documentation may have to be adjusted. */
-  const [product] = productsWithPrice.sort(comparePrices);
-
-  const user = ctx.state.sessionId
-    ? await getUserBySession(ctx.state.sessionId)
-    : null;
 
   return (
     <>
@@ -206,12 +179,12 @@ export default async function PricingPage(
         <div class="flex flex-col md:flex-row gap-4">
           <FreePlanCard />
           <PremiumPlanCard
-            product={product}
-            isSubscribed={user?.isSubscribed}
+            product={data[0]}
+            isSubscribed={ctx.state.sessionUser?.isSubscribed}
           />
           <EnterprisePricingCard />
         </div>
       </main>
     </>
   );
-}
+});

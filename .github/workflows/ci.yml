@@ -16,10 +16,13 @@ jobs:
           - ubuntu-22.04
           - windows-2022
           - macOS-12
+    env:
+      GITHUB_CLIENT_ID: test
+      GITHUB_CLIENT_SECRET: test
 
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
@@ -32,7 +35,7 @@ jobs:
         run: deno task ok
 
       - name: Create lcov file
-        run: deno task cov
+        run: deno task cov:gen
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3
