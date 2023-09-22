@@ -29,11 +29,23 @@ import Stripe from "stripe";
 import options from "./fresh.config.ts";
 
 /**
+ * These tests are end-to-end tests, which follow this rule-set:
+ * 1. `Response.status` is checked first by using the `Status` enum.
+ *    It's the primary indicator of whether the request was successful or not.
+ * 2. `Response.header`'s `content-type` is checked next to ensure the response is of the expected type.
+ *    This is where custom assertions are used.
+ * 3. `Response.body` is checked last, if needed.
+ *    This is where the actual content of the response is checked.
+ *    Here, we're checking if the body is instance of a specific type, equals a specific string, contains a specific string or is empty.
+ */
+
+/**
  * @see {@link https://fresh.deno.dev/docs/examples/writing-tests|Writing tests} example on how to write tests for Fresh projects.
  */
 const handler = await createHandler(manifest, options);
 
 function assertHtml(resp: Response) {
+  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
@@ -42,6 +54,7 @@ function assertHtml(resp: Response) {
 }
 
 function assertJson(resp: Response) {
+  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(resp.headers.get("content-type"), "application/json");
 }
@@ -56,6 +69,7 @@ function assertRedirect(response: Response, location?: string) {
 }
 
 function assertXml(resp: Response) {
+  assertEquals(resp.status, Status.OK);
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(
     resp.headers.get("content-type"),
@@ -74,7 +88,7 @@ Deno.test("[e2e] GET /callback", async () => {
     new Request("http://localhost/callback"),
   );
 
-  assertEquals(resp.status, 500);
+  assertEquals(resp.status, Status.InternalServerError);
 });
 
 Deno.test("[e2e] GET /blog", async () => {
