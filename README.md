@@ -12,18 +12,20 @@ template for building your SaaS quickly and easily.
 
 ## Features
 
-- In-built data persistence with [Deno KV](https://deno.com/kv)
-- High-level OAuth with [Deno KV OAuth](https://deno.land/x/deno_kv_oauth)
-- First-class web performance
-- Stripe integration (optional)
-- SaaS-oriented design
 - Deno's built-in [formatter](https://deno.land/manual/tools/formatter),
   [linter](https://deno.land/manual/tools/linter) and
   [test runner](https://deno.land/manual/basics/testing) and TypeScript support
-- [Fresh](https://fresh.deno.dev/) web framework and
-  [Tailwind CSS](https://tailwindcss.com/) CSS framework.
+- Next-gen web framework with [Fresh](https://fresh.deno.dev/)
+- In-built data persistence with [Deno KV](https://deno.com/kv)
+- High-level OAuth with [Deno KV OAuth](https://deno.land/x/deno_kv_oauth)
+- Modern CSS framework with [Tailwind CSS](https://tailwindcss.com/)
+- Responsive, SaaS-oriented design
+- Dashboard with users view and statistics chart
+- Stripe integration (optional)
+- First-class web performance
 - REST API
-- Blog with RSS feed
+- Blog with RSS feed and social sharing icons
+- HTTP security headers
 
 ## Get Started
 
