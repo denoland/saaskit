@@ -49,24 +49,12 @@ const handler = await createHandler(manifest, options);
 
 function assertHtml(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
-  assertEquals(
-    resp.headers.get("content-type"),
-    "text/html; charset=utf-8",
-  );
+  assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
 }
 
 function assertJson(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(resp.headers.get("content-type"), "application/json");
-}
-
-function assertRedirect(response: Response, location?: string) {
-  assert(isRedirectStatus(response.status));
-  if (location !== undefined) {
-    assertStringIncludes(response.headers.get("location")!, location);
-  } else {
-    assert(response.headers.has("location"));
-  }
 }
 
 function assertXml(resp: Response) {
@@ -75,6 +63,16 @@ function assertXml(resp: Response) {
     resp.headers.get("content-type"),
     "application/atom+xml; charset=utf-8",
   );
+}
+
+function assertText(resp: Response) {
+  assertInstanceOf(resp.body, ReadableStream);
+  assertEquals(resp.headers.get("content-type"), "text/plain;charset=UTF-8");
+}
+
+function assertRedirect(response: Response, location: string) {
+  assert(isRedirectStatus(response.status));
+  assert(response.headers.get("location")?.includes(location));
 }
 
 Deno.test("[e2e] GET /", async () => {
@@ -90,6 +88,7 @@ Deno.test("[e2e] GET /callback", async () => {
   );
 
   assertEquals(resp.status, Status.InternalServerError);
+  assertHtml(resp);
 });
 
 Deno.test("[e2e] GET /blog", async () => {
@@ -107,6 +106,7 @@ Deno.test("[e2e] GET /pricing", async () => {
   const resp = await handler(req);
 
   assertEquals(resp.status, Status.NotFound);
+  assertHtml(resp);
 });
 
 Deno.test("[e2e] GET /signin", async () => {
@@ -169,6 +169,7 @@ Deno.test("[e2e] GET /dashboard/stats", async (test) => {
     );
 
     assertEquals(resp.status, Status.OK);
+    assertHtml(resp);
     assertStringIncludes(await resp.text(), "<!--frsh-chart_default");
   });
 });
@@ -192,6 +193,7 @@ Deno.test("[e2e] GET /dashboard/users", async (test) => {
     );
 
     assertEquals(resp.status, Status.OK);
+    assertHtml(resp);
     assertStringIncludes(await resp.text(), "<!--frsh-userstable_default");
   });
 });
@@ -241,6 +243,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
     assertEquals(resp.status, Status.Unauthorized);
+    assertText(resp);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -255,6 +258,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     );
 
     assertEquals(resp.status, Status.BadRequest);
+    assertText(resp);
     assertEquals(await resp.text(), "Title is missing");
   });
 
@@ -270,6 +274,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     );
 
     assertEquals(resp1.status, Status.BadRequest);
+    assertText(resp1);
     assertEquals(await resp1.text(), "URL is invalid or missing");
 
     body.set("url", "invalid-url");
@@ -282,6 +287,7 @@ Deno.test("[e2e] POST /api/items", async (test) => {
     );
 
     assertEquals(resp2.status, Status.BadRequest);
+    assertText(resp2);
     assertEquals(await resp2.text(), "URL is invalid or missing");
   });
 
@@ -345,6 +351,7 @@ Deno.test("[e2e] GET /api/users/[login]", async () => {
   const resp1 = await handler(req);
 
   assertEquals(resp1.status, Status.NotFound);
+  assertText(resp1);
   assertEquals(await resp1.text(), "User not found");
 
   await createUser(user);
@@ -366,6 +373,8 @@ Deno.test("[e2e] GET /api/users/[login]/items", async () => {
   const resp1 = await handler(req);
 
   assertEquals(resp1.status, Status.NotFound);
+  assertText(resp1);
+  assertEquals(await resp1.text(), "User not found");
 
   await createUser(user);
   await createItem(item);
@@ -395,6 +404,7 @@ Deno.test("[e2e] DELETE /api/items/[id]/vote", async (test) => {
     const resp = await handler(new Request(url, { method: "DELETE" }));
 
     assertEquals(resp.status, Status.Unauthorized);
+    assertText(resp);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -407,6 +417,7 @@ Deno.test("[e2e] DELETE /api/items/[id]/vote", async (test) => {
     );
 
     assertEquals(resp.status, Status.NotFound);
+    assertText(resp);
     assertEquals(await resp.text(), "Item not found");
   });
 
@@ -433,6 +444,7 @@ Deno.test("[e2e] POST /api/items/[id]/vote", async (test) => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
     assertEquals(resp.status, Status.Unauthorized);
+    assertText(resp);
     assertEquals(await resp.text(), "User must be signed in");
   });
 
@@ -445,6 +457,7 @@ Deno.test("[e2e] POST /api/items/[id]/vote", async (test) => {
     );
 
     assertEquals(resp.status, Status.NotFound);
+    assertText(resp);
     assertEquals(await resp.text(), "Item not found");
   });
 
@@ -492,6 +505,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
     assertEquals(resp.status, Status.NotFound);
+    assertText(resp);
     assertEquals(await resp.text(), "Not Found");
   });
 
@@ -500,6 +514,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const resp = await handler(new Request(url, { method: "POST" }));
 
     assertEquals(resp.status, Status.BadRequest);
+    assertText(resp);
     assertEquals(await resp.text(), "`Stripe-Signature` header is missing");
   });
 
@@ -513,6 +528,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     );
 
     assertEquals(resp.status, Status.InternalServerError);
+    assertText(resp);
     assertEquals(
       await resp.text(),
       "`STRIPE_WEBHOOK_SECRET` environment variable is not set",
@@ -529,6 +545,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     );
 
     assertEquals(resp.status, Status.BadRequest);
+    assertText(resp);
     assertEquals(
       await resp.text(),
       "No webhook payload was provided.",
@@ -551,10 +568,11 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    assertEquals(resp.status, Status.NotFound);
-    assertEquals(await resp.text(), "User not found");
-
     constructEventAsyncStub.restore();
+
+    assertEquals(resp.status, Status.NotFound);
+    assertText(resp);
+    assertEquals(await resp.text(), "User not found");
   });
 
   await test.step("returns HTTP 201 Created response if the subscription is created", async () => {
@@ -604,6 +622,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     constructEventAsyncStub.restore();
 
     assertEquals(resp.status, Status.NotFound);
+    assertText(resp);
     assertEquals(await resp.text(), "User not found");
   });
 
@@ -654,6 +673,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     constructEventAsyncStub.restore();
 
     assertEquals(resp.status, Status.BadRequest);
+    assertText(resp);
     assertEquals(await resp.text(), "Event type not supported");
   });
 });
@@ -678,6 +698,7 @@ Deno.test("[e2e] GET /account", async (test) => {
     );
 
     assertEquals(resp.status, Status.OK);
+    assertHtml(resp);
     assertStringIncludes(await resp.text(), 'href="/account/upgrade"');
   });
 
@@ -692,6 +713,7 @@ Deno.test("[e2e] GET /account", async (test) => {
     );
 
     assertEquals(resp.status, Status.OK);
+    assertHtml(resp);
     assertStringIncludes(await resp.text(), 'href="/account/manage"');
   });
 });
@@ -716,6 +738,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     );
 
     assertEquals(resp.status, Status.NotFound);
+    assertHtml(resp);
   });
 
   await test.step("returns redirect response to the URL returned by Stripe after creating a billing portal session", async () => {
@@ -765,6 +788,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     );
 
     assertEquals(resp.status, Status.InternalServerError);
+    assertHtml(resp);
   });
 
   await test.step("returns HTTP 404 Not Found response if Stripe is disabled", async () => {
@@ -777,6 +801,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     );
 
     assertEquals(resp.status, Status.NotFound);
+    assertHtml(resp);
   });
 
   await test.step("returns HTTP 404 Not Found response if Stripe returns a `null` URL", async () => {
@@ -801,6 +826,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     sessionsCreateStub.restore();
 
     assertEquals(resp.status, Status.NotFound);
+    assertHtml(resp);
   });
 
   await test.step("returns redirect response to the URL returned by Stripe after creating a checkout session", async () => {
@@ -852,5 +878,6 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
   const body = await resp.json();
 
   assertEquals(resp.status, Status.OK);
+  assertJson(resp);
   assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
 });
