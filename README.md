@@ -23,7 +23,7 @@ template for building your SaaS quickly and easily.
 - Dashboard with users view and statistics chart
 - Stripe integration (optional)
 - First-class web performance
-- REST API
+- [REST API](#rest-api-reference)
 - Blog with RSS feed and social sharing icons
 - HTTP security headers
 
@@ -271,7 +271,7 @@ platforms:
    [set up your Stripe branding](https://dashboard.stripe.com/settings/branding)
    to customize the look and feel of your Stripe checkout page.
 
-## REST API
+## REST API Reference
 
 ### `GET /api/items`
 
