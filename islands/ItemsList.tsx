@@ -74,7 +74,11 @@ function ItemSummary(props: ItemSummaryProps) {
 
   return (
     <div class="py-2 flex gap-4">
-      <div class="pr-2 text-center flex flex-col justify-center">
+      <div
+        class={`pr-2 text-center flex flex-col justify-center ${
+          isVotedSig.value ? "text-primary" : "hover:text-primary"
+        }`}
+      >
         {!props.isSignedIn && (
           <a
             title="Sign in to vote"
