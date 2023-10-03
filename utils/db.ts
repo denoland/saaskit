@@ -111,7 +111,7 @@ export async function getItem(id: string) {
  * the items in the database, in chronological order.
  *
  * @example
- * ```
+ * ```ts
  * import { listItems } from "@/utils/db.ts";
  *
  * for await (const entry of listItems()) {
@@ -131,7 +131,7 @@ export function listItems(options?: Deno.KvListOptions) {
  * the items by a given user in the database, in chronological order.
  *
  * @example
- * ```
+ * ```ts
  * import { listItemsByUser } from "@/utils/db.ts";
  *
  * for await (const entry of listItemsByUser("pedro")) {
@@ -211,7 +211,7 @@ export async function createVote(vote: Vote) {
  * the items voted by a given user in the database, in chronological order.
  *
  * @example
- * ```
+ * ```ts
  * import { listItemsVotedByUser } from "@/utils/db.ts";
  *
  * for await (const entry of listItemsVotedByUser("john")) {
@@ -394,6 +394,7 @@ export async function getUserBySession(sessionId: string) {
  * user?.sessionId; // Returns "xxx"
  * user?.isSubscribed; // Returns false
  * user?.stripeCustomerId; // Returns "123"
+ * ```
  */
 export async function getUserByStripeCustomer(stripeCustomerId: string) {
   const res = await kv.get<User>([
@@ -408,7 +409,7 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
  * the users in the database.
  *
  * @example
- * ```
+ * ```ts
  * import { listUsers } from "@/utils/db.ts";
  *
  * for await (const entry of listUsers()) {
