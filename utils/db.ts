@@ -115,7 +115,7 @@ export async function getItem(id: string) {
  * import { listItems } from "@/utils/db.ts";
  *
  * for await (const entry of listItems()) {
- *   entry.value.itemId; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
+ *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
  *   entry.value.userLogin; // Returns "pedro"
  *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
  *   entry.versionstamp; // Returns "00000000000000010000"
@@ -135,7 +135,7 @@ export function listItems(options?: Deno.KvListOptions) {
  * import { listItemsByUser } from "@/utils/db.ts";
  *
  * for await (const entry of listItemsByUser("pedro")) {
- *   entry.value.itemId; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
+ *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
  *   entry.value.userLogin; // Returns "pedro"
  *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
  *   entry.versionstamp; // Returns "00000000000000010000"
@@ -215,7 +215,7 @@ export async function createVote(vote: Vote) {
  * import { listItemsVotedByUser } from "@/utils/db.ts";
  *
  * for await (const entry of listItemsVotedByUser("john")) {
- *   entry.value.itemId; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
+ *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
  *   entry.value.userLogin; // Returns "pedro"
  *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
  *   entry.versionstamp; // Returns "00000000000000010000"
