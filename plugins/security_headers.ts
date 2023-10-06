@@ -15,7 +15,10 @@ export default {
 
           const response = await ctx.next();
 
-          /** @todo(Jabolol) Implement `Content-Security-Policy` once https://github.com/denoland/fresh/pull/1787 lands */
+          /**
+           * @todo(Jabolol) Implement `Content-Security-Policy` once
+           * https://github.com/denoland/fresh/pull/1787 lands.
+           */
           response.headers.set(
             "Strict-Transport-Security",
             "max-age=63072000;",

@@ -9,6 +9,7 @@ const handler = await createHandler(manifest, options);
 Deno.test("[middleware] security headers are present", async () => {
   const resp = await handler(new Request("http://localhost"));
 
+  console.log(resp);
   assertEquals(
     resp.headers.get("strict-transport-security"),
     "max-age=63072000;",
