@@ -829,3 +829,12 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
   assertJson(resp);
   assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
 });
+
+Deno.test("[e2e] GET /welcome", async () => {
+  Deno.env.delete("GITHUB_CLIENT_ID");
+
+  const req = new Request("http://localhost/");
+  const resp = await handler(req);
+
+  assertRedirect(resp, "/welcome");
+});
