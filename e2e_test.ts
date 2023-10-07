@@ -14,7 +14,7 @@ import {
   randomUser,
   User,
 } from "@/utils/db.ts";
-import { stripe } from "@/utils/stripe.ts";
+import { isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import {
   assert,
   assertArrayIncludes,
@@ -114,7 +114,7 @@ Deno.test("[e2e] GET /blog", async () => {
   assertHtml(resp);
 });
 
-Deno.test("[e2e] GET /pricing", async () => {
+Deno.test("[e2e] GET /pricing", { ignore: isStripeEnabled() }, async () => {
   const req = new Request("http://localhost/pricing");
   const resp = await handler(req);
 

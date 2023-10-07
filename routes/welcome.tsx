@@ -44,7 +44,7 @@ function SetupInstruction() {
   );
 }
 
-export default defineRoute((req, ctx) => {
+export default defineRoute((_req, ctx) => {
   return (
     <>
       <Head title="Welcome" href={ctx.url.href} />
