@@ -27,6 +27,7 @@ import { isRedirectStatus } from "std/http/http_status.ts";
 import { resolvesNext, returnsNext, stub } from "std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
+import { _internals } from "./plugins/kv_oauth.ts";
 
 /**
  * These tests are end-to-end tests, which follow this rule-set:
@@ -97,12 +98,33 @@ Deno.test("[e2e] GET /", async () => {
 });
 
 Deno.test("[e2e] GET /callback", async () => {
-  const resp = await handler(
-    new Request("http://localhost/callback"),
+  const sessionId = crypto.randomUUID();
+  const login = crypto.randomUUID();
+  const handleCallbackStub = stub(
+    _internals,
+    "handleCallback",
+    returnsNext([Promise.resolve({
+      response: new Response(),
+      tokens: {
+        accessToken: crypto.randomUUID(),
+        tokenType: crypto.randomUUID(),
+      },
+      sessionId,
+    })]),
   );
+  const body = { login, email: crypto.randomUUID() };
+  const fetchStub = stub(
+    window,
+    "fetch",
+    returnsNext([Promise.resolve(Response.json(body))]),
+  );
+  const req = new Request("http://localhost/callback");
+  const resp = await handler(req);
+  handleCallbackStub.restore();
+  fetchStub.restore();
 
-  assertEquals(resp.status, Status.InternalServerError);
-  assertHtml(resp);
+  assertRedirect(resp, "/signin");
+  // console.log(await getUser(login));
 });
 
 Deno.test("[e2e] GET /blog", async () => {
