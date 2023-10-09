@@ -122,6 +122,14 @@ Deno.test("[e2e] GET /pricing", { ignore: isStripeEnabled() }, async () => {
   assertHtml(resp);
 });
 
+Deno.test("[e2e] GET /pricing", { ignore: !isStripeEnabled() }, async () => {
+  const req = new Request("http://localhost/pricing");
+  const resp = await handler(req);
+
+  assertEquals(resp.status, Status.OK);
+  assertHtml(resp);
+});
+
 Deno.test("[e2e] GET /signin", async () => {
   const resp = await handler(
     new Request("http://localhost/signin"),
@@ -474,7 +482,7 @@ function createStripeEvent(
 
 Deno.test(
   "[e2e] POST /api/stripe-webhooks",
-  { ignore: !isStripeEnabled() },
+  // { ignore: !isStripeEnabled() },
   async (test) => {
     const url = "http://localhost/api/stripe-webhooks";
 
