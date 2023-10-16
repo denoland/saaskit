@@ -20,6 +20,7 @@ import {
   assertArrayIncludes,
   assertEquals,
   assertInstanceOf,
+  assertNotEquals,
   assertObjectMatch,
   assertStringIncludes,
 } from "std/assert/mod.ts";
@@ -97,34 +98,85 @@ Deno.test("[e2e] GET /", async () => {
   assertHtml(resp);
 });
 
-Deno.test("[e2e] GET /callback", async () => {
-  const sessionId = crypto.randomUUID();
+Deno.test("[e2e] GET /callback", async (test) => {
   const login = crypto.randomUUID();
-  const handleCallbackStub = stub(
-    _internals,
-    "handleCallback",
-    returnsNext([Promise.resolve({
+  const sessionId = crypto.randomUUID();
+
+  await test.step("creates a new user if it doesn't already exist", async () => {
+    const handleCallbackResp = {
       response: new Response(),
       tokens: {
         accessToken: crypto.randomUUID(),
         tokenType: crypto.randomUUID(),
       },
       sessionId,
-    })]),
-  );
-  const body = { login, email: crypto.randomUUID() };
-  const fetchStub = stub(
-    window,
-    "fetch",
-    returnsNext([Promise.resolve(Response.json(body))]),
-  );
-  const req = new Request("http://localhost/callback");
-  const resp = await handler(req);
-  handleCallbackStub.restore();
-  fetchStub.restore();
+    };
+    const id = crypto.randomUUID();
+    const handleCallbackStub = stub(
+      _internals,
+      "handleCallback",
+      returnsNext([Promise.resolve(handleCallbackResp)]),
+    );
+    const githubRespBody = {
+      login,
+      email: crypto.randomUUID(),
+    };
+    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
+    const fetchStub = stub(
+      window,
+      "fetch",
+      returnsNext([
+        Promise.resolve(Response.json(githubRespBody)),
+        Promise.resolve(Response.json(stripeRespBody)),
+      ]),
+    );
+    const req = new Request("http://localhost/callback");
+    await handler(req);
+    handleCallbackStub.restore();
+    fetchStub.restore();
 
-  assertRedirect(resp, "/signin");
-  // console.log(await getUser(login));
+    const user = await getUser(githubRespBody.login);
+    assert(user !== null);
+    assertEquals(user.sessionId, handleCallbackResp.sessionId);
+  });
+
+  await test.step("updates the user session ID if they already exist", async () => {
+    const handleCallbackResp = {
+      response: new Response(),
+      tokens: {
+        accessToken: crypto.randomUUID(),
+        tokenType: crypto.randomUUID(),
+      },
+      sessionId: crypto.randomUUID(),
+    };
+    const id = crypto.randomUUID();
+    const handleCallbackStub = stub(
+      _internals,
+      "handleCallback",
+      returnsNext([Promise.resolve(handleCallbackResp)]),
+    );
+    const githubRespBody = {
+      login,
+      email: crypto.randomUUID(),
+    };
+    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
+    const fetchStub = stub(
+      window,
+      "fetch",
+      returnsNext([
+        Promise.resolve(Response.json(githubRespBody)),
+        Promise.resolve(Response.json(stripeRespBody)),
+      ]),
+    );
+    const req = new Request("http://localhost/callback");
+    await handler(req);
+    handleCallbackStub.restore();
+    fetchStub.restore();
+
+    const user = await getUser(githubRespBody.login);
+    assert(user !== null);
+    assertNotEquals(user.sessionId, sessionId);
+  });
 });
 
 Deno.test("[e2e] GET /blog", async () => {
