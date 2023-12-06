@@ -1,6 +1,6 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
 import { LINK_STYLES } from "@/utils/constants.ts";
-import { cx } from "@twind/core";
+import classnames from "npm:classnames@2.3.2";
 import { ComponentChildren } from "preact";
 
 export interface TabItemProps {
@@ -15,7 +15,7 @@ export function TabItem(props: TabItemProps) {
   return (
     <a
       href={props.path}
-      class={cx(
+      class={classnames(
         "px-4 py-2 rounded-lg",
         props.active
           ? "bg-gray-100 text-black dark:(bg-gray-800 text-white)"

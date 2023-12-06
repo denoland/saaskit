@@ -9,7 +9,7 @@ import {
 import { isStripeEnabled } from "@/utils/stripe.ts";
 import IconX from "tabler_icons_tsx/x.tsx";
 import IconMenu from "tabler_icons_tsx/menu-2.tsx";
-import { cx } from "@twind/core";
+import classnames from "npm:classnames@2.3.2";
 import { User } from "@/utils/db.ts";
 
 export interface HeaderProps {
@@ -26,7 +26,7 @@ export default function Header(props: HeaderProps) {
   const NAV_ITEM = "text-gray-500 px-3 py-4 sm:py-2";
   return (
     <header
-      class={cx(
+      class={classnames(
         SITE_BAR_STYLES,
         "flex-col sm:flex-row",
       )}
@@ -75,7 +75,7 @@ export default function Header(props: HeaderProps) {
       >
         <a
           href="/dashboard"
-          class={cx(LINK_STYLES, ACTIVE_ANCESTOR_LINK_STYLES, NAV_ITEM)}
+          class={classnames(LINK_STYLES, ACTIVE_ANCESTOR_LINK_STYLES, NAV_ITEM)}
         >
           Dashboard
         </a>
@@ -83,7 +83,7 @@ export default function Header(props: HeaderProps) {
           (
             <a
               href="/pricing"
-              class={cx(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
+              class={classnames(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
             >
               Pricing
             </a>
@@ -92,12 +92,16 @@ export default function Header(props: HeaderProps) {
           ? (
             <a
               href="/account"
-              class={cx(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
+              class={classnames(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
             >
               Account
             </a>
           )
-          : <a href="/signin" class={cx(LINK_STYLES, NAV_ITEM)}>Sign in</a>}
+          : (
+            <a href="/signin" class={classnames(LINK_STYLES, NAV_ITEM)}>
+              Sign in
+            </a>
+          )}
         <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
           <a
             href="/submit"
