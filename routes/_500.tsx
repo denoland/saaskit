@@ -1,8 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import { ErrorPageProps } from "$fresh/server.ts";
+import { PageProps } from "$fresh/server.ts";
 import { HEADING_STYLES, LINK_STYLES } from "@/utils/constants.ts";
 
-export default function Error500Page(props: ErrorPageProps) {
+export default function Error500Page(props: PageProps) {
   return (
     <main class="flex flex-1 flex-col justify-center p-4 text-center space-y-4">
       <h1 class={HEADING_STYLES}>Server error</h1>
