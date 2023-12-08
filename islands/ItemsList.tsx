@@ -91,7 +91,7 @@ function ItemSummary(props: ItemSummaryProps) {
       <div class="space-y-1">
         <p>
           <a
-            class="visited:(text-[purple] dark:text-[lightpink]) hover:underline mr-4"
+            class="visited:text-[purple] visited:dark:text-[lightpink] hover:underline mr-4"
             href={props.item.url}
           >
             {props.item.title}

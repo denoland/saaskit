@@ -15,7 +15,7 @@ import { ulid } from "std/ulid/mod.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 
 const SUBMIT_STYLES =
-  "w-full text-white text-center rounded-[7px] transition duration-300 px-4 py-2 block hover:(bg-white text-black dark:(bg-gray-900 !text-white))";
+  "w-full text-white text-center rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white";
 
 export const handler: Handlers<undefined, SignedInState> = {
   async POST(req, ctx) {

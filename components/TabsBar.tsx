@@ -18,7 +18,7 @@ export function TabItem(props: TabItemProps) {
       class={classnames(
         "px-4 py-2 rounded-lg",
         props.active
-          ? "bg-gray-100 text-black dark:(bg-gray-800 text-white)"
+          ? "bg-gray-100 text-black dark:bg-gray-800 dark:text-white"
           : "",
         LINK_STYLES,
       )}
