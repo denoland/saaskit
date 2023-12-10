@@ -3,7 +3,6 @@ import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import type { User } from "@/utils/db.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
-import { LINK_STYLES } from "@/utils/constants.ts";
 import { fetchValues } from "@/utils/http.ts";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
@@ -86,7 +85,7 @@ export default function UsersTable(props: UsersTableProps) {
       {cursorSig.value !== "" && (
         <button
           onClick={loadMoreUsers}
-          class={LINK_STYLES + " p-4"}
+          class="link-styles p-4"
         >
           {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>

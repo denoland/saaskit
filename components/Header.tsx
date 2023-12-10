@@ -1,15 +1,8 @@
 // Copyright 2023 the Deno authors. All rights reserved. MIT license.
-import {
-  ACTIVE_ANCESTOR_LINK_STYLES,
-  ACTIVE_LINK_STYLES,
-  LINK_STYLES,
-  SITE_BAR_STYLES,
-  SITE_NAME,
-} from "@/utils/constants.ts";
+import { SITE_NAME } from "@/utils/constants.ts";
 import { isStripeEnabled } from "@/utils/stripe.ts";
 import IconX from "tabler_icons_tsx/x.tsx";
 import IconMenu from "tabler_icons_tsx/menu-2.tsx";
-import classnames from "npm:classnames@2.3.2";
 import { User } from "@/utils/db.ts";
 
 export interface HeaderProps {
@@ -23,14 +16,8 @@ export interface HeaderProps {
 }
 
 export default function Header(props: HeaderProps) {
-  const NAV_ITEM = "text-gray-500 px-3 py-4 sm:py-2";
   return (
-    <header
-      class={classnames(
-        SITE_BAR_STYLES,
-        "flex-col sm:flex-row",
-      )}
-    >
+    <header class="site-bar-styles flex-col sm:flex-row">
       <input
         type="checkbox"
         id="nav-toggle"
@@ -75,7 +62,7 @@ export default function Header(props: HeaderProps) {
       >
         <a
           href="/dashboard"
-          class={classnames(LINK_STYLES, ACTIVE_ANCESTOR_LINK_STYLES, NAV_ITEM)}
+          class="link-styles data-[ancestor]:!text-black data-[ancestor]:!dark:text-white nav-item"
         >
           Dashboard
         </a>
@@ -83,7 +70,7 @@ export default function Header(props: HeaderProps) {
           (
             <a
               href="/pricing"
-              class={classnames(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
+              class="link-styles data-[current]:!text-black data-[current]:!dark:text-white nav-item"
             >
               Pricing
             </a>
@@ -92,13 +79,13 @@ export default function Header(props: HeaderProps) {
           ? (
             <a
               href="/account"
-              class={classnames(LINK_STYLES, ACTIVE_LINK_STYLES, NAV_ITEM)}
+              class="link-styles data-[current]:!text-black data-[current]:!dark:text-white nav-item"
             >
               Account
             </a>
           )
           : (
-            <a href="/signin" class={classnames(LINK_STYLES, NAV_ITEM)}>
+            <a href="/signin" class="link-styles nav-item">
               Sign in
             </a>
           )}
