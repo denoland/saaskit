@@ -64,7 +64,7 @@ export default function Footer(props: FooterProps) {
       <nav class="nav-styles">
         <a
           href="/blog"
-          class="link-styles active-link-styles"
+          class="link-styles data-[current]:!text-black data-[current]:dark:!text-white"
         >
           Blog
         </a>

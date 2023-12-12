@@ -26,11 +26,11 @@
 }
 
 /* .active-link-styles {
-  @apply data-[current]:!text-black data-[current]:!dark:text-white;
+  @apply data-[current]:!text-black data-[current]:dark:!text-white;
 }
 
 .active-ancestor-link-styles {
-  @apply data-[ancestor]:!text-black data-[ancestor]:!dark:text-white;
+  @apply data-[ancestor]:!text-black data-[ancestor]:dark:!text-white;
 } */
 
 .heading-styles {

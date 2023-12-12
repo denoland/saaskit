@@ -11,6 +11,9 @@ export default {
         primary: "#be185d",
         secondary: "#4338ca",
       },
+      borderWidth: {
+        "1": "1px",
+      },
     },
   },
   plugins: [],

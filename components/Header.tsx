@@ -62,7 +62,7 @@ export default function Header(props: HeaderProps) {
       >
         <a
           href="/dashboard"
-          class="link-styles data-[ancestor]:!text-black data-[ancestor]:!dark:text-white nav-item"
+          class="link-styles data-[ancestor]:!text-black data-[ancestor]:dark:!text-white nav-item"
         >
           Dashboard
         </a>
@@ -70,7 +70,7 @@ export default function Header(props: HeaderProps) {
           (
             <a
               href="/pricing"
-              class="link-styles data-[current]:!text-black data-[current]:!dark:text-white nav-item"
+              class="link-styles data-[current]:!text-black data-[current]:dark:!text-white nav-item"
             >
               Pricing
             </a>
@@ -79,7 +79,7 @@ export default function Header(props: HeaderProps) {
           ? (
             <a
               href="/account"
-              class="link-styles data-[current]:!text-black data-[current]:!dark:text-white nav-item"
+              class="link-styles data-[current]:!text-black data-[current]:dark:!text-white nav-item"
             >
               Account
             </a>

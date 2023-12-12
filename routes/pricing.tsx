@@ -9,7 +9,7 @@ import { defineRoute } from "$fresh/server.ts";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 const CARD_STYLES =
-  "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
+  "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 ring-opacity-50 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
 const CHECK_STYLES = "w-6 h-6 text-primary shrink-0 inline-block mr-2";
 
 function FreePlanCard() {
