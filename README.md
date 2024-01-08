@@ -268,6 +268,12 @@ git rev-parse HEAD
    [set up your Stripe branding](https://dashboard.stripe.com/settings/branding)
    to customize the look and feel of your Stripe checkout page.
 
+### Google Analytics
+
+Set `GA4_MEASUREMENT_ID` in your production system to enable google analytics.
+Note: it is not recommended to set this locally, otherwise your tests and
+debugging will be logged.
+
 ## REST API Reference
 
 ### `GET /api/items`
