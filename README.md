@@ -271,7 +271,8 @@ git rev-parse HEAD
 
 ### Google Analytics (Optional)
 
-Set `GA4_MEASUREMENT_ID` in your production environment to enable Google Analytics.
+Set `GA4_MEASUREMENT_ID` in your production environment to enable Google
+Analytics.
 
 > Note: it is not recommended to set this locally, otherwise your tests and
 > debugging requests will be logged.
