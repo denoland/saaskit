@@ -5,7 +5,7 @@ import { SignedInState } from "@/plugins/session.ts";
 
 export const handler: Handlers<undefined, SignedInState> = {
   async GET(_req, ctx) {
-    const iter = listItemsVotedByUser(ctx.state.sessionUser.login);
+    const iter = listItemsVotedByUser(ctx.state.sessionUser.id);
     const items = await collectValues(iter);
     return Response.json(items);
   },

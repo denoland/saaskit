@@ -33,7 +33,7 @@ export const handler: Handlers<undefined, SignedInState> = {
 
     await createItem({
       id: ulid(),
-      userLogin: ctx.state.sessionUser.login,
+      userId: ctx.state.sessionUser.id,
       title,
       url,
       score: 0,

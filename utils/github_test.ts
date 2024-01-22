@@ -27,7 +27,11 @@ Deno.test("[plugins] getGitHubUser()", async (test) => {
   });
 
   await test.step("resolves to a GitHub user object", async () => {
-    const body = { login: crypto.randomUUID(), email: crypto.randomUUID() };
+    const body = {
+      id: crypto.randomUUID(),
+      login: crypto.randomUUID(),
+      email: crypto.randomUUID(),
+    };
     const fetchStub = stub(
       window,
       "fetch",

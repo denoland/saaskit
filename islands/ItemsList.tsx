@@ -105,12 +105,12 @@ function ItemSummary(props: ItemSummaryProps) {
         </p>
         <p class="text-gray-500">
           <GitHubAvatarImg
-            login={props.item.userLogin}
+            login={props.item.id}
             size={24}
             class="mr-2"
           />
-          <a class="hover:underline" href={`/users/${props.item.userLogin}`}>
-            {props.item.userLogin}
+          <a class="hover:underline" href={`/users/${props.item.id}`}>
+            {props.item.userId}
           </a>{" "}
           {timeAgo(new Date(decodeTime(props.item.id)))}
         </p>

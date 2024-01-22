@@ -125,6 +125,7 @@ Deno.test("[e2e] GET /", async () => {
 
 Deno.test("[e2e] GET /callback", async (test) => {
   setupEnv();
+  const id = crypto.randomUUID();
   const login = crypto.randomUUID();
   const sessionId = crypto.randomUUID();
 
@@ -137,17 +138,19 @@ Deno.test("[e2e] GET /callback", async (test) => {
       },
       sessionId,
     };
-    const id = crypto.randomUUID();
     const handleCallbackStub = stub(
       _internals,
       "handleCallback",
       returnsNext([Promise.resolve(handleCallbackResp)]),
     );
     const githubRespBody = {
+      id,
       login,
       email: crypto.randomUUID(),
     };
-    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
+    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = {
+      id: crypto.randomUUID(),
+    };
     const fetchStub = stub(
       window,
       "fetch",
@@ -161,7 +164,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
     handleCallbackStub.restore();
     fetchStub.restore();
 
-    const user = await getUser(githubRespBody.login);
+    const user = await getUser(githubRespBody.id);
     assert(user !== null);
     assertEquals(user.sessionId, handleCallbackResp.sessionId);
   });
@@ -175,17 +178,19 @@ Deno.test("[e2e] GET /callback", async (test) => {
       },
       sessionId: crypto.randomUUID(),
     };
-    const id = crypto.randomUUID();
     const handleCallbackStub = stub(
       _internals,
       "handleCallback",
       returnsNext([Promise.resolve(handleCallbackResp)]),
     );
     const githubRespBody = {
+      id,
       login,
       email: crypto.randomUUID(),
     };
-    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
+    const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = {
+      id: crypto.randomUUID(),
+    };
     const fetchStub = stub(
       window,
       "fetch",
@@ -199,7 +204,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
     handleCallbackStub.restore();
     fetchStub.restore();
 
-    const user = await getUser(githubRespBody.login);
+    const user = await getUser(githubRespBody.id);
     assert(user !== null);
     assertNotEquals(user.sessionId, sessionId);
   });
@@ -418,7 +423,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
         body,
       }),
     );
-    const items = await collectValues(listItemsByUser(user.login));
+    const items = await collectValues(listItemsByUser(user.id));
 
     assertRedirect(resp, "/");
     // Deep partial match since the item ID is a ULID generated at runtime
@@ -493,7 +498,7 @@ Deno.test("[e2e] GET /api/users/[login]/items", async (test) => {
   const user = randomUser();
   const item: Item = {
     ...randomItem(),
-    userLogin: user.login,
+    userId: user.id,
   };
   const req = new Request(`http://localhost/api/users/${user.login}/items`);
 
@@ -547,7 +552,7 @@ Deno.test("[e2e] POST /api/vote", async (test) => {
   });
 
   await test.step("creates a vote", async () => {
-    const item = { ...randomItem(), userLogin: user.login };
+    const item = { ...randomItem(), userId: user.id };
     await createItem(item);
     const resp = await handler(
       new Request(url, {
@@ -700,7 +705,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     constructEventAsyncStub.restore();
 
     assertEquals(resp.status, STATUS_CODE.Created);
-    assertEquals(await getUser(user.login), { ...user, isSubscribed: true });
+    assertEquals(await getUser(user.id), { ...user, isSubscribed: true });
   });
 
   await test.step("serves not found response if the user is not found for subscription deletion", async () => {
@@ -750,7 +755,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
 
     constructEventAsyncStub.restore();
 
-    assertEquals(await getUser(user.login), { ...user, isSubscribed: false });
+    assertEquals(await getUser(user.id), { ...user, isSubscribed: false });
     assertEquals(resp.status, STATUS_CODE.Accepted);
   });
 
@@ -970,11 +975,11 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
   await createItem(item1);
   await createItem(item2);
   await createVote({
-    userLogin: user.login,
+    userId: user.id,
     itemId: item1.id,
   });
   await createVote({
-    userLogin: user.login,
+    userId: user.id,
     itemId: item2.id,
   });
   const resp = await handler(

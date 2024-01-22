@@ -21,7 +21,7 @@ export const kv = await Deno.openKv(path);
  *
  * const items = await collectValues<Item>(listItems());
  * items[0].id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
- * items[0].userLogin; // Returns "snoop"
+ * items[0].userId; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  * items[0].title; // Returns "example-title"
  * items[0].url; // Returns "http://example.com"
  * items[0].score; // Returns 420
@@ -35,7 +35,7 @@ export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
 export interface Item {
   // Uses ULID
   id: string;
-  userLogin: string;
+  userId: string;
   title: string;
   url: string;
   score: number;
@@ -45,7 +45,7 @@ export interface Item {
 export function randomItem(): Item {
   return {
     id: ulid(),
-    userLogin: crypto.randomUUID(),
+    userId: crypto.randomUUID(),
     title: crypto.randomUUID(),
     url: `http://${crypto.randomUUID()}.com`,
     score: 0,
@@ -63,7 +63,7 @@ export function randomItem(): Item {
  *
  * await createItem({
  *   id: ulid(),
- *   userLogin: "john_doe",
+ *   userId: "13d643e1-ad65-42bf-be9f-31c95e1b94d8",
  *   title: "example-title",
  *   url: "https://example.com",
  *   score: 0,
@@ -72,7 +72,7 @@ export function randomItem(): Item {
  */
 export async function createItem(item: Item) {
   const itemsKey = ["items", item.id];
-  const itemsByUserKey = ["items_by_user", item.userLogin, item.id];
+  const itemsByUserKey = ["items_by_user", item.userId, item.id];
 
   const res = await kv.atomic()
     .check({ key: itemsKey, versionstamp: null })
@@ -93,7 +93,7 @@ export async function createItem(item: Item) {
  *
  * const item = await getItem("01H9YD2RVCYTBVJEYEJEV5D1S1");
  * item?.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
- * item?.userLogin; // Returns "snoop"
+ * item?.userId; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  * item?.title; // Returns "example-title"
  * item?.url; // Returns "http://example.com"
  * item?.score; // Returns 420
@@ -114,8 +114,8 @@ export async function getItem(id: string) {
  *
  * for await (const entry of listItems()) {
  *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
- *   entry.value.userLogin; // Returns "pedro"
- *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
+ *   entry.value.userId; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
+ *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "13d643e1-ad65-42bf-be9f-31c95e1b94d8"]
  *   entry.versionstamp; // Returns "00000000000000010000"
  * }
  * ```
@@ -132,25 +132,25 @@ export function listItems(options?: Deno.KvListOptions) {
  * ```ts
  * import { listItemsByUser } from "@/utils/db.ts";
  *
- * for await (const entry of listItemsByUser("pedro")) {
+ * for await (const entry of listItemsByUser("13d643e1-ad65-42bf-be9f-31c95e1b94d8")) {
  *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
- *   entry.value.userLogin; // Returns "pedro"
- *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
+ *   entry.value.userId; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
+ *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "13d643e1-ad65-42bf-be9f-31c95e1b94d8"]
  *   entry.versionstamp; // Returns "00000000000000010000"
  * }
  * ```
  */
 export function listItemsByUser(
-  userLogin: string,
+  userId: string,
   options?: Deno.KvListOptions,
 ) {
-  return kv.list<Item>({ prefix: ["items_by_user", userLogin] }, options);
+  return kv.list<Item>({ prefix: ["items_by_user", userId] }, options);
 }
 
 // Vote
 export interface Vote {
   itemId: string;
-  userLogin: string;
+  userId: string;
 }
 
 /**
@@ -163,13 +163,13 @@ export interface Vote {
  *
  * await createVote({
  *   itemId: "01H9YD2RVCYTBVJEYEJEV5D1S1",
- *   userLogin: "pedro",
+ *   userId: "pedro",
  * });
  * ```
  */
 export async function createVote(vote: Vote) {
   const itemKey = ["items", vote.itemId];
-  const userKey = ["users", vote.userLogin];
+  const userKey = ["users", vote.userId];
   const [itemRes, userRes] = await kv.getMany<[Item, User]>([itemKey, userKey]);
   const item = itemRes.value;
   const user = userRes.value;
@@ -178,15 +178,15 @@ export async function createVote(vote: Vote) {
 
   const itemVotedByUserKey = [
     "items_voted_by_user",
-    vote.userLogin,
+    vote.userId,
     vote.itemId,
   ];
   const userVotedForItemKey = [
     "users_voted_for_item",
     vote.itemId,
-    vote.userLogin,
+    vote.userId,
   ];
-  const itemByUserKey = ["items_by_user", item.userLogin, item.id];
+  const itemByUserKey = ["items_by_user", item.userId, item.id];
 
   item.score++;
 
@@ -214,18 +214,19 @@ export async function createVote(vote: Vote) {
  *
  * for await (const entry of listItemsVotedByUser("john")) {
  *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
- *   entry.value.userLogin; // Returns "pedro"
- *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
+ *   entry.value.userId; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
+ *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "13d643e1-ad65-42bf-be9f-31c95e1b94d8"]
  *   entry.versionstamp; // Returns "00000000000000010000"
  * }
  * ```
  */
-export function listItemsVotedByUser(userLogin: string) {
-  return kv.list<Item>({ prefix: ["items_voted_by_user", userLogin] });
+export function listItemsVotedByUser(userId: string) {
+  return kv.list<Item>({ prefix: ["items_voted_by_user", userId] });
 }
 
 // User
 export interface User {
+  id: string;
   // AKA username
   login: string;
   sessionId: string;
@@ -240,6 +241,7 @@ export interface User {
 /** For testing */
 export function randomUser(): User {
   return {
+    id: crypto.randomUUID(),
     login: crypto.randomUUID(),
     sessionId: crypto.randomUUID(),
     isSubscribed: false,
@@ -256,6 +258,7 @@ export function randomUser(): User {
  * import { createUser } from "@/utils/db.ts";
  *
  * await createUser({
+ *   id: "13d643e1-ad65-42bf-be9f-31c95e1b94d8",
  *   login: "john",
  *   sessionId: crypto.randomUUID(),
  *   isSubscribed: false,
@@ -263,13 +266,16 @@ export function randomUser(): User {
  * ```
  */
 export async function createUser(user: User) {
-  const usersKey = ["users", user.login];
+  const usersKey = ["users", user.id];
+  const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
   const atomicOp = kv.atomic()
     .check({ key: usersKey, versionstamp: null })
+    .check({ key: usersByLoginKey, versionstamp: null })
     .check({ key: usersBySessionKey, versionstamp: null })
     .set(usersKey, user)
+    .set(usersByLoginKey, user)
     .set(usersBySessionKey, user);
 
   if (user.stripeCustomerId !== undefined) {
@@ -294,6 +300,7 @@ export async function createUser(user: User) {
  * import { updateUser } from "@/utils/db.ts";
  *
  * await updateUser({
+ *   id: "13d643e1-ad65-42bf-be9f-31c95e1b94d8",
  *   login: "john",
  *   sessionId: crypto.randomUUID(),
  *   isSubscribed: false,
@@ -301,11 +308,13 @@ export async function createUser(user: User) {
  * ```
  */
 export async function updateUser(user: User) {
-  const usersKey = ["users", user.login];
+  const usersKey = ["users", user.id];
+  const usersByLoginKey = ["users_by_login", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
   const atomicOp = kv.atomic()
     .set(usersKey, user)
+    .set(usersByLoginKey, user)
     .set(usersBySessionKey, user);
 
   if (user.stripeCustomerId !== undefined) {
@@ -329,6 +338,7 @@ export async function updateUser(user: User) {
  * import { updateUserSession } from "@/utils/db.ts";
  *
  * await updateUserSession({
+ *   id: "13d643e1-ad65-42bf-be9f-31c95e1b94d8",
  *   login: "john",
  *   sessionId: "xxx",
  *   isSubscribed: false,
@@ -336,13 +346,15 @@ export async function updateUser(user: User) {
  * ```
  */
 export async function updateUserSession(user: User, sessionId: string) {
-  const userKey = ["users", user.login];
+  const userKey = ["users", user.id];
+  const usersByLoginKey = ["users_by_login", user.login];
   const oldUserBySessionKey = ["users_by_session", user.sessionId];
   const newUserBySessionKey = ["users_by_session", sessionId];
   const newUser: User = { ...user, sessionId };
 
   const atomicOp = kv.atomic()
     .set(userKey, newUser)
+    .set(usersByLoginKey, newUser)
     .delete(oldUserBySessionKey)
     .check({ key: newUserBySessionKey, versionstamp: null })
     .set(newUserBySessionKey, newUser);
@@ -361,20 +373,40 @@ export async function updateUserSession(user: User, sessionId: string) {
 }
 
 /**
- * Gets the user with the given login from the database.
+ * Gets the user with the given ID from the database.
  *
  * @example
  * ```ts
  * import { getUser } from "@/utils/db.ts";
  *
- * const user = await getUser("jack");
+ * const user = await getUser("13d643e1-ad65-42bf-be9f-31c95e1b94d8");
+ * user?.id; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  * user?.login; // Returns "jack"
  * user?.sessionId; // Returns "xxx"
  * user?.isSubscribed; // Returns false
  * ```
  */
-export async function getUser(login: string) {
-  const res = await kv.get<User>(["users", login]);
+export async function getUser(id: string) {
+  const res = await kv.get<User>(["users", id]);
+  return res.value;
+}
+
+/**
+ * Gets the user with the given username from the database.
+ *
+ * @example
+ * ```ts
+ * import { getUserByLogin } from "@/utils/db.ts";
+ *
+ * const user = await getUserByLogin("jack");
+ * user?.id; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
+ * user?.login; // Returns "jack"
+ * user?.sessionId; // Returns "xxx"
+ * user?.isSubscribed; // Returns false
+ * ```
+ */
+export async function getUserByLogin(login: string) {
+  const res = await kv.get<User>(["users_by_login", login]);
   return res.value;
 }
 
@@ -390,6 +422,7 @@ export async function getUser(login: string) {
  * import { getUserBySession } from "@/utils/db.ts";
  *
  * const user = await getUserBySession("xxx");
+ * user?.id; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  * user?.login; // Returns "jack"
  * user?.sessionId; // Returns "xxx"
  * user?.isSubscribed; // Returns false
@@ -413,6 +446,7 @@ export async function getUserBySession(sessionId: string) {
  * import { getUserByStripeCustomer } from "@/utils/db.ts";
  *
  * const user = await getUserByStripeCustomer("123");
+ * user?.id; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  * user?.login; // Returns "jack"
  * user?.sessionId; // Returns "xxx"
  * user?.isSubscribed; // Returns false
@@ -436,6 +470,7 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
  * import { listUsers } from "@/utils/db.ts";
  *
  * for await (const entry of listUsers()) {
+ *   entry.value.id; // Returns "13d643e1-ad65-42bf-be9f-31c95e1b94d8"
  *   entry.value.login; // Returns "jack"
  *   entry.value.sessionId; // Returns "xxx"
  *   entry.value.isSubscribed; // Returns false

@@ -21,24 +21,25 @@ import {
   updateUserSession,
   type User,
 } from "./db.ts";
+import { getUserByLogin } from "@/utils/db.ts";
 
 Deno.test("[db] items", async () => {
   const user = randomUser();
   const item1: Item = {
     ...randomItem(),
     id: ulid(),
-    userLogin: user.login,
+    userId: user.id,
   };
   const item2: Item = {
     ...randomItem(),
     id: ulid(Date.now() + 1_000),
-    userLogin: user.login,
+    userId: user.id,
   };
 
   assertEquals(await getItem(item1.id), null);
   assertEquals(await getItem(item2.id), null);
   assertEquals(await collectValues(listItems()), []);
-  assertEquals(await collectValues(listItemsByUser(user.login)), []);
+  assertEquals(await collectValues(listItemsByUser(user.id)), []);
 
   await createItem(item1);
   await createItem(item2);
@@ -47,7 +48,7 @@ Deno.test("[db] items", async () => {
   assertEquals(await getItem(item1.id), item1);
   assertEquals(await getItem(item2.id), item2);
   assertEquals(await collectValues(listItems()), [item1, item2]);
-  assertEquals(await collectValues(listItemsByUser(user.login)), [
+  assertEquals(await collectValues(listItemsByUser(user.id)), [
     item1,
     item2,
   ]);
@@ -56,19 +57,22 @@ Deno.test("[db] items", async () => {
 Deno.test("[db] user", async () => {
   const user = randomUser();
 
+  assertEquals(await getUser(user.id), null);
   assertEquals(await getUser(user.login), null);
   assertEquals(await getUserBySession(user.sessionId), null);
   assertEquals(await getUserByStripeCustomer(user.stripeCustomerId!), null);
 
   await createUser(user);
   await assertRejects(async () => await createUser(user));
-  assertEquals(await getUser(user.login), user);
+  assertEquals(await getUser(user.id), user);
+  assertEquals(await getUserByLogin(user.login), user);
   assertEquals(await getUserBySession(user.sessionId), user);
   assertEquals(await getUserByStripeCustomer(user.stripeCustomerId!), user);
 
   const subscribedUser: User = { ...user, isSubscribed: true };
   await updateUser(subscribedUser);
-  assertEquals(await getUser(subscribedUser.login), subscribedUser);
+  assertEquals(await getUser(subscribedUser.id), subscribedUser);
+  assertEquals(await getUserByLogin(subscribedUser.login), subscribedUser);
   assertEquals(
     await getUserBySession(subscribedUser.sessionId),
     subscribedUser,
@@ -98,11 +102,11 @@ Deno.test("[db] votes", async () => {
   const user = randomUser();
   const vote = {
     itemId: item.id,
-    userLogin: user.login,
+    userId: user.id,
     createdAt: new Date(),
   };
 
-  assertEquals(await collectValues(listItemsVotedByUser(user.login)), []);
+  assertEquals(await collectValues(listItemsVotedByUser(user.id)), []);
 
   await assertRejects(
     async () => await createVote(vote),
@@ -119,7 +123,7 @@ Deno.test("[db] votes", async () => {
   await createVote(vote);
   item.score++;
 
-  assertEquals(await collectValues(listItemsVotedByUser(user.login)), [item]);
+  assertEquals(await collectValues(listItemsVotedByUser(user.id)), [item]);
   await assertRejects(async () => await createVote(vote));
 });
 
@@ -128,13 +132,13 @@ Deno.test("[db] getAreVotedByUser()", async () => {
   const user = randomUser();
   const vote = {
     itemId: item.id,
-    userLogin: user.login,
+    userId: user.id,
     createdAt: new Date(),
   };
 
   assertEquals(await getItem(item.id), null);
-  assertEquals(await getUser(user.login), null);
-  assertEquals(await getAreVotedByUser([item], user.login), [false]);
+  assertEquals(await getUser(user.id), null);
+  assertEquals(await getAreVotedByUser([item], user.id), [false]);
 
   await createItem(item);
   await createUser(user);
@@ -142,6 +146,6 @@ Deno.test("[db] getAreVotedByUser()", async () => {
   item.score++;
 
   assertEquals(await getItem(item.id), item);
-  assertEquals(await getUser(user.login), user);
-  assertEquals(await getAreVotedByUser([item], user.login), [true]);
+  assertEquals(await getUser(user.id), user);
+  assertEquals(await getAreVotedByUser([item], user.id), [true]);
 });
