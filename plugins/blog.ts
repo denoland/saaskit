@@ -1,7 +1,7 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
 import type { Plugin } from "$fresh/server.ts";
-import BlogIndex from "./routes/blog/index.tsx";
-import BlogSlug from "./routes/blog/[slug].tsx";
+import BlogIndex from "@/plugins/routes/blog/index.tsx";
+import BlogSlug from "@/plugins/routes/blog/[slug].tsx";
 
 export function blog() {
   const currentUrl = new URL(import.meta.url);
