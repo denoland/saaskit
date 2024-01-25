@@ -1,12 +1,10 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
 import type { Plugin } from "$fresh/server.ts";
-import BlogIndex from "@/plugins/routes/blog/index.tsx";
-import BlogSlug from "@/plugins/routes/blog/[slug].tsx";
+import BlogIndex from "./routes/blog/index.tsx";
+import BlogSlug from "./routes/blog/[slug].tsx";
+import { toFileUrl } from "std/path/to_file_url.ts";
 
 export function blog() {
-  const currentUrl = new URL(import.meta.url);
-  currentUrl.pathname = currentUrl.pathname.split("/").slice(0, -2).join("/") +
-    "/";
   return {
     name: "blog",
     routes: [{
@@ -17,6 +15,6 @@ export function blog() {
       component: BlogSlug,
     }],
     location: import.meta.url,
-    projectLocation: currentUrl.href,
+    projectLocation: toFileUrl(Deno.cwd()).href,
   } satisfies Plugin;
 }
