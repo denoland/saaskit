@@ -19,7 +19,6 @@ import * as $api_vote from "./routes/api/vote.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $dashboard_stats from "./routes/dashboard/stats.tsx";
 import * as $dashboard_users from "./routes/dashboard/users.tsx";
-import * as $feed from "./routes/feed.ts";
 import * as $index from "./routes/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
 import * as $submit from "./routes/submit.tsx";
@@ -49,7 +48,6 @@ const manifest = {
     "./routes/dashboard/index.tsx": $dashboard_index,
     "./routes/dashboard/stats.tsx": $dashboard_stats,
     "./routes/dashboard/users.tsx": $dashboard_users,
-    "./routes/feed.ts": $feed,
     "./routes/index.tsx": $index,
     "./routes/pricing.tsx": $pricing,
     "./routes/submit.tsx": $submit,

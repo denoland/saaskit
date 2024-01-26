@@ -2,6 +2,7 @@
 import type { Plugin } from "$fresh/server.ts";
 import BlogIndex from "./routes/blog/index.tsx";
 import BlogSlug from "./routes/blog/[slug].tsx";
+import Feed from "./routes/feed.ts";
 import { toFileUrl } from "std/path/to_file_url.ts";
 
 export function blog() {
@@ -13,6 +14,9 @@ export function blog() {
     }, {
       path: "/blog/[slug]",
       component: BlogSlug,
+    }, {
+      path: "/feed",
+      component: Feed,
     }],
     location: import.meta.url,
     projectLocation: toFileUrl(Deno.cwd()).href,

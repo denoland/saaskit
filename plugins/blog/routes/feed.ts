@@ -1,6 +1,6 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
 import { Feed } from "feed";
-import { getPosts } from "@/plugins/blog/utils/posts.ts";
+import { getPosts } from "../utils/posts.ts";
 import { SITE_NAME } from "@/utils/constants.ts";
 import { defineRoute } from "$fresh/server.ts";
 
