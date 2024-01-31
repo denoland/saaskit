@@ -31,7 +31,7 @@ export default function Header(props: HeaderProps) {
             width="48"
             src="/logo.webp"
             alt={SITE_NAME + " logo"}
-            class="h-12 w-12"
+            class="size-12"
           />
         </a>
         <div class="flex gap-4 items-center">
@@ -41,8 +41,8 @@ export default function Header(props: HeaderProps) {
             id="nav-toggle-label"
             htmlFor="nav-toggle"
           >
-            <IconMenu class="w-6 h-6" />
-            <IconX class="hidden w-6 h-6" />
+            <IconMenu class="size-6" />
+            <IconX class="hidden size-6" />
           </label>
         </div>
       </div>

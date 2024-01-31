@@ -38,7 +38,7 @@ export default defineRoute<SignedInState>((_req, ctx) => {
                 {sessionUser.isSubscribed
                   ? (
                     <>
-                      Premium <PremiumBadge class="w-5 h-5 inline" />
+                      Premium <PremiumBadge class="size-5 inline" />
                     </>
                   )
                   : "Free"}
