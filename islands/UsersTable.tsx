@@ -25,7 +25,7 @@ function UserTableRow(props: User) {
         {props.isSubscribed
           ? (
             <>
-              Premium <PremiumBadge class="w-5 h-5 inline" />
+              Premium <PremiumBadge class="size-5 inline" />
             </>
           )
           : "Basic"}
