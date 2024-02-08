@@ -3,7 +3,7 @@ import { defineRoute } from "$fresh/server.ts";
 import { CSS, render } from "$gfm";
 import { getPost } from "../../utils/posts.ts";
 import Head from "@/components/Head.tsx";
-import Share from "@/components/Share.tsx";
+import Share from "../../components/Share.tsx";
 
 export default defineRoute(async (_req, ctx) => {
   const post = await getPost(ctx.params.slug);
