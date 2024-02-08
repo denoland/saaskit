@@ -23,9 +23,9 @@ import {
   assertNotEquals,
   assertObjectMatch,
   assertStringIncludes,
-} from "std/assert/mod.ts";
-import { isRedirectStatus, STATUS_CODE } from "std/http/status.ts";
-import { resolvesNext, returnsNext, stub } from "std/testing/mock.ts";
+} from "$std/assert/mod.ts";
+import { isRedirectStatus, STATUS_CODE } from "$std/http/status.ts";
+import { resolvesNext, returnsNext, stub } from "$std/testing/mock.ts";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
 import { _internals } from "./plugins/kv_oauth.ts";

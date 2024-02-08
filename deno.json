@@ -30,7 +30,7 @@
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "std/": "https://deno.land/std@0.208.0/",
+    "$std/": "https://deno.land/std@0.208.0/",
     "stripe": "npm:/stripe@13.5.0",
     "feed": "npm:/feed@4.2.2",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.9.1/",

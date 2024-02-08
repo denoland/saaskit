@@ -1,5 +1,5 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
-import { ulid } from "std/ulid/mod.ts";
+import { ulid } from "$std/ulid/mod.ts";
 
 const DENO_KV_PATH_KEY = "DENO_KV_PATH";
 let path = undefined;
@@ -59,7 +59,7 @@ export function randomItem(): Item {
  * @example
  * ```ts
  * import { createItem } from "@/utils/db.ts";
- * import { ulid } from "std/ulid/mod.ts";
+ * import { ulid } from "$std/ulid/mod.ts";
  *
  * await createItem({
  *   id: ulid(),
