@@ -10,7 +10,7 @@ import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 const CARD_STYLES =
   "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 ring-opacity-50 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
-const CHECK_STYLES = "w-6 h-6 text-primary shrink-0 inline-block mr-2";
+const CHECK_STYLES = "size-6 text-primary shrink-0 inline-block mr-2";
 
 function FreePlanCard() {
   return (
@@ -90,7 +90,7 @@ function PremiumPlanCard(props: PremiumCardPlanProps) {
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
-          Official pro user badge <PremiumBadge class="w-5 h-5 inline" />
+          Official pro user badge <PremiumBadge class="size-5 inline" />
         </p>
       </div>
 
