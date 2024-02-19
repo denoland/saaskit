@@ -20,7 +20,7 @@
   "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
   "imports": {
     "@/": "./",
-    "$fresh/": "https://raw.githubusercontent.com/deer/fresh/2159_plugin_routes_tailwind/",
+    "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/3cb107bbd1fcf94986e4207097e555e1b41ab926/",
     "preact": "https://esm.sh/preact@10.19.2",
     "preact/": "https://esm.sh/preact@10.19.2/",
     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.2",
