@@ -21,10 +21,10 @@ export default function Header(props: HeaderProps) {
       <input
         type="checkbox"
         id="nav-toggle"
-        class="hidden [:checked&+*>:last-child>*>:first-child]:hidden [:checked&+*>:last-child>*>:last-child]:block checked:siblings:last-child:flex"
+        class="hidden peer"
       />
 
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center peer-checked:[&_>div>label>#IconMenu]:hidden peer-checked:[&_>div>label>#IconX]:block">
         <a href="/" class="shrink-0">
           <img
             height="48"
@@ -41,8 +41,8 @@ export default function Header(props: HeaderProps) {
             id="nav-toggle-label"
             htmlFor="nav-toggle"
           >
-            <IconMenu class="size-6" />
-            <IconX class="hidden size-6" />
+            <IconMenu class="size-6" id="IconMenu" />
+            <IconX class="hidden size-6" id="IconX" />
           </label>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function Header(props: HeaderProps) {
         `}
       </script>
       <nav
-        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:flex sm:items-center sm:flex-row sm:divide-y-0"}
+        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:flex sm:items-center sm:flex-row sm:divide-y-0 peer-checked:flex"}
       >
         <a
           href="/dashboard"
