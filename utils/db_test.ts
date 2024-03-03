@@ -1,6 +1,6 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
-import { assertEquals, assertRejects } from "std/assert/mod.ts";
-import { ulid } from "std/ulid/mod.ts";
+import { assertEquals, assertRejects } from "$std/assert/mod.ts";
+import { ulid } from "$std/ulid/mod.ts";
 import {
   collectValues,
   createItem,
