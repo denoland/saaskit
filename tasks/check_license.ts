@@ -2,55 +2,64 @@
 // Copied from std/_tools/check_license.ts
 
 import { walk } from "std/fs/walk.ts";
+import { globToRegExp } from "std/path/glob_to_regexp.ts";
+
+const EXTENSIONS = [".ts", ".tsx"];
+const EXCLUDED_DIRS = [
+  "data",
+  "static",
+];
 
 const ROOT = new URL("../", import.meta.url);
-const CHECK = Deno.args[0] === "--check";
+const CHECK = Deno.args.includes("--check");
 const CURRENT_YEAR = new Date().getFullYear();
+const RX_COPYRIGHT = new RegExp(
+  `// Copyright 2023-([0-9]{4}) the Deno authors\\. All rights reserved\\. MIT license\\.\\n`,
+  "m",
+);
 const COPYRIGHT =
-  `// Copyright 2023-${CURRENT_YEAR} the Deno authors. All rights reserved. MIT license.\n`;
+  `// Copyright 2023-${CURRENT_YEAR} the Deno authors. All rights reserved. MIT license.`;
 
-let filesChecked = 0;
-let filesFixed = 0;
-const invalidFilePaths: string[] = [];
+let failed = false;
 
 for await (
   const { path } of walk(ROOT, {
-    exts: [".ts", ".tsx"],
+    exts: EXTENSIONS,
     skip: [
-      /$fresh\.gen\.ts/,
-      /$data/,
-      /$static/,
+      ...EXCLUDED_DIRS.map((path) => globToRegExp(ROOT.pathname + path)),
+      new RegExp("fresh.gen.ts"),
     ],
     includeDirs: false,
   })
 ) {
-  filesChecked++;
-
   const content = await Deno.readTextFile(path);
-  if (!content.startsWith(COPYRIGHT)) continue;
+  const match = content.match(RX_COPYRIGHT);
 
-  if (CHECK) {
-    invalidFilePaths.push(path);
-  } else {
-    const contentWithCopyright = COPYRIGHT + content;
-    await Deno.writeTextFile(path, contentWithCopyright);
-    filesFixed++;
+  if (!match) {
+    if (CHECK) {
+      console.error(`Missing copyright header: ${path}`);
+      failed = true;
+    } else {
+      const contentWithCopyright = COPYRIGHT + "\n" + content;
+      await Deno.writeTextFile(path, contentWithCopyright);
+      console.log("Copyright header automatically added to " + path);
+    }
+  } else if (parseInt(match[1]) !== CURRENT_YEAR) {
+    if (CHECK) {
+      console.error(`Incorrect copyright year: ${path}`);
+      failed = true;
+    } else {
+      const index = match.index ?? 0;
+      const contentWithoutCopyright = content.replace(match[0], "");
+      const contentWithCopyright = contentWithoutCopyright.substring(0, index) +
+        COPYRIGHT + "\n" + contentWithoutCopyright.substring(index);
+      await Deno.writeTextFile(path, contentWithCopyright);
+      console.log("Copyright header automatically updated in " + path);
+    }
   }
 }
 
-console.log(`Checked ${filesChecked} files`);
-
-if (filesFixed > 0) {
-  console.info(`Fixed ${filesFixed} files`);
-}
-
-if (invalidFilePaths.length > 0) {
-  console.info(
-    `The following files have incorrect or missing copyright headers:`,
-  );
-  for (const path of invalidFilePaths) {
-    console.info(path);
-  }
+if (failed) {
   console.info(`Copyright header should be "${COPYRIGHT}"`);
   Deno.exit(1);
 }
