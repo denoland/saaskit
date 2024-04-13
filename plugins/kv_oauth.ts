@@ -11,7 +11,7 @@ import { isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import { getGitHubUser } from "@/utils/github.ts";
 
 export const { signIn, handleCallback, signOut, getSessionId } = createHelpers(
-  createGitHubOAuthConfig()
+  createGitHubOAuthConfig(),
 );
 // Exported for mocking and spying in e2e tests
 export const _internals = { handleCallback };
@@ -35,7 +35,7 @@ export default {
       path: "/callback",
       handler: async (req) => {
         const { response, tokens, sessionId } = await _internals.handleCallback(
-          req
+          req,
         );
 
         const githubUser = await getGitHubUser(tokens.accessToken);
