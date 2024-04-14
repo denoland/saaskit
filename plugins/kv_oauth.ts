@@ -61,7 +61,7 @@ export default {
     },
     {
       path: "/signout",
-      handler: signOut,
+      handler: async (req) => await signOut(req),
     },
   ],
 } as Plugin;
