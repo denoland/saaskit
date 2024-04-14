@@ -1,6 +1,5 @@
 .env
 *.DS_Store
-cov/
 cov.lcov
 .idea
 _fresh/
