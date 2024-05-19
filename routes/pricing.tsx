@@ -180,7 +180,7 @@ export default defineRoute<State>(async (_req, ctx) => {
       <main class="mx-auto max-w-5xl w-full flex-1 flex flex-col justify-center px-4">
         <div class="mb-8 text-center">
           <h1 class="heading-styles">Pricing</h1>
-          <p class="text-gray-500">Choose the plan that suites you</p>
+          <p class="text-gray-500">Choose the plan that suits you</p>
         </div>
         <div class="flex flex-col md:flex-row gap-4">
           <FreePlanCard />
