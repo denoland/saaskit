@@ -25,8 +25,10 @@ export const handler: Handlers<undefined, SignedInState> = {
     const url = form.get("url");
 
     if (
-      typeof url !== "string" || !URL.canParse(url) ||
-      typeof title !== "string" || title === ""
+      typeof url !== "string" ||
+      !URL.canParse(url) ||
+      typeof title !== "string" ||
+      title === ""
     ) {
       return redirect("/submit?error");
     }
@@ -48,9 +50,7 @@ export default defineRoute<State>((_req, ctx) => {
       <Head title="Submit" href={ctx.url.href} />
       <main class="flex-1 flex flex-col justify-center mx-auto w-full space-y-16 p-4 max-w-6xl">
         <div class="text-center">
-          <h1 class="heading-styles">
-            Share your project
-          </h1>
+          <h1 class="heading-styles">Share your project</h1>
           <p class="text-gray-500">
             Let the community know about your Deno-related blog post, video or
             module!
@@ -69,18 +69,13 @@ export default defineRoute<State>((_req, ctx) => {
             <div>
               <IconCheckCircle class="inline-block mr-2" />
               <strong>Do</strong> include a description with your title.
-
               <div class="text-sm text-gray-500">
                 E.g. “Deno Hunt: the best place to share your Deno project”
               </div>
             </div>
-            <p>
-            </p>
+            <p></p>
           </div>
-          <form
-            class="flex-1 flex flex-col justify-center"
-            method="post"
-          >
+          <form class="flex-1 flex flex-col justify-center" method="post">
             <div>
               <label
                 htmlFor="submit_title"
@@ -101,12 +96,13 @@ export default defineRoute<State>((_req, ctx) => {
 
             <div class="mt-4">
               <label
-                htmlFor="submit_title"
+                htmlFor="submit_url"
                 class="block text-sm font-medium leading-6 text-gray-900"
               >
                 URL
               </label>
               <input
+                id="submit_url"
                 class="input-styles w-full mt-2"
                 type="url"
                 name="url"
@@ -117,22 +113,18 @@ export default defineRoute<State>((_req, ctx) => {
             </div>
             {ctx.url.searchParams.has("error") && (
               <div class="w-full text-red-500 mt-4">
-                <IconInfo class="inline-block" />{" "}
-                Title and valid URL are required
+                <IconInfo class="inline-block" /> Title and valid URL are
+                required
               </div>
             )}
             <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px mt-8">
-              {!ctx.state.sessionUser
-                ? (
-                  <a href="/signin" class={SUBMIT_STYLES}>
-                    Sign in to submit &#8250;
-                  </a>
-                )
-                : (
-                  <button class={SUBMIT_STYLES}>
-                    Submit
-                  </button>
-                )}
+              {!ctx.state.sessionUser ? (
+                <a href="/signin" class={SUBMIT_STYLES}>
+                  Sign in to submit &#8250;
+                </a>
+              ) : (
+                <button class={SUBMIT_STYLES}>Submit</button>
+              )}
             </div>
           </form>
         </div>
