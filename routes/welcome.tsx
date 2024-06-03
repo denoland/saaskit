@@ -38,13 +38,14 @@ function SetupInstruction() {
         and{" "}
         <span class="bg-green-100 dark:bg-gray-800 p-1 rounded">
           GITHUB_CLIENT_SECRET
-        </span>, this message will disappear.
+        </span>
+        , this message will disappear.
       </p>
     </div>
   );
 }
 
-export default defineRoute((req, ctx) => {
+export default defineRoute((_req, ctx) => {
   return (
     <>
       <Head title="Welcome" href={ctx.url.href} />
