@@ -73,7 +73,6 @@ export default defineRoute<State>((_req, ctx) => {
                 E.g. “Deno Hunt: the best place to share your Deno project”
               </div>
             </div>
-            <p></p>
           </div>
           <form class="flex-1 flex flex-col justify-center" method="post">
             <div>
