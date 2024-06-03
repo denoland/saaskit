@@ -112,18 +112,18 @@ export default defineRoute<State>((_req, ctx) => {
             </div>
             {ctx.url.searchParams.has("error") && (
               <div class="w-full text-red-500 mt-4">
-                <IconInfo class="inline-block" /> Title and valid URL are
-                required
+                <IconInfo class="inline-block" />{" "}
+                Title and valid URL are required
               </div>
             )}
             <div class="w-full rounded-lg bg-gradient-to-tr from-secondary to-primary p-px mt-8">
-              {!ctx.state.sessionUser ? (
-                <a href="/signin" class={SUBMIT_STYLES}>
-                  Sign in to submit &#8250;
-                </a>
-              ) : (
-                <button class={SUBMIT_STYLES}>Submit</button>
-              )}
+              {!ctx.state.sessionUser
+                ? (
+                  <a href="/signin" class={SUBMIT_STYLES}>
+                    Sign in to submit &#8250;
+                  </a>
+                )
+                : <button class={SUBMIT_STYLES}>Submit</button>}
             </div>
           </form>
         </div>
