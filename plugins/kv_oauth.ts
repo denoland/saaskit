@@ -1,11 +1,6 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
 import type { Plugin } from "$fresh/server.ts";
-import {
-  createGitHubOAuthConfig,
-  handleCallback,
-  signIn,
-  signOut,
-} from "kv_oauth/mod.ts";
+import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import {
   createUser,
   getUser,
@@ -15,6 +10,9 @@ import {
 import { isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import { getGitHubUser } from "@/utils/github.ts";
 
+export const { signIn, handleCallback, signOut, getSessionId } = createHelpers(
+  createGitHubOAuthConfig(),
+);
 // Exported for mocking and spying in e2e tests
 export const _internals = { handleCallback };
 
@@ -31,14 +29,13 @@ export default {
   routes: [
     {
       path: "/signin",
-      handler: async (req) => await signIn(req, createGitHubOAuthConfig()),
+      handler: async (req) => await signIn(req),
     },
     {
       path: "/callback",
       handler: async (req) => {
         const { response, tokens, sessionId } = await _internals.handleCallback(
           req,
-          createGitHubOAuthConfig(),
         );
 
         const githubUser = await getGitHubUser(tokens.accessToken);
@@ -64,7 +61,7 @@ export default {
     },
     {
       path: "/signout",
-      handler: signOut,
+      handler: async (req) => await signOut(req),
     },
   ],
 } as Plugin;

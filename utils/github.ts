@@ -1,5 +1,5 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
-import { createGitHubOAuthConfig } from "kv_oauth/mod.ts";
+import { createGitHubOAuthConfig } from "jsr:@deno/kv-oauth";
 import { BadRequestError } from "@/utils/http.ts";
 
 export function isGitHubSetup() {
@@ -39,5 +39,5 @@ export async function getGitHubUser(accessToken: string) {
     const { message } = await resp.json();
     throw new BadRequestError(message);
   }
-  return await resp.json() as Promise<GitHubUser>;
+  return (await resp.json()) as Promise<GitHubUser>;
 }
