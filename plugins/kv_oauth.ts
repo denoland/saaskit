@@ -42,10 +42,11 @@ export default {
         );
 
         const githubUser = await getGitHubUser(tokens.accessToken);
-        const user = await getUser(githubUser.login);
+        const user = await getUser(githubUser.id);
 
         if (user === null) {
           const user: User = {
+            id: githubUser.id,
             login: githubUser.login,
             sessionId,
             isSubscribed: false,
