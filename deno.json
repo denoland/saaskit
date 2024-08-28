@@ -10,7 +10,7 @@
     "start": "deno run --unstable-kv -A --watch=static/,routes/ --env dev.ts",
     "test": "DENO_KV_PATH=:memory: deno test -A --parallel --unstable-kv --coverage",
     "check:license": "deno run --allow-read --allow-write tasks/check_license.ts",
-    "check:types": "deno check main.ts && deno check dev.ts",
+    "check:types": "deno check main.ts && deno check dev.ts && deno check tasks/*.ts",
     "ok": "deno fmt --check && deno lint && deno task check:license --check && deno task check:types && deno task test",
     "cov:gen": "deno coverage coverage --lcov --exclude='.tsx' --output=cov.lcov",
     "update": "deno run -A -r https://fresh.deno.dev/update .",
