@@ -4,7 +4,6 @@ about: Suggest an idea or voice a concern
 title: 'Feature request: '
 labels: enhancement
 assignees: ''
-
 ---
 
 **Is your feature request related to a problem? Please describe.** A clear and
