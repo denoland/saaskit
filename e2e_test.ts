@@ -1,4 +1,5 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
+/// <reference lib="deno.unstable" />
 
 import { createHandler } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
@@ -23,9 +24,9 @@ import {
   assertNotEquals,
   assertObjectMatch,
   assertStringIncludes,
-} from "$std/assert/mod.ts";
-import { isRedirectStatus, STATUS_CODE } from "$std/http/status.ts";
-import { resolvesNext, returnsNext, stub } from "$std/testing/mock.ts";
+} from "@std/assert";
+import { isRedirectStatus, STATUS_CODE } from "@std/http";
+import { resolvesNext, returnsNext, stub } from "@std/testing/mock";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";
 import { _internals } from "./plugins/kv_oauth.ts";
