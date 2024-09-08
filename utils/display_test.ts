@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { formatCurrency, pluralize, timeAgo } from "./display.ts";
-import { DAY, HOUR, MINUTE, SECOND } from "$std/datetime/constants.ts";
-import { assertEquals, assertThrows } from "$std/assert/mod.ts";
+import { DAY, HOUR, MINUTE, SECOND } from "@std/datetime";
+import { assertEquals, assertThrows } from "@std/assert";
 
 Deno.test("[display] pluralize()", () => {
   assertEquals(pluralize(0, "item"), "0 items");

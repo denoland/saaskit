@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { type Handlers } from "$fresh/server.ts";
-import { STATUS_CODE } from "$std/http/status.ts";
+import { STATUS_CODE } from "@std/http";
 import type { SignedInState } from "@/plugins/session.ts";
 import { createVote } from "@/utils/db.ts";
 import { BadRequestError } from "@/utils/http.ts";

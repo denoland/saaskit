@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { extract } from "$std/front_matter/yaml.ts";
-import { join } from "$std/path/join.ts";
+import { extract as extractYaml } from "@std/front-matter/yaml";
+import { join } from "@std/path/join";
 
 /**
  * This code is based on the
@@ -38,7 +38,7 @@ export interface Post {
 export async function getPost(slug: string): Promise<Post | null> {
   try {
     const text = await Deno.readTextFile(join("./posts", `${slug}.md`));
-    const { attrs, body } = extract<Post>(text);
+    const { attrs, body } = extractYaml<Post>(text);
     return {
       ...attrs,
       slug,

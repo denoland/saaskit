@@ -3,7 +3,7 @@ import type { Plugin } from "$fresh/server.ts";
 import BlogIndex from "./routes/blog/index.tsx";
 import BlogSlug from "./routes/blog/[slug].tsx";
 import Feed from "./routes/feed.ts";
-import { normalize } from "$std/url/normalize.ts";
+import { normalize } from "@std/url";
 
 export function blog(): Plugin {
   return {

@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { difference } from "$std/datetime/difference.ts";
+import { difference } from "@std/datetime/difference";
 
 /**
  * Returns a pluralized string for the given amount and unit.
@@ -22,7 +22,7 @@ export function pluralize(amount: number, unit: string) {
  * @example
  * ```ts
  * import { timeAgo } from "@/utils/display.ts";
- * import { SECOND, MINUTE, HOUR } from "$std/datetime/constants.ts";
+ * import { SECOND, MINUTE, HOUR } from "@std/datetime";
  *
  * timeAgo(new Date()); // Returns "just now"
  * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours ago"

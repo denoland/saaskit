@@ -4,7 +4,7 @@ import { useEffect } from "preact/hooks";
 import { type Item } from "@/utils/db.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import { fetchValues } from "@/utils/http.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
+import { decodeTime } from "@std/ulid";
 import { timeAgo } from "@/utils/display.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 

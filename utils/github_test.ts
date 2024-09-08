@@ -1,9 +1,9 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { assertRejects } from "$std/assert/assert_rejects.ts";
+import { assertRejects } from "@std/assert/rejects";
 import { getGitHubUser } from "./github.ts";
-import { returnsNext, stub } from "$std/testing/mock.ts";
-import { assertEquals } from "$std/assert/assert_equals.ts";
-import { STATUS_CODE } from "$std/http/status.ts";
+import { returnsNext, stub } from "@std/testing/mock";
+import { assertEquals } from "@std/assert";
+import { STATUS_CODE } from "@std/http";
 import { BadRequestError } from "@/utils/http.ts";
 
 Deno.test("[plugins] getGitHubUser()", async (test) => {
