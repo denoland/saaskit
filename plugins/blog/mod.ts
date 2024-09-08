@@ -5,7 +5,7 @@ import BlogSlug from "./routes/blog/[slug].tsx";
 import Feed from "./routes/feed.ts";
 import { normalize } from "@std/url";
 
-export function blog(): Plugin {
+export function blog(): Plugin & { location: string; projectLocation: string } {
   return {
     name: "blog",
     routes: [{
