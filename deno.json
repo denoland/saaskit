@@ -19,7 +19,7 @@
   },
   "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
   "imports": {
-    "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/60220dd33b5b0f6b5c72927c933dbc32a3c4734e/",
+    "$fresh/": "https://deno.land/x/fresh@1.7.1/",
     "@/": "./",
     "@deno/gfm": "jsr:@deno/gfm@^0.9.0",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.1",
@@ -36,7 +36,6 @@
     "fresh_charts/": "https://deno.land/x/fresh_charts@0.3.1/",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.9.1/",
     "preact": "https://esm.sh/preact@10.19.2",
-    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.2",
     "preact/": "https://esm.sh/preact@10.19.2/",
     "stripe": "npm:/stripe@13.5.0",
     "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/",
