@@ -3,9 +3,9 @@ import type { Plugin } from "$fresh/server.ts";
 import BlogIndex from "./routes/blog/index.tsx";
 import BlogSlug from "./routes/blog/[slug].tsx";
 import Feed from "./routes/feed.ts";
-import { normalize } from "@std/url";
+import { normalize } from "@std/path/normalize";
 
-export function blog(): Plugin & { location: string; projectLocation: string } {
+export function blog(): Plugin {
   return {
     name: "blog",
     routes: [{
@@ -19,6 +19,6 @@ export function blog(): Plugin & { location: string; projectLocation: string } {
       component: Feed,
     }],
     location: import.meta.url,
-    projectLocation: normalize(import.meta.url + "../../../").href,
+    projectLocation: normalize(import.meta.url + "../../../"),
   };
 }

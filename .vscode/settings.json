@@ -1,6 +1,4 @@
 {
-  "typescript.validate.enable": false,
-  "javascript.validate.enable": false,
   "deno.enable": true,
   "deno.lint": true,
   "editor.formatOnSave": true,
