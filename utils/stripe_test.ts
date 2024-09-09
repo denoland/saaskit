@@ -1,5 +1,6 @@
 // Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
-import { AssertionError, assertThrows } from "$std/assert/mod.ts";
+import { AssertionError } from "@std/assert/assertion-error";
+import { assertThrows } from "@std/assert/throws";
 import { assertIsPrice } from "./stripe.ts";
 
 Deno.test("[stripe] assertIsPrice()", () => {
