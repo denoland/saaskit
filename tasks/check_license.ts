@@ -1,8 +1,8 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 // Copied from std/_tools/check_license.ts
 
-import { walk } from "@std/fs";
-import { globToRegExp } from "@std/path";
+import { walk } from "@std/fs/walk";
+import { globToRegExp } from "@std/path/glob-to-regexp";
 
 const EXTENSIONS = [".ts", ".tsx"];
 const EXCLUDED_DIRS = [

@@ -15,16 +15,14 @@ import {
   User,
 } from "@/utils/db.ts";
 import { stripe } from "@/utils/stripe.ts";
-import {
-  assert,
-  assertArrayIncludes,
-  assertEquals,
-  assertInstanceOf,
-  assertNotEquals,
-  assertObjectMatch,
-  assertStringIncludes,
-} from "@std/assert";
-import { isRedirectStatus, STATUS_CODE } from "@std/http";
+import { assert } from "@std/assert/assert";
+import { assertArrayIncludes } from "@std/assert/array-includes";
+import { assertEquals } from "@std/assert/equals";
+import { assertInstanceOf } from "@std/assert/instance-of";
+import { assertNotEquals } from "@std/assert/not-equals";
+import { assertObjectMatch } from "@std/assert/object-match";
+import { assertStringIncludes } from "@std/assert/string-includes";
+import { isRedirectStatus, STATUS_CODE } from "@std/http/status";
 import { resolvesNext, returnsNext, stub } from "@std/testing/mock";
 import Stripe from "stripe";
 import options from "./fresh.config.ts";

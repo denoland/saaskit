@@ -10,7 +10,7 @@ import {
   type SignedInState,
   State,
 } from "@/plugins/session.ts";
-import { ulid } from "@std/ulid";
+import { ulid } from "@std/ulid/ulid";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 
 const SUBMIT_STYLES =

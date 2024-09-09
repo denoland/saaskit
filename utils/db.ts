@@ -62,7 +62,7 @@ export function randomItem(): Item {
  * @example
  * ```ts
  * import { createItem } from "@/utils/db.ts";
- * import { ulid } from "@std/ulid";
+ * import { ulid } from "@std/ulid/ulid";
  *
  * await createItem({
  *   id: ulid(),
