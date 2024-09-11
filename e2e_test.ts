@@ -21,7 +21,6 @@ import {
   assertEquals,
   assertInstanceOf,
   assertNotEquals,
-  assertObjectMatch,
   assertStringIncludes,
 } from "$std/assert/mod.ts";
 import { isRedirectStatus, STATUS_CODE } from "$std/http/status.ts";
@@ -422,7 +421,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
 
     assertRedirect(resp, "/");
     // Deep partial match since the item ID is a ULID generated at runtime
-    assertObjectMatch(items[0], item);
+    assertEquals(items[0], item);
   });
 });
 

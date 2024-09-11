@@ -47,8 +47,8 @@ export default {
           try {
             return await ctx.next();
           } catch (error) {
-            const status = toErrorStatus(error);
-            return new Response(error.message, {
+            const status = toErrorStatus(error as Error);
+            return new Response((error as Error).message, {
               statusText: STATUS_TEXT[status],
               status,
             });

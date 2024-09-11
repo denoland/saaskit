@@ -41,7 +41,7 @@ export const handler: Handlers = {
         cryptoProvider,
       );
     } catch (error) {
-      throw new BadRequestError(error.message);
+      throw new BadRequestError((error as Error).message);
     }
 
     // @ts-ignore: Property 'customer' actually does exist on type 'Object'

@@ -146,7 +146,7 @@ export default function ItemsList(props: ItemsListProps) {
       itemsSig.value = [...itemsSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
-      console.error(error.message);
+      console.error((error as Error).message);
     } finally {
       isLoadingSig.value = false;
     }

@@ -10,7 +10,7 @@ Deno.test("[plugins] getGitHubUser()", async (test) => {
   await test.step("rejects on error message", async () => {
     const message = crypto.randomUUID();
     const fetchStub = stub(
-      window,
+      globalThis,
       "fetch",
       returnsNext([
         Promise.resolve(
@@ -29,7 +29,7 @@ Deno.test("[plugins] getGitHubUser()", async (test) => {
   await test.step("resolves to a GitHub user object", async () => {
     const body = { login: crypto.randomUUID(), email: crypto.randomUUID() };
     const fetchStub = stub(
-      window,
+      globalThis,
       "fetch",
       returnsNext([Promise.resolve(Response.json(body))]),
     );
