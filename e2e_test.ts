@@ -149,7 +149,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
     };
     const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
     const fetchStub = stub(
-      window,
+      globalThis,
       "fetch",
       returnsNext([
         Promise.resolve(Response.json(githubRespBody)),
@@ -187,7 +187,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
     };
     const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
     const fetchStub = stub(
-      window,
+      globalThis,
       "fetch",
       returnsNext([
         Promise.resolve(Response.json(githubRespBody)),
