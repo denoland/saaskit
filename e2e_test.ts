@@ -881,6 +881,9 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
   await createUser(user);
 
   await test.step("serves internal server error response if the `STRIPE_PREMIUM_PLAN_PRICE_ID` environment variable is not set", async () => {
+    // Suppress the error message thrown by the handler
+    const stubbedError = stub(console, "error");
+
     setupEnv(
       { "STRIPE_PREMIUM_PLAN_PRICE_ID": null },
     );
@@ -893,6 +896,8 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
 
     assertEquals(resp.status, STATUS_CODE.InternalServerError);
     assertHtml(resp);
+
+    stubbedError.restore();
   });
 
   await test.step("serves not found response if Stripe is disabled", async () => {
