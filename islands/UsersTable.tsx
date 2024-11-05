@@ -58,7 +58,7 @@ export default function UsersTable(props: UsersTableProps) {
       usersSig.value = [...usersSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
-      console.log(error.message);
+      console.log((error as Error).message);
     } finally {
       isLoadingSig.value = false;
     }
