@@ -185,7 +185,7 @@ file. If you'd like to change the filename, also be sure to change the
 ## Deploy to Production
 
 This section assumes that a
-[local development environment](#getting-started-locally) is already set up.
+[local development environment](#get-started-locally) is already set up.
 
 1. Navigate to your
    [GitHub OAuth application settings page](https://github.com/settings/developers).
