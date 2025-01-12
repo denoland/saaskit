@@ -4,13 +4,18 @@ import IconBrandLinkedin from "tabler_icons_tsx/brand-linkedin.tsx";
 import IconBrandReddit from "tabler_icons_tsx/brand-reddit.tsx";
 import IconBrandTwitter from "tabler_icons_tsx/brand-twitter.tsx";
 
+interface ShareProps {
+  url: URL;
+  title: string;
+}
+
 /**
  * Dynamically generates links for sharing the current content on the major
  * social media platforms.
  *
  * @see {@link https://schier.co/blog/pure-html-share-buttons}
  */
-export default function Share(props: { url: URL; title: string }) {
+export default function Share(props: ShareProps) {
   return (
     <div class="flex flex-row gap-4 my-4">
       <span class="align-middle">Share</span>
