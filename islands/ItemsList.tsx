@@ -99,6 +99,7 @@ function ItemSummary(props: ItemSummaryProps) {
             class="hover:underline text-gray-500 after:content-['_↗']"
             href={props.item.url}
             target="_blank"
+            rel="noopener noreferrer"
           >
             {new URL(props.item.url).host}
           </a>

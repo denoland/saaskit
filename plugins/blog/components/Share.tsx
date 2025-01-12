@@ -19,6 +19,7 @@ export default function Share(props: { url: URL; title: string }) {
           encodeURIComponent(props.url.href)
         }`}
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`Share ${props.title} on Facebook`}
       >
         <IconBrandFacebook />
@@ -28,6 +29,7 @@ export default function Share(props: { url: URL; title: string }) {
           encodeURIComponent(props.url.href)
         }&title=${encodeURIComponent(props.title)}`}
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`Share ${props.title} on LinkedIn`}
       >
         <IconBrandLinkedin />
@@ -37,6 +39,7 @@ export default function Share(props: { url: URL; title: string }) {
           encodeURIComponent(props.url.href)
         }&title=${encodeURIComponent(props.title)}`}
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`Share ${props.title} on Reddit`}
       >
         <IconBrandReddit />
@@ -46,6 +49,7 @@ export default function Share(props: { url: URL; title: string }) {
           encodeURIComponent(props.url.href)
         }&text=${encodeURIComponent(props.title)}`}
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`Share ${props.title} on Twitter`}
       >
         <IconBrandTwitter />
