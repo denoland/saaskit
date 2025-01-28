@@ -14,7 +14,7 @@ export const handler: Handlers<undefined, SignedInState> = {
 
     await createVote({
       itemId,
-      userLogin: ctx.state.sessionUser.login,
+      userId: ctx.state.sessionUser.id,
     });
 
     return new Response(null, { status: STATUS_CODE.Created });
