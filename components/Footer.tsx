@@ -66,6 +66,7 @@ export default function Footer() {
         <a
           href="https://discord.gg/deno"
           target="_blank"
+          rel="noopener noreferrer"
           aria-label="Deno SaaSKit on Discord"
           class="link-styles"
         >
@@ -74,6 +75,7 @@ export default function Footer() {
         <a
           href="https://github.com/denoland/saaskit"
           target="_blank"
+          rel="noopener noreferrer"
           aria-label="Deno SaaSKit repo on GitHub"
           class="link-styles"
         >
