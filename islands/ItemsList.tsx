@@ -1,4 +1,4 @@
-// Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { Signal, useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import { type Item } from "@/utils/db.ts";
@@ -146,7 +146,7 @@ export default function ItemsList(props: ItemsListProps) {
       itemsSig.value = [...itemsSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
-      console.error(error.message);
+      console.error((error as Error).message);
     } finally {
       isLoadingSig.value = false;
     }

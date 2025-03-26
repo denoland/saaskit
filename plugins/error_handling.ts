@@ -1,4 +1,4 @@
-// Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import type { Plugin } from "$fresh/server.ts";
 import type { State } from "@/plugins/session.ts";
 import { BadRequestError, redirect, UnauthorizedError } from "@/utils/http.ts";
@@ -47,8 +47,8 @@ export default {
           try {
             return await ctx.next();
           } catch (error) {
-            const status = toErrorStatus(error);
-            return new Response(error.message, {
+            const status = toErrorStatus(error as Error);
+            return new Response((error as Error).message, {
               statusText: STATUS_TEXT[status],
               status,
             });

@@ -1,4 +1,4 @@
-// Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { type Handlers } from "$fresh/server.ts";
 import { STATUS_CODE } from "$std/http/status.ts";
 import { isStripeEnabled, stripe } from "@/utils/stripe.ts";
@@ -41,7 +41,7 @@ export const handler: Handlers = {
         cryptoProvider,
       );
     } catch (error) {
-      throw new BadRequestError(error.message);
+      throw new BadRequestError((error as Error).message);
     }
 
     // @ts-ignore: Property 'customer' actually does exist on type 'Object'

@@ -1,4 +1,4 @@
-// Copyright 2023-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import type { User } from "@/utils/db.ts";
@@ -58,7 +58,7 @@ export default function UsersTable(props: UsersTableProps) {
       usersSig.value = [...usersSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
-      console.log(error.message);
+      console.log((error as Error).message);
     } finally {
       isLoadingSig.value = false;
     }
