@@ -12,7 +12,7 @@ export default defineRoute(async (_req, ctx) => {
   return (
     <>
       <Head title={post.title} href={ctx.url.href}>
-        <style dangerouslySetInnerHTML={{ __html: CSS }} />
+        <style>{CSS}</style>
       </Head>
       <main class="p-4 flex-1">
         <h1 class="text-4xl font-bold">{post.title}</h1>
@@ -32,6 +32,7 @@ export default defineRoute(async (_req, ctx) => {
           data-color-mode="auto"
           data-light-theme="light"
           data-dark-theme="dark"
+          // deno-lint-ignore react-no-danger
           dangerouslySetInnerHTML={{ __html: render(post.content) }}
         />
       </main>

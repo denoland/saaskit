@@ -45,7 +45,7 @@ function VoteButton(props: VoteButtonProps) {
   }
 
   return (
-    <button onClick={onClick} class="hover:text-primary">
+    <button onClick={onClick} class="hover:text-primary" type="button">
       ▲
     </button>
   );
@@ -185,7 +185,7 @@ export default function ItemsList(props: ItemsListProps) {
         })
         : <EmptyItemsList />}
       {cursorSig.value !== "" && (
-        <button onClick={loadMoreItems} class="link-styles">
+        <button onClick={loadMoreItems} class="link-styles" type="button">
           {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>
       )}

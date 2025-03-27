@@ -123,7 +123,7 @@ export default defineRoute<State>((_req, ctx) => {
                     Sign in to submit &#8250;
                   </a>
                 )
-                : <button class={SUBMIT_STYLES}>Submit</button>}
+                : <button type="submit" class={SUBMIT_STYLES}>Submit</button>}
             </div>
           </form>
         </div>
