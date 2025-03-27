@@ -79,11 +79,14 @@ export default function UsersTable(props: UsersTableProps) {
           </tr>
         </thead>
         <tbody>
-          {usersSig.value.map((user) => <UserTableRow {...user} />)}
+          {usersSig.value.map((user) => (
+            <UserTableRow key={user.login} {...user} />
+          ))}
         </tbody>
       </table>
       {cursorSig.value !== "" && (
         <button
+          type="button"
           onClick={loadMoreUsers}
           class="link-styles p-4"
         >
