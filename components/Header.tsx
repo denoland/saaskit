@@ -57,9 +57,7 @@ export default function Header(props: HeaderProps) {
           });
         `}
       </script>
-      <nav
-        class={"hidden flex-col gap-x-4 divide-y divide-solid sm:flex sm:items-center sm:flex-row sm:divide-y-0 peer-checked:flex"}
-      >
+      <nav class="hidden flex-col gap-x-4 divide-y divide-solid sm:flex sm:items-center sm:flex-row sm:divide-y-0 peer-checked:flex">
         <a
           href="/dashboard"
           class="link-styles data-[ancestor]:!text-black data-[ancestor]:dark:!text-white nav-item"

@@ -77,8 +77,8 @@ function PremiumPlanCard(props: PremiumCardPlanProps) {
               props.product.default_price.unit_amount! / 100,
               props.product.default_price?.currency,
             )}
-          </span>
-          <span>{" "}/ {props.product.default_price.recurring?.interval}</span>
+          </span>{" "}
+          / <span>{props.product.default_price.recurring?.interval}</span>
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />

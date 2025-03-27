@@ -37,7 +37,7 @@ export default defineRoute(async (_req, ctx) => {
       <main class="p-4 flex-1">
         <h1 class="heading-with-margin-styles">Blog</h1>
         <div class="divide-y">
-          {posts.map((post) => <PostCard {...post} />)}
+          {posts.map((post) => <PostCard key={post.slug} {...post} />)}
         </div>
       </main>
     </>
