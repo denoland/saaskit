@@ -21,7 +21,7 @@
   "imports": {
     "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/60220dd33b5b0f6b5c72927c933dbc32a3c4734e/",
     "@/": "./",
-    "@deno/gfm": "jsr:@deno/gfm@^0.9",
+    "@deno/gfm": "jsr:@deno/gfm@^0.10.0",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.1",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.0",
     "@std/assert": "jsr:@std/assert@^1.0",
