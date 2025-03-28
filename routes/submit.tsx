@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import Head from "@/components/Head.tsx";
-import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
-import IconCircleX from "tabler_icons_tsx/circle-x.tsx";
+import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
+import IconCircleX from "@preact-icons/tb/TbCircleX";
 import { defineRoute, Handlers } from "$fresh/server.ts";
 import { createItem } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
@@ -10,8 +10,8 @@ import {
   type SignedInState,
   State,
 } from "@/plugins/session.ts";
-import { ulid } from "$std/ulid/mod.ts";
-import IconInfo from "tabler_icons_tsx/info-circle.tsx";
+import { ulid } from "@std/ulid/ulid";
+import IconInfo from "@preact-icons/tb/TbInfoCircle";
 
 const SUBMIT_STYLES =
   "w-full text-white text-center rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white";

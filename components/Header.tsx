@@ -1,8 +1,8 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { SITE_NAME } from "@/utils/constants.ts";
 import { isStripeEnabled } from "@/utils/stripe.ts";
-import IconX from "tabler_icons_tsx/x.tsx";
-import IconMenu from "tabler_icons_tsx/menu-2.tsx";
+import IconX from "@preact-icons/tb/TbX";
+import IconMenu from "@preact-icons/tb/TbMenu2";
 import { User } from "@/utils/db.ts";
 
 export interface HeaderProps {
