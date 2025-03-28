@@ -27,6 +27,7 @@ function UserProfile(props: UserProfileProps) {
           aria-label={`${props.login}'s GitHub profile`}
           class="link-styles"
           target="_blank"
+          rel="noopener noreferrer"
         >
           <IconBrandGithub class="w-6" />
         </a>
