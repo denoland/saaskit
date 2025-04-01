@@ -1,8 +1,8 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { SITE_NAME } from "@/utils/constants.ts";
-import IconBrandDiscord from "@preact-icons/tb/TbBrandDiscord";
-import IconBrandGithub from "@preact-icons/tb/TbBrandGithub";
-import IconRss from "@preact-icons/tb/TbRss";
+import IconBrandDiscord from "tabler_icons_tsx/brand-discord.tsx";
+import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
+import IconRss from "tabler_icons_tsx/rss.tsx";
 
 function MadeWithFreshBadge() {
   return (
