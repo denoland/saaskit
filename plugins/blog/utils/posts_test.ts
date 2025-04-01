@@ -1,7 +1,8 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { getPost, getPosts } from "./posts.ts";
 
-import { assert, assertEquals } from "$std/assert/mod.ts";
+import { assert } from "@std/assert/assert";
+import { assertEquals } from "@std/assert/equals";
 
 Deno.test("[blog] getPost()", async () => {
   const post = await getPost("first-post");
