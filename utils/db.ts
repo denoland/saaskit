@@ -2,7 +2,7 @@
 
 /// <reference lib="deno.unstable" />
 
-import { ulid } from "@std/ulid";
+import { ulid } from "$std/ulid/mod.ts";
 
 const DENO_KV_PATH_KEY = "DENO_KV_PATH";
 let path = undefined;
@@ -62,7 +62,7 @@ export function randomItem(): Item {
  * @example
  * ```ts
  * import { createItem } from "@/utils/db.ts";
- * import { ulid } from "@std/ulid/ulid";
+ * import { ulid } from "$std/ulid/mod.ts";
  *
  * await createItem({
  *   id: ulid(),
