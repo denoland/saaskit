@@ -6,11 +6,10 @@ import { isGitHubSetup } from "@/utils/github.ts";
 function SetupInstruction() {
   return (
     <div class="bg-green-50 dark:bg-gray-900 dark:border dark:border-green-800 rounded-xl max-w-screen-sm mx-auto p-8 space-y-2">
-      <h1 class="text-2xl font-medium">Welcome to SaaSKit!</h1>
+      <h1 class="text-2xl font-medium">Oi Alzi!</h1>
 
       <p class="text-gray-600 dark:text-gray-400">
-        To enable user login, you need to configure the GitHub OAuth application
-        and set environment variables.
+        Tudo bom com voce?
       </p>
 
       <p>
