@@ -3,6 +3,9 @@
 /// <reference lib="deno.unstable" />
 
 import { ulid } from "$std/ulid/mod.ts";
+import Chance from "https://esm.sh/chance";
+const chance = new Chance();
+
 
 const DENO_KV_PATH_KEY = "DENO_KV_PATH";
 let path = undefined;
@@ -23,12 +26,12 @@ export const kv = await Deno.openKv(
  * ```ts
  * import { collectValues, listProducts, type product } from "@/utils/db.ts";
  *
- * const products = await collectValues<product>(listItems());
- * products[0].id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
- * products[0].userLogin; // Returns "snoop"
- * products[0].title; // Returns "example-title"
- * products[0].url; // Returns "http://example.com"
- * products[0].score; // Returns 420
+ * const produtos = await collectValues<product>(listItems());
+ * produtos[0].id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
+ * produtos[0].userLogin; // Returns "snoop"
+ * produtos[0].title; // Returns "example-title"
+ * produtos[0].url; // Returns "http://example.com"
+ * produtos[0].score; // Returns 420
  * ```
  */
 export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
@@ -43,16 +46,47 @@ export interface Product {
   title: string;
   url: string;
   score: number;
+  category: string;
+  createdAt: number;
+  image: string;
+}
+
+export interface Brand {
+  // Uses ULID
+  id: string;
+  userLogin: string;
+  title: string;
+  url: string;
+  score: number;
+  bio?: string;
+  website?: string;
+  logoUrl?: string;
 }
 
 /** For testing */
 export function randomProduct(): Product {
   return {
     id: ulid(),
-    userLogin: crypto.randomUUID(),
-    title: crypto.randomUUID(),
-    url: `http://${crypto.randomUUID()}.com`,
-    score: 0,
+    userLogin: chance.twitter().replace("@", ""),
+    title: chance.sentence({ words: 3 }),
+    url: chance.url(),
+    score: chance.integer({ min: 0, max: 999 }),
+    category: chance.pickone(["tops", "bottoms", "footwear", "accessories", "other"]),
+    createdAt: Date.now(), // 🛠️ matches `number` type
+    image: chance.url(),
+  };
+}
+
+export function randomBrand(): Brand {
+  return {
+    id: ulid(),
+    userLogin: chance.twitter().replace("@", ""),
+    title: chance.company(),
+    url: chance.url(),
+    score: chance.integer({ min: 0, max: 999 }),
+    bio: chance.sentence({ words: 8 }),
+    website: chance.url(),
+    logoUrl: chance.url(),
   };
 }
 
@@ -102,6 +136,115 @@ export async function createProduct(product: Product) {
 }
 
 /**
+ * Creates a new product in the database. Throws if the product already exists in
+ * one of the indexes.
+ *
+ * @example
+ * ```ts
+ * import { createBrand } from "@/utils/db.ts";
+ * import { ulid } from "$std/ulid/mod.ts";
+ *
+ * await createBrand({
+ *   id: ulid(),
+ *   userLogin: "john_doe",
+ *   title: "example-title",
+ *   url: "https://example.com",
+ *   score: 0,
+ * });
+ * ```
+ */
+export async function createBrand(brand: Brand) {
+  const brandsKey = ["brands", brand.id];
+  const brandsByUserKey = ["brands_by_user", brand.userLogin, brand.id];
+
+  const res = await kv.atomic()
+      .check({ key: brandsKey, versionstamp: null })
+      .check({ key: brandsByUserKey, versionstamp: null })
+      .set(brandsKey, brand)
+      .set(brandsByUserKey, brand)
+      .commit();
+
+  if (!res.ok) {
+    console.error("❌ Failed to create brand:", brand.id);
+
+    const existing = await Promise.all([
+      kv.get(brandsKey),
+      kv.get(brandsByUserKey),
+    ]);
+    console.log("🔍 Existing brandsKey?", existing[0].value);
+    console.log("🔍 Existing brandsByUserKey?", existing[1].value);
+
+    throw new Error("Failed to create product");
+  }
+
+  console.log("✅ Brand created:", brand.id);
+}
+
+/**
+ * Gets the product with the given ID from the database.
+ *
+ * @example
+ * ```ts
+ * import { getBrand } from "@/utils/db.ts";
+ *
+ * const brand = await getItem("01H9YD2RVCYTBVJEYEJEV5D1S1");
+ * brand?.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
+ * brand?.userLogin; // Returns "snoop"
+ * brand?.title; // Returns "example-title"
+ * brand?.url; // Returns "http://example.com"
+ * brand?.score; // Returns 420
+ * ```
+ */
+export async function getBrand(id: string) {
+  const res = await kv.get<Brand>(["brands", id]);
+  return res.value;
+}
+
+/**
+ * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
+ * the produtos in the database, in chronological order.
+ *
+ * @example
+ * ```ts
+ * import { listBrands } from "@/utils/db.ts";
+ *
+ * for await (const entry of listBrands()) {
+ *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
+ *   entry.value.userLogin; // Returns "pedro"
+ *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
+ *   entry.versionstamp; // Returns "00000000000000010000"
+ * }
+ * ```
+ */
+export function listBrands(options?: Deno.KvListOptions) {
+  return kv.list<Brand>({ prefix: ["brands"] }, options);
+}
+
+/**
+ * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
+ * the produtos by a given user in the database, in chronological order.
+ *
+ * @example
+ * ```ts
+ * import { listBrandsByUser } from "@/utils/db.ts";
+ *
+ * for await (const entry of listBrandsByUser("pedro")) {
+ *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
+ *   entry.value.userLogin; // Returns "pedro"
+ *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
+ *   entry.versionstamp; // Returns "00000000000000010000"
+ * }
+ * ```
+ */
+export function listBrandsByUser(
+    userLogin: string,
+    options?: Deno.KvListOptions,
+) {
+  return kv.list<Brand>({ prefix: ["brands_by_user", userLogin] }, options);
+}
+
+
+/**
  * Gets the product with the given ID from the database.
  *
  * @example
@@ -123,7 +266,7 @@ export async function getProduct(id: string) {
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the products in the database, in chronological order.
+ * the produtos in the database, in chronological order.
  *
  * @example
  * ```ts
@@ -143,7 +286,7 @@ export function listProducts(options?: Deno.KvListOptions) {
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the products by a given user in the database, in chronological order.
+ * the produtos by a given user in the database, in chronological order.
  *
  * @example
  * ```ts
@@ -157,11 +300,11 @@ export function listProducts(options?: Deno.KvListOptions) {
  * }
  * ```
  */
-export function listProductsByUser(
+export function listProductsByBrand(
   userLogin: string,
   options?: Deno.KvListOptions,
 ) {
-  return kv.list<Product>({ prefix: ["products_by_user", userLogin] }, options);
+  return kv.list<Product>({ prefix: ["products_by_brand", userLogin] }, options);
 }
 
 // Vote
@@ -223,7 +366,7 @@ export async function createVote(vote: Vote) {
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the products voted by a given user in the database, in chronological order.
+ * the produtos voted by a given user in the database, in chronological order.
  *
  * @example
  * ```ts
@@ -280,7 +423,7 @@ export function randomUser(): User {
  * ```
  */
 export async function createUser(user: User) {
-  const usersKey = ["users", user.login];
+  const usersKey = ["usuarios", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
   const atomicOp = kv.atomic()
@@ -456,7 +599,7 @@ export async function getUserByStripeCustomer(stripeCustomerId: string) {
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the users in the database.
+ * the usuarios in the database.
  *
  * @example
  * ```ts
@@ -474,14 +617,14 @@ export function listUsers(options?: Deno.KvListOptions) {
 }
 
 /**
- * Returns a boolean array indicating whether the given products have been voted
+ * Returns a boolean array indicating whether the given produtos have been voted
  * for by the given user in the database.
  *
  * @example
  * ```ts
  * import { getAreVotedByUser } from "@/utils/db.ts";
  *
- * const products = [
+ * const produtos = [
  *   {
  *     id: "01H9YD2RVCYTBVJEYEJEV5D1S1",
  *     userLogin: "jack",
@@ -497,7 +640,7 @@ export function listUsers(options?: Deno.KvListOptions) {
  *     score: 0,
  *   }
  * ];
- * await getAreVotedByUser(products, "jack"); // Returns [true, false]
+ * await getAreVotedByUser(produtos, "jack"); // Returns [true, false]
  * ```
  */
 export async function getAreVotedByUser(products: Product[], userLogin: string) {

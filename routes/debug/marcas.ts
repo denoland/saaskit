@@ -6,12 +6,12 @@ export const handler: Handlers = {
             Deno.env.get("DENO_DEPLOYMENT_ID") ? undefined : "./dev-kv.sqlite3",
         );
 
-        const products = [];
-        for await (const entry of kv.list({ prefix: ["products"] })) {
-            products.push(entry);
+        const brands = [];
+        for await (const entry of kv.list({ prefix: ["brands"] })) {
+            brands.push(entry);
         }
 
-        return new Response(JSON.stringify(products, null, 2), {
+        return new Response(JSON.stringify(brands, null, 2), {
             headers: { "Content-Type": "application/json" },
         });
     },

@@ -9,7 +9,7 @@ import {
   createVote,
   getUser,
   Product,
-  listProductsByUser,
+  listProductsByBrand,
   randomProduct,
   randomUser,
   User,
@@ -298,7 +298,7 @@ Deno.test("[e2e] GET /dashboard/stats", async (test) => {
   });
 });
 
-Deno.test("[e2e] GET /dashboard/users", async (test) => {
+Deno.test("[e2e] GET /dashboard/usuarios", async (test) => {
   setupEnv();
   const url = "http://localhost/dashboard/users";
   const user = randomUser();
@@ -343,7 +343,7 @@ Deno.test("[e2e] GET /feed", async () => {
   assertXml(resp);
 });
 
-Deno.test("[e2e] GET /api/products", async () => {
+Deno.test("[e2e] GET /api/produtos", async () => {
   setupEnv();
   const product1 = randomProduct();
   const product2 = randomProduct();
@@ -418,7 +418,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
         body,
       }),
     );
-    const products = await collectValues(listProductsByUser(user.login));
+    const products = await collectValues(listProductsByBrand(user.login));
 
     assertRedirect(resp, "/");
     // Deep partial match since the product ID is a ULID generated at runtime
@@ -426,7 +426,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
   });
 });
 
-Deno.test("[e2e] GET /api/products/[id]", async (test) => {
+Deno.test("[e2e] GET /api/produtos/[id]", async (test) => {
   setupEnv();
   const product = randomProduct();
   const req = new Request("http://localhost/api/products/" + product.id);
@@ -448,7 +448,7 @@ Deno.test("[e2e] GET /api/products/[id]", async (test) => {
   });
 });
 
-Deno.test("[e2e] GET /api/users", async () => {
+Deno.test("[e2e] GET /api/usuarios", async () => {
   setupEnv();
   const user1 = randomUser();
   const user2 = randomUser();
@@ -465,7 +465,7 @@ Deno.test("[e2e] GET /api/users", async () => {
   assertArrayIncludes(values, [user1, user2]);
 });
 
-Deno.test("[e2e] GET /api/users/[login]", async (test) => {
+Deno.test("[e2e] GET /api/usuarios/[login]", async (test) => {
   setupEnv();
   const user = randomUser();
   const req = new Request("http://localhost/api/users/" + user.login);
@@ -488,7 +488,7 @@ Deno.test("[e2e] GET /api/users/[login]", async (test) => {
   });
 });
 
-Deno.test("[e2e] GET /api/users/[login]/products", async (test) => {
+Deno.test("[e2e] GET /api/usuarios/[login]/produtos", async (test) => {
   setupEnv();
   const user = randomUser();
   const product: Product = {
@@ -505,7 +505,7 @@ Deno.test("[e2e] GET /api/users/[login]/products", async (test) => {
     assertEquals(await resp.text(), "User not found");
   });
 
-  await test.step("serves products as JSON", async () => {
+  await test.step("serves produtos as JSON", async () => {
     await createUser(user);
     await createProduct(product);
     const resp = await handler(req);

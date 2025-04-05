@@ -26,7 +26,7 @@ export default defineRoute<SignedInState>((_req, ctx) => {
               <span>
                 {sessionUser.login}
               </span>
-              <a href={`/users/${sessionUser.login}`} class="link-styles">
+              <a href={`/usuarios/${sessionUser.login}`} class="link-styles">
                 Go to my profile &#8250;
               </a>
             </p>

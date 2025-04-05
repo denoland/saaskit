@@ -1,11 +1,11 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { Signal, useComputed, useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
-import { type Product } from "@/utils/db.ts";
+import {Signal, useComputed, useSignal} from "@preact/signals";
+import {useEffect} from "preact/hooks";
+import {type Product} from "@/utils/db.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
-import { fetchValues } from "@/utils/http.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
-import { timeAgo } from "@/utils/display.ts";
+import {fetchValues} from "@/utils/http.ts";
+import {decodeTime} from "$std/ulid/mod.ts";
+import {timeAgo} from "@/utils/display.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 
 async function fetchVotedProducts() {
@@ -64,57 +64,62 @@ function ProductSummary(props: ProductSummaryProps) {
   const isVotedSig = useSignal(props.isVoted);
 
   return (
-    <div class="py-2 flex gap-4">
-      <div
-        class={`pr-2 text-center flex flex-col justify-center ${
-          isVotedSig.value ? "text-primary" : "hover:text-primary"
-        }`}
-      >
-        {!props.isSignedIn && (
-          <a
-            title="Sign in to vote"
-            href="/signin"
-          >
-            ▲
-          </a>
-        )}
-        {props.isSignedIn && !isVotedSig.value && (
-          <VoteButton
-            product={props.product}
-            scoreSig={scoreSig}
-            isVotedSig={isVotedSig}
-          />
-        )}
-        <p>{scoreSig}</p>
-      </div>
-      <div class="space-y-1">
-        <p>
-          <a
-            class="visited:text-[purple] visited:dark:text-[lightpink] hover:underline mr-4"
-            href={props.product.url}
-          >
-            {props.product.title}
-          </a>
-          <a
-            class="hover:underline text-gray-500 after:content-['_↗']"
-            href={props.product.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {new URL(props.product.url).host}
-          </a>
-        </p>
-        <p class="text-gray-500">
-          <GitHubAvatarImg
-            login={props.product.userLogin}
-            size={24}
-            class="mr-2"
-          />
-          <a class="hover:underline" href={`/users/${props.product.userLogin}`}>
-            {props.product.userLogin}
-          </a>{" "}
-          {timeAgo(new Date(decodeTime(props.product.id)))}
-        </p>
+      <div class="flex flex-col border rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 space-y-6 h-full min-h-[600px]">
+      <img
+        src={props.product.image}
+        alt={props.product.title}
+        class="w-full h-[400px] object-cover rounded-lg"
+       />
+
+      <div className="flex justify-between items-start">
+        <div
+          className={`flex flex-col items-center gap-1 ${
+            isVotedSig.value ? "text-primary" : "hover:text-primary"
+          }`}
+        >
+          {!props.isSignedIn && <a title="Sign in to vote" href="/signin">▲</a>}
+          {props.isSignedIn && !isVotedSig.value && (
+            <VoteButton
+              product={props.product}
+              scoreSig={scoreSig}
+              isVotedSig={isVotedSig}
+            />
+          )}
+          <p>{scoreSig}</p>
+        </div>
+
+        <div className="flex-1 space-y-1">
+          <p>
+            <a
+              className="visited:text-[purple] visited:dark:text-[lightpink] hover:underline mr-4"
+              href={props.product.url}
+            >
+              {props.product.title}
+            </a>
+            <a
+              className="hover:underline text-gray-500 after:content-['_↗']"
+              href={props.product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {new URL(props.product.url).host}
+            </a>
+          </p>
+          <p className="text-gray-500 text-sm">
+            <GitHubAvatarImg
+              login={props.product.userLogin}
+              size={24}
+              class="inline-block mr-2"
+            />
+            <a
+              className="hover:underline"
+              href={`/users/${props.product.userLogin}`}
+            >
+              {props.product.userLogin}
+            </a>{" "}
+            {timeAgo(new Date(decodeTime(props.product.id)))}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -133,7 +138,9 @@ export default function ProductsList(props: ProductsListProps) {
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal<boolean | undefined>(undefined);
   const productsAreVotedSig = useComputed(() =>
-      productsSig.value.map((product) => votedProductsIdsSig.value.includes(product.id))
+    productsSig.value.map((product) =>
+      votedProductsIdsSig.value.includes(product.id)
+    )
   );
 
   async function loadMoreProducts() {
@@ -171,21 +178,20 @@ export default function ProductsList(props: ProductsListProps) {
   }
 
   return (
-    <div>
+      <div class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8">
       {productsSig.value.length
-        ? productsSig.value.map((product, id) => {
-          return (
-            <ProductSummary
-              key={product.id}
-              product={product}
-              isVoted={productsAreVotedSig.value[id]}
-              isSignedIn={props.isSignedIn}
-            />
-          );
-        })
-        : <EmptyProductsList />}
-      {cursorSig.value !== "" && (
-        <button onClick={loadMoreProducts} class="link-styles" type="button">
+        ? productsSig.value.map((product, id) => (
+              <div key={product.id} className="min-w-[90vw] sm:min-w-[700px] snap-center">
+                <ProductSummary
+                    product={product}
+                    isVoted={productsAreVotedSig.value[id]}
+                    isSignedIn={props.isSignedIn}
+                />
+              </div>
+          ))
+          : <EmptyProductsList/>}
+        {cursorSig.value !== "" && (
+            <button onClick={loadMoreProducts} class="link-styles" type="button">
           {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>
       )}

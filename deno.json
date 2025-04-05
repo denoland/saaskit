@@ -21,6 +21,7 @@
   "imports": {
     "@/": "./",
     "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/60220dd33b5b0f6b5c72927c933dbc32a3c4734e/",
+    "chance": "npm:chance@^1.1.12",
     "preact": "https://esm.sh/preact@10.19.2",
     "preact/": "https://esm.sh/preact@10.19.2/",
     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.2",

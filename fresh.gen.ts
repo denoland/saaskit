@@ -8,25 +8,29 @@ import * as $_app from "./routes/_app.tsx";
 import * as $account_index from "./routes/account/index.tsx";
 import * as $account_manage from "./routes/account/manage.ts";
 import * as $account_upgrade from "./routes/account/upgrade.ts";
+import * as $api_marcas_id_ from "./routes/api/marcas/[id].ts";
+import * as $api_marcas_index from "./routes/api/marcas/index.ts";
 import * as $api_me_votes from "./routes/api/me/votes.ts";
-import * as $api_products_id_ from "./routes/api/products/[id].ts";
-import * as $api_products_index from "./routes/api/products/index.ts";
+import * as $api_produtos_id_ from "./routes/api/produtos/[id].ts";
+import * as $api_produtos_index from "./routes/api/produtos/index.ts";
 import * as $api_stripe_webhooks from "./routes/api/stripe-webhooks.ts";
-import * as $api_users_login_index from "./routes/api/users/[login]/index.ts";
-import * as $api_users_login_products from "./routes/api/users/[login]/products.ts";
-import * as $api_users_index from "./routes/api/users/index.ts";
+import * as $api_usuarios_login_index from "./routes/api/usuarios/[login]/index.ts";
+import * as $api_usuarios_login_produtos from "./routes/api/usuarios/[login]/produtos.ts";
+import * as $api_usuarios_index from "./routes/api/usuarios/index.ts";
 import * as $api_vote from "./routes/api/vote.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $dashboard_status from "./routes/dashboard/status.tsx";
 import * as $dashboard_usuarios from "./routes/dashboard/usuarios.tsx";
 import * as $debug_delete from "./routes/debug/delete.ts";
-import * as $debug_products from "./routes/debug/products.ts";
+import * as $debug_marcas from "./routes/debug/marcas.ts";
+import * as $debug_produtos from "./routes/debug/produtos.ts";
 import * as $debug_user from "./routes/debug/user.ts";
 import * as $index from "./routes/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
 import * as $submit from "./routes/submit.tsx";
-import * as $users_login_ from "./routes/users/[login].tsx";
+import * as $usuarios_login_ from "./routes/usuarios/[login].tsx";
 import * as $welcome from "./routes/welcome.tsx";
+import * as $BrandsList from "./islands/BrandsList.tsx";
 import * as $Chart from "./islands/Chart.tsx";
 import * as $ProductsList from "./islands/ProductsList.tsx";
 import * as $UsersTable from "./islands/UsersTable.tsx";
@@ -40,27 +44,31 @@ const manifest = {
     "./routes/account/index.tsx": $account_index,
     "./routes/account/manage.ts": $account_manage,
     "./routes/account/upgrade.ts": $account_upgrade,
+    "./routes/api/marcas/[id].ts": $api_marcas_id_,
+    "./routes/api/marcas/index.ts": $api_marcas_index,
     "./routes/api/me/votes.ts": $api_me_votes,
-    "./routes/api/products/[id].ts": $api_products_id_,
-    "./routes/api/products/index.ts": $api_products_index,
+    "./routes/api/produtos/[id].ts": $api_produtos_id_,
+    "./routes/api/produtos/index.ts": $api_produtos_index,
     "./routes/api/stripe-webhooks.ts": $api_stripe_webhooks,
-    "./routes/api/users/[login]/index.ts": $api_users_login_index,
-    "./routes/api/users/[login]/products.ts": $api_users_login_products,
-    "./routes/api/users/index.ts": $api_users_index,
+    "./routes/api/usuarios/[login]/index.ts": $api_usuarios_login_index,
+    "./routes/api/usuarios/[login]/produtos.ts": $api_usuarios_login_produtos,
+    "./routes/api/usuarios/index.ts": $api_usuarios_index,
     "./routes/api/vote.ts": $api_vote,
     "./routes/dashboard/index.tsx": $dashboard_index,
     "./routes/dashboard/status.tsx": $dashboard_status,
     "./routes/dashboard/usuarios.tsx": $dashboard_usuarios,
     "./routes/debug/delete.ts": $debug_delete,
-    "./routes/debug/products.ts": $debug_products,
+    "./routes/debug/marcas.ts": $debug_marcas,
+    "./routes/debug/produtos.ts": $debug_produtos,
     "./routes/debug/user.ts": $debug_user,
     "./routes/index.tsx": $index,
     "./routes/pricing.tsx": $pricing,
     "./routes/submit.tsx": $submit,
-    "./routes/users/[login].tsx": $users_login_,
+    "./routes/usuarios/[login].tsx": $usuarios_login_,
     "./routes/welcome.tsx": $welcome,
   },
   islands: {
+    "./islands/BrandsList.tsx": $BrandsList,
     "./islands/Chart.tsx": $Chart,
     "./islands/ProductsList.tsx": $ProductsList,
     "./islands/UsersTable.tsx": $UsersTable,

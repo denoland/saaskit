@@ -81,7 +81,7 @@ export default function Header(props: HeaderProps) {
           ? (
             <div className="">
               <a
-                href="/account"
+                href="/produtos"
                 class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
               >
                 Produtos
@@ -95,7 +95,7 @@ export default function Header(props: HeaderProps) {
           )}
         <div className="">
           <a
-            href="/submit"
+            href="/marcas"
             class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
           >
             Marcas

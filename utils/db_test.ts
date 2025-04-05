@@ -13,7 +13,7 @@ import {
   getUserByStripeCustomer,
   type Product,
   listProducts,
-  listProductsByUser,
+  listProductsByBrand,
   listProductsVotedByUser,
   randomProduct,
   randomUser,
@@ -22,7 +22,7 @@ import {
   type User,
 } from "./db.ts";
 
-Deno.test("[db] products", async () => {
+Deno.test("[db] produtos", async () => {
   const user = randomUser();
   const product1: Product = {
     ...randomProduct(),
@@ -38,7 +38,7 @@ Deno.test("[db] products", async () => {
   assertEquals(await getProduct(product1.id), null);
   assertEquals(await getProduct(product2.id), null);
   assertEquals(await collectValues(listProducts()), []);
-  assertEquals(await collectValues(listProductsByUser(user.login)), []);
+  assertEquals(await collectValues(listProductsByBrand(user.login)), []);
 
   await createProduct(product1);
   await createProduct(product2);
@@ -47,7 +47,7 @@ Deno.test("[db] products", async () => {
   assertEquals(await getProduct(product1.id), product1);
   assertEquals(await getProduct(product2.id), product2);
   assertEquals(await collectValues(listProducts()), [product1, product2]);
-  assertEquals(await collectValues(listProductsByUser(user.login)), [
+  assertEquals(await collectValues(listProductsByBrand(user.login)), [
     product1,
     product2,
   ]);

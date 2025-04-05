@@ -53,7 +53,7 @@ Deno.test("[http] fetchValues()", async () => {
     `Request failed: GET ${endpoint}`,
   );
   assertEquals(
-    await fetchValues<Product>(endpoint + "/api/products", resp2Cursor),
+    await fetchValues<Product>(endpoint + "/api/produtos", resp2Cursor),
     resp2Body,
   );
 

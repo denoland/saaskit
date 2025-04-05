@@ -139,8 +139,8 @@ function EnterprisePricingCard() {
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
           Direct line to{" "}
-          <a href="/users/lambtron" class="text-secondary">Andy</a> and{" "}
-          <a href="/users/iuioiua" class="text-secondary">Asher</a>
+          <a href="/Users/saralynx/WebstormProjects/marketplace/routes/usuarios/lambtron" class="text-secondary">Andy</a> and{" "}
+          <a href="/Users/saralynx/WebstormProjects/marketplace/routes/usuarios/iuioiua" class="text-secondary">Asher</a>
         </p>
         <p>
           <IconCheckCircle class={CHECK_STYLES} />
@@ -170,7 +170,7 @@ export default defineRoute<State>(async (_req, ctx) => {
 
   if (data.length === 0) {
     throw new Error(
-      "No Stripe products have been found. Please see https://github.com/denoland/saaskit#set-up-stripe-optional to set up Stripe locally and create a Stripe product.",
+      "No Stripe produtos have been found. Please see https://github.com/denoland/saaskit#set-up-stripe-optional to set up Stripe locally and create a Stripe product.",
     );
   }
 

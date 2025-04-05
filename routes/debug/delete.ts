@@ -20,8 +20,12 @@ export const handler: Handlers = {
             await kv.delete(entry.key);
         }
 
+        for await (const entry of kv.list({ prefix: ["brands"] })) {
+            await kv.delete(entry.key);
+        }
+
         return new Response(
-            JSON.stringify({ status: "✅ Users + products wiped from KV" }, null, 2),
+            JSON.stringify({ status: "✅ Usuarios + produtos + marcas wiped from KV" }, null, 2),
             { headers: { "Content-Type": "application/json" } }
         );
 

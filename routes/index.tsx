@@ -26,7 +26,7 @@ export default defineRoute<State>((_req, ctx) => {
           />
         )}
       </Head>
-      <main class="flex-1 p-4">
+      <main class="">
         <ProductsList
           endpoint={endpoint}
           isSignedIn={isSignedIn}
