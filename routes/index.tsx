@@ -30,6 +30,7 @@ export default defineRoute<State>((_req, ctx) => {
         <ProductsList
           endpoint={endpoint}
           isSignedIn={isSignedIn}
+          layout="carousel"
         />
       </main>
     </>

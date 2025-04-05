@@ -46,3 +46,7 @@
 .heading-with-margin-styles {
   @apply text-3xl font-bold mb-8;
 }
+
+.product-grid .product-summary img {
+  height: 200px;
+}

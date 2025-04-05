@@ -27,6 +27,7 @@ import * as $debug_produtos from "./routes/debug/produtos.ts";
 import * as $debug_user from "./routes/debug/user.ts";
 import * as $index from "./routes/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
+import * as $produtos_index from "./routes/produtos/index.tsx";
 import * as $submit from "./routes/submit.tsx";
 import * as $usuarios_login_ from "./routes/usuarios/[login].tsx";
 import * as $welcome from "./routes/welcome.tsx";
@@ -63,6 +64,7 @@ const manifest = {
     "./routes/debug/user.ts": $debug_user,
     "./routes/index.tsx": $index,
     "./routes/pricing.tsx": $pricing,
+    "./routes/produtos/index.tsx": $produtos_index,
     "./routes/submit.tsx": $submit,
     "./routes/usuarios/[login].tsx": $usuarios_login_,
     "./routes/welcome.tsx": $welcome,

@@ -64,7 +64,7 @@ function ProductSummary(props: ProductSummaryProps) {
   const isVotedSig = useSignal(props.isVoted);
 
   return (
-      <div class="flex flex-col border rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 space-y-6 h-full min-h-[600px]">
+      <div class="flex flex-col border rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 space-y-6 h-full ">
       <img
         src={props.product.image}
         alt={props.product.title}
@@ -130,6 +130,7 @@ export interface ProductsListProps {
   endpoint: string;
   /** Whether the user is signed-in */
   isSignedIn: boolean;
+  layout: "carousel" | "grid";
 }
 
 export default function ProductsList(props: ProductsListProps) {
@@ -179,22 +180,41 @@ export default function ProductsList(props: ProductsListProps) {
 
   return (
       <div class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8">
-      {productsSig.value.length
-        ? productsSig.value.map((product, id) => (
-              <div key={product.id} className="min-w-[90vw] sm:min-w-[700px] snap-center">
-                <ProductSummary
-                    product={product}
-                    isVoted={productsAreVotedSig.value[id]}
-                    isSignedIn={props.isSignedIn}
-                />
-              </div>
-          ))
-          : <EmptyProductsList/>}
-        {cursorSig.value !== "" && (
-            <button onClick={loadMoreProducts} class="link-styles" type="button">
-          {isLoadingSig.value ? "Loading..." : "Load more"}
-        </button>
-      )}
-    </div>
+        {productsSig.value.length > 0 ? (
+            props.layout === "carousel" ? (
+                <div class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8">
+                  {productsSig.value.map((product, id) => (
+                      <div key={product.id} class="min-w-[90vw] sm:min-w-[700px] snap-center">
+                        <ProductSummary
+                            product={product}
+                            isVoted={productsAreVotedSig.value[id]}
+                            isSignedIn={props.isSignedIn}
+                        />
+                      </div>
+                  ))}
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
+                  {productsSig.value.map((product, id) => (
+                      <div
+                          key={product.id}
+                          className="h-full max-h-[400px] min-h-[300px] flex flex-col"
+                      >
+                        <div
+                            className="flex-1 flex flex-col overflow-hidden rounded-xl border shadow bg-white dark:bg-zinc-900">
+                          <ProductSummary
+                              product={product}
+                              isVoted={productsAreVotedSig.value[id]}
+                              isSignedIn={props.isSignedIn}
+                          />
+                        </div>
+                      </div>
+                  ))}
+                </div>
+            )
+        ) : (
+            <EmptyProductsList/>
+        )}
+      </div>
   );
 }
