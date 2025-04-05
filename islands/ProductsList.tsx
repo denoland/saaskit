@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import {Signal, useComputed, useSignal} from "@preact/signals";
-import {useEffect} from "preact/hooks";
+import {useEffect, useRef} from "preact/hooks";
 import {type Product} from "@/utils/db.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import {fetchValues} from "@/utils/http.ts";
@@ -64,12 +64,12 @@ function ProductSummary(props: ProductSummaryProps) {
   const isVotedSig = useSignal(props.isVoted);
 
   return (
-      <div class="flex flex-col border rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 space-y-6 h-full ">
+    <div class="flex flex-col border rounded-2xl p-6 shadow-lg bg-white dark:bg-zinc-900 space-y-6 h-full ">
       <img
         src={props.product.image}
         alt={props.product.title}
         class="w-full h-[400px] object-cover rounded-lg"
-       />
+      />
 
       <div className="flex justify-between items-start">
         <div
@@ -144,6 +144,8 @@ export default function ProductsList(props: ProductsListProps) {
     )
   );
 
+  const carouselRef = useRef<HTMLDivElement>(null);
+
   async function loadMoreProducts() {
     if (isLoadingSig.value) return;
     isLoadingSig.value = true;
@@ -178,43 +180,87 @@ export default function ProductsList(props: ProductsListProps) {
     return <p class="link-styles">Loading...</p>;
   }
 
+  function scrollCarousel(direction: "left" | "right") {
+    const el = carouselRef.current;
+    if (!el) return;
+    const scrollAmount = el.clientWidth * 0.9; // scroll by 90% of container width
+    el.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  }
+
   return (
-      <div class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8">
-        {productsSig.value.length > 0 ? (
-            props.layout === "carousel" ? (
-                <div class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8">
+    <>
+      {productsSig.value.length > 0
+        ? (
+          props.layout === "carousel"
+            ? (
+              <div class="relative">
+                {/* Buttons */}
+                <button
+                  type="button"
+                  onClick={() => scrollCarousel("left")}
+                  class="absolute top-1/2 left-4 -translate-y-1/2 z-50
+         w-12 h-12 flex items-center justify-center
+         text-3xl text-black dark:text-white
+         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
+         transition"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollCarousel("right")}
+                  class="absolute top-1/2 right-4 -translate-y-1/2 z-50
+         w-12 h-12 flex items-center justify-center
+         text-3xl text-black dark:text-white
+         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
+         transition"
+                >
+                  →
+                </button>
+
+                {/* Carousel container */}
+                <div
+                  ref={carouselRef}
+                  class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8 scroll-smooth"
+                >
                   {productsSig.value.map((product, id) => (
-                      <div key={product.id} class="min-w-[90vw] sm:min-w-[700px] snap-center">
-                        <ProductSummary
-                            product={product}
-                            isVoted={productsAreVotedSig.value[id]}
-                            isSignedIn={props.isSignedIn}
-                        />
-                      </div>
+                    <div
+                      key={product.id}
+                      class="min-w-[90vw] sm:min-w-[700px] snap-center"
+                    >
+                      <ProductSummary
+                        product={product}
+                        isVoted={productsAreVotedSig.value[id]}
+                        isSignedIn={props.isSignedIn}
+                      />
+                    </div>
                   ))}
                 </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
-                  {productsSig.value.map((product, id) => (
-                      <div
-                          key={product.id}
-                          className="h-full max-h-[400px] min-h-[300px] flex flex-col"
-                      >
-                        <div
-                            className="flex-1 flex flex-col overflow-hidden rounded-xl border shadow bg-white dark:bg-zinc-900">
-                          <ProductSummary
-                              product={product}
-                              isVoted={productsAreVotedSig.value[id]}
-                              isSignedIn={props.isSignedIn}
-                          />
-                        </div>
-                      </div>
-                  ))}
-                </div>
+              </div>
             )
-        ) : (
-            <EmptyProductsList/>
-        )}
-      </div>
+            : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
+                {productsSig.value.map((product, id) => (
+                  <div
+                    key={product.id}
+                    className="h-full max-h-[400px] min-h-[300px] flex flex-col"
+                  >
+                    <div className="flex-1 flex flex-col overflow-hidden rounded-xl border shadow bg-white dark:bg-zinc-900">
+                      <ProductSummary
+                        product={product}
+                        isVoted={productsAreVotedSig.value[id]}
+                        isSignedIn={props.isSignedIn}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+        )
+        : <EmptyProductsList />}
+    </>
   );
 }
