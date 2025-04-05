@@ -43,7 +43,7 @@ function FreePlanCard() {
 
       <div class="text-center">
         <a
-          href="/account/manage"
+          href="/usuarios/gerenciar"
           class="button-styles w-full rounded-md block"
         >
           Manage
@@ -99,7 +99,7 @@ function PremiumPlanCard(props: PremiumCardPlanProps) {
           ? (
             <a
               class="button-styles w-full rounded-md block"
-              href="/account/manage"
+              href="/usuarios/gerenciar"
             >
               Manage
             </a>
@@ -107,7 +107,7 @@ function PremiumPlanCard(props: PremiumCardPlanProps) {
           : (
             <a
               class="button-styles w-full rounded-md block"
-              href="/account/upgrade"
+              href="/usuarios/upgrade"
             >
               Upgrade
             </a>

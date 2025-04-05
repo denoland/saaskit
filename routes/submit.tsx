@@ -3,7 +3,7 @@ import Head from "@/components/Head.tsx";
 import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
 import IconCircleX from "tabler_icons_tsx/circle-x.tsx";
 import { defineRoute, Handlers } from "$fresh/server.ts";
-import { createItem } from "@/utils/db.ts";
+import { createProduct } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import {
   assertSignedIn,
@@ -33,7 +33,7 @@ export const handler: Handlers<undefined, SignedInState> = {
       return redirect("/submit?error");
     }
 
-    await createItem({
+    await createProduct({
       id: ulid(),
       userLogin: ctx.state.sessionUser.login,
       title,

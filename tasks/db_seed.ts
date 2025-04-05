@@ -1,11 +1,11 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 // Description: Seeds the kv db with Hacker News stories
-import { createItem, createUser } from "@/utils/db.ts";
+import { createProduct, createUser } from "@/utils/db.ts";
 import { ulid } from "$std/ulid/mod.ts";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
-const API_ITEM_URL = `${API_BASE_URL}/item`;
+const API_PRODUCT_URL = `${API_BASE_URL}/item`;
 const API_TOP_STORIES_URL = `${API_BASE_URL}/topstories.json`;
 const TOP_STORIES_COUNT = 10;
 
@@ -24,14 +24,14 @@ const topStories = allTopStories.slice(0, TOP_STORIES_COUNT);
 const storiesPromises = [];
 
 for (const id of topStories) {
-  storiesPromises.push(fetch(`${API_ITEM_URL}/${id}.json`));
+  storiesPromises.push(fetch(`${API_PRODUCT_URL}/${id}.json`));
 }
 
 const storiesResponses = await Promise.all(storiesPromises);
 const stories = await Promise.all(
   storiesResponses.map((r) => r.json()),
 ) as Story[];
-const items = stories.map(({ by: userLogin, title, url, score, time }) => ({
+const products = stories.map(({ by: userLogin, title, url, score, time }) => ({
   id: ulid(),
   userLogin,
   title,
@@ -40,13 +40,14 @@ const items = stories.map(({ by: userLogin, title, url, score, time }) => ({
   createdAt: new Date(time * 1000),
 })).filter(({ url }) => url);
 
-const users = new Set(items.map((user) => user.userLogin));
+const users = new Set(products.map((user) => user.userLogin));
 
-const itemPromises = [];
-for (const item of items) {
-  itemPromises.push(createItem(item));
+const productPromises = [];
+for (const product of products) {
+  console.log("nya")
+  productPromises.push(createProduct(product));
 }
-await Promise.all(itemPromises);
+await Promise.all(productPromises);
 
 const userPromises = [];
 for (const login of users) {

@@ -6,11 +6,11 @@ import { defineRoute } from "$fresh/server.ts";
 import { Partial } from "$fresh/runtime.ts";
 
 export default defineRoute((_req, ctx) => {
-  const endpoint = "/api/users";
+  const endpoint = "/api/usuarios";
 
   return (
     <>
-      <Head title="Users" href={ctx.url.href}>
+      <Head title="Usuarios" href={ctx.url.href}>
         <link
           as="fetch"
           crossOrigin="anonymous"
@@ -22,15 +22,15 @@ export default defineRoute((_req, ctx) => {
         <h1 class="heading-with-margin-styles">Dashboard</h1>
         <TabsBar
           links={[{
-            path: "/dashboard/stats",
-            innerText: "Stats",
+            path: "/dashboard/status",
+            innerText: "Status",
           }, {
-            path: "/dashboard/users",
-            innerText: "Users",
+            path: "/dashboard/usuarios",
+            innerText: "Usuarios",
           }]}
           currentPath={ctx.url.pathname}
         />
-        <Partial name="users">
+        <Partial name="usuarios">
           <UsersTable endpoint={endpoint} />
         </Partial>
       </main>

@@ -8,24 +8,27 @@ import * as $_app from "./routes/_app.tsx";
 import * as $account_index from "./routes/account/index.tsx";
 import * as $account_manage from "./routes/account/manage.ts";
 import * as $account_upgrade from "./routes/account/upgrade.ts";
-import * as $api_items_id_ from "./routes/api/items/[id].ts";
-import * as $api_items_index from "./routes/api/items/index.ts";
 import * as $api_me_votes from "./routes/api/me/votes.ts";
+import * as $api_products_id_ from "./routes/api/products/[id].ts";
+import * as $api_products_index from "./routes/api/products/index.ts";
 import * as $api_stripe_webhooks from "./routes/api/stripe-webhooks.ts";
 import * as $api_users_login_index from "./routes/api/users/[login]/index.ts";
-import * as $api_users_login_items from "./routes/api/users/[login]/items.ts";
+import * as $api_users_login_products from "./routes/api/users/[login]/products.ts";
 import * as $api_users_index from "./routes/api/users/index.ts";
 import * as $api_vote from "./routes/api/vote.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
-import * as $dashboard_stats from "./routes/dashboard/stats.tsx";
-import * as $dashboard_users from "./routes/dashboard/users.tsx";
+import * as $dashboard_status from "./routes/dashboard/status.tsx";
+import * as $dashboard_usuarios from "./routes/dashboard/usuarios.tsx";
+import * as $debug_delete from "./routes/debug/delete.ts";
+import * as $debug_products from "./routes/debug/products.ts";
+import * as $debug_user from "./routes/debug/user.ts";
 import * as $index from "./routes/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
 import * as $submit from "./routes/submit.tsx";
 import * as $users_login_ from "./routes/users/[login].tsx";
 import * as $welcome from "./routes/welcome.tsx";
 import * as $Chart from "./islands/Chart.tsx";
-import * as $ItemsList from "./islands/ItemsList.tsx";
+import * as $ProductsList from "./islands/ProductsList.tsx";
 import * as $UsersTable from "./islands/UsersTable.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -37,17 +40,20 @@ const manifest = {
     "./routes/account/index.tsx": $account_index,
     "./routes/account/manage.ts": $account_manage,
     "./routes/account/upgrade.ts": $account_upgrade,
-    "./routes/api/items/[id].ts": $api_items_id_,
-    "./routes/api/items/index.ts": $api_items_index,
     "./routes/api/me/votes.ts": $api_me_votes,
+    "./routes/api/products/[id].ts": $api_products_id_,
+    "./routes/api/products/index.ts": $api_products_index,
     "./routes/api/stripe-webhooks.ts": $api_stripe_webhooks,
     "./routes/api/users/[login]/index.ts": $api_users_login_index,
-    "./routes/api/users/[login]/items.ts": $api_users_login_items,
+    "./routes/api/users/[login]/products.ts": $api_users_login_products,
     "./routes/api/users/index.ts": $api_users_index,
     "./routes/api/vote.ts": $api_vote,
     "./routes/dashboard/index.tsx": $dashboard_index,
-    "./routes/dashboard/stats.tsx": $dashboard_stats,
-    "./routes/dashboard/users.tsx": $dashboard_users,
+    "./routes/dashboard/status.tsx": $dashboard_status,
+    "./routes/dashboard/usuarios.tsx": $dashboard_usuarios,
+    "./routes/debug/delete.ts": $debug_delete,
+    "./routes/debug/products.ts": $debug_products,
+    "./routes/debug/user.ts": $debug_user,
     "./routes/index.tsx": $index,
     "./routes/pricing.tsx": $pricing,
     "./routes/submit.tsx": $submit,
@@ -56,7 +62,7 @@ const manifest = {
   },
   islands: {
     "./islands/Chart.tsx": $Chart,
-    "./islands/ItemsList.tsx": $ItemsList,
+    "./islands/ProductsList.tsx": $ProductsList,
     "./islands/UsersTable.tsx": $UsersTable,
   },
   baseUrl: import.meta.url,

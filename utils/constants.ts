@@ -1,3 +1,3 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-export const SITE_NAME = "Deno Hunt (Beta)";
-export const SITE_DESCRIPTION = "Discover new Deno projects. Share your own.";
+export const SITE_NAME = "Casa de Criadores";
+export const SITE_DESCRIPTION = "meowmeow :3";

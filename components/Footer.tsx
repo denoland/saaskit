@@ -60,30 +60,6 @@ export default function Footer() {
         >
           Blog
         </a>
-        <a href="/feed" aria-label="Deno Hunt RSS Feed" class="link-styles">
-          <IconRss class="size-6" />
-        </a>
-        <a
-          href="https://discord.gg/deno"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Deno SaaSKit on Discord"
-          class="link-styles"
-        >
-          <IconBrandDiscord class="size-6" />
-        </a>
-        <a
-          href="https://github.com/denoland/saaskit"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Deno SaaSKit repo on GitHub"
-          class="link-styles"
-        >
-          <IconBrandGithub class="size-6" />
-        </a>
-        <a href="https://fresh.deno.dev">
-          <MadeWithFreshBadge />
-        </a>
       </nav>
     </footer>
   );

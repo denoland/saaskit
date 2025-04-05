@@ -4,13 +4,13 @@ import { createHandler } from "$fresh/server.ts";
 import manifest from "@/fresh.gen.ts";
 import {
   collectValues,
-  createItem,
+  createProduct,
   createUser,
   createVote,
   getUser,
-  type Item,
-  listItemsByUser,
-  randomItem,
+  Product,
+  listProductsByUser,
+  randomProduct,
   randomUser,
   User,
 } from "@/utils/db.ts";
@@ -343,19 +343,19 @@ Deno.test("[e2e] GET /feed", async () => {
   assertXml(resp);
 });
 
-Deno.test("[e2e] GET /api/items", async () => {
+Deno.test("[e2e] GET /api/products", async () => {
   setupEnv();
-  const item1 = randomItem();
-  const item2 = randomItem();
-  await createItem(item1);
-  await createItem(item2);
-  const req = new Request("http://localhost/api/items");
+  const product1 = randomProduct();
+  const product2 = randomProduct();
+  await createProduct(product1);
+  await createProduct(product2);
+  const req = new Request("http://localhost/api/products");
   const resp = await handler(req);
   const { values } = await resp.json();
 
   assertEquals(resp.status, STATUS_CODE.OK);
   assertJson(resp);
-  assertArrayIncludes(values, [item1, item2]);
+  assertArrayIncludes(values, [product1, product2]);
 });
 
 Deno.test("[e2e] POST /submit", async (test) => {
@@ -364,7 +364,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
   const user = randomUser();
   await createUser(user);
 
-  await test.step("redirects to `/submit?error` if item is missing title", async () => {
+  await test.step("redirects to `/submit?error` if product is missing title", async () => {
     const body = new FormData();
     const resp = await handler(
       new Request(url, {
@@ -377,7 +377,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
     assertRedirect(resp, "/submit?error");
   });
 
-  await test.step("redirects to `/submit?error` if item is missing URL", async () => {
+  await test.step("redirects to `/submit?error` if product is missing URL", async () => {
     const body = new FormData();
     body.set("title", "Title text");
     const resp = await handler(
@@ -391,7 +391,7 @@ Deno.test("[e2e] POST /submit", async (test) => {
     assertRedirect(resp, "/submit?error");
   });
 
-  await test.step("redirects to `/submit?error` if item has an invalid URL", async () => {
+  await test.step("redirects to `/submit?error` if product has an invalid URL", async () => {
     const body = new FormData();
     body.set("title", "Title text");
     body.set("url", "invalid-url");
@@ -406,11 +406,11 @@ Deno.test("[e2e] POST /submit", async (test) => {
     assertRedirect(resp, "/submit?error");
   });
 
-  await test.step("creates an item and redirects to the home page", async () => {
-    const item = { title: "Title text", url: "http://bobross.com" };
+  await test.step("creates an product and redirects to the home page", async () => {
+    const product = { title: "Title text", url: "http://bobross.com" };
     const body = new FormData();
-    body.set("title", item.title);
-    body.set("url", item.url);
+    body.set("title", product.title);
+    body.set("url", product.url);
     const resp = await handler(
       new Request(url, {
         method: "POST",
@@ -418,33 +418,33 @@ Deno.test("[e2e] POST /submit", async (test) => {
         body,
       }),
     );
-    const items = await collectValues(listItemsByUser(user.login));
+    const products = await collectValues(listProductsByUser(user.login));
 
     assertRedirect(resp, "/");
-    // Deep partial match since the item ID is a ULID generated at runtime
-    assertObjectMatch(items[0], item);
+    // Deep partial match since the product ID is a ULID generated at runtime
+    assertObjectMatch(products[0], product);
   });
 });
 
-Deno.test("[e2e] GET /api/items/[id]", async (test) => {
+Deno.test("[e2e] GET /api/products/[id]", async (test) => {
   setupEnv();
-  const item = randomItem();
-  const req = new Request("http://localhost/api/items/" + item.id);
+  const product = randomProduct();
+  const req = new Request("http://localhost/api/products/" + product.id);
 
-  await test.step("serves not found response if item not found", async () => {
+  await test.step("serves not found response if product not found", async () => {
     const resp = await handler(req);
 
     assertEquals(resp.status, STATUS_CODE.NotFound);
-    assertEquals(await resp.text(), "Item not found");
+    assertEquals(await resp.text(), "product not found");
   });
 
-  await test.step("serves item as JSON", async () => {
-    await createItem(item);
+  await test.step("serves product as JSON", async () => {
+    await createProduct(product);
     const resp = await handler(req);
 
     assertEquals(resp.status, STATUS_CODE.OK);
     assertJson(resp);
-    assertEquals(await resp.json(), item);
+    assertEquals(await resp.json(), product);
   });
 });
 
@@ -488,14 +488,14 @@ Deno.test("[e2e] GET /api/users/[login]", async (test) => {
   });
 });
 
-Deno.test("[e2e] GET /api/users/[login]/items", async (test) => {
+Deno.test("[e2e] GET /api/users/[login]/products", async (test) => {
   setupEnv();
   const user = randomUser();
-  const item: Item = {
-    ...randomItem(),
+  const product: Product = {
+    ...randomProduct(),
     userLogin: user.login,
   };
-  const req = new Request(`http://localhost/api/users/${user.login}/items`);
+  const req = new Request(`http://localhost/api/users/${user.login}/products`);
 
   await test.step("serves not found response if user not found", async () => {
     const resp = await handler(req);
@@ -505,25 +505,25 @@ Deno.test("[e2e] GET /api/users/[login]/items", async (test) => {
     assertEquals(await resp.text(), "User not found");
   });
 
-  await test.step("serves items as JSON", async () => {
+  await test.step("serves products as JSON", async () => {
     await createUser(user);
-    await createItem(item);
+    await createProduct(product);
     const resp = await handler(req);
     const { values } = await resp.json();
 
     assertEquals(resp.status, STATUS_CODE.OK);
     assertJson(resp);
-    assertArrayIncludes(values, [item]);
+    assertArrayIncludes(values, [product]);
   });
 });
 
 Deno.test("[e2e] POST /api/vote", async (test) => {
   setupEnv();
-  const item = randomItem();
+  const product = randomProduct();
   const user = randomUser();
-  await createItem(item);
+  await createProduct(product);
   await createUser(user);
-  const url = `http://localhost/api/vote?item_id=${item.id}`;
+  const url = `http://localhost/api/vote?item_id=${product.id}`;
 
   await test.step("serves unauthorized response if the session user is not signed in", async () => {
     const resp = await handler(new Request(url, { method: "POST" }));
@@ -533,7 +533,7 @@ Deno.test("[e2e] POST /api/vote", async (test) => {
     assertEquals(await resp.text(), "User must be signed in");
   });
 
-  await test.step("serves not found response if the item is not found", async () => {
+  await test.step("serves not found response if the product is not found", async () => {
     const resp = await handler(
       new Request("http://localhost/api/vote?item_id=bob-ross", {
         method: "POST",
@@ -543,12 +543,12 @@ Deno.test("[e2e] POST /api/vote", async (test) => {
 
     assertEquals(resp.status, STATUS_CODE.NotFound);
     assertText(resp);
-    assertEquals(await resp.text(), "Item not found");
+    assertEquals(await resp.text(), "product not found");
   });
 
   await test.step("creates a vote", async () => {
-    const item = { ...randomItem(), userLogin: user.login };
-    await createItem(item);
+    const product = { ...randomProduct(), userLogin: user.login };
+    await createProduct(product);
     const resp = await handler(
       new Request(url, {
         method: "POST",
@@ -970,17 +970,17 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
   setupEnv();
   const user = randomUser();
   await createUser(user);
-  const item1 = randomItem();
-  const item2 = randomItem();
-  await createItem(item1);
-  await createItem(item2);
+  const product1 = randomProduct();
+  const product2 = randomProduct();
+  await createProduct(product1);
+  await createProduct(product2);
   await createVote({
     userLogin: user.login,
-    itemId: item1.id,
+    productId: product1.id,
   });
   await createVote({
     userLogin: user.login,
-    itemId: item2.id,
+    productId: product2.id,
   });
   const resp = await handler(
     new Request("http://localhost/api/me/votes", {
@@ -991,7 +991,7 @@ Deno.test("[e2e] GET /api/me/votes", async () => {
 
   assertEquals(resp.status, STATUS_CODE.OK);
   assertJson(resp);
-  assertArrayIncludes(body, [{ ...item1, score: 1 }, { ...item2, score: 1 }]);
+  assertArrayIncludes(body, [{ ...product1, score: 1 }, { ...product2, score: 1 }]);
 });
 
 Deno.test("[e2e] GET /welcome", async () => {

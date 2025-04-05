@@ -69,7 +69,7 @@ export default {
       middleware: { handler: setSessionState },
     },
     {
-      path: "/account",
+      path: "/usuario",
       middleware: { handler: ensureSignedIn },
     },
     {
@@ -77,11 +77,15 @@ export default {
       middleware: { handler: ensureSignedIn },
     },
     {
-      path: "/api/me",
+      path: "/produtos",
       middleware: { handler: ensureSignedIn },
     },
     {
       path: "/api/vote",
+      middleware: { handler: ensureSignedIn },
+    },
+    {
+      path: "/api/me",
       middleware: { handler: ensureSignedIn },
     },
   ],

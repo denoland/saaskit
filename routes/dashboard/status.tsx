@@ -49,15 +49,15 @@ export default defineRoute((_req, ctx) => {
         <h1 class="heading-with-margin-styles">Dashboard</h1>
         <TabsBar
           links={[{
-            path: "/dashboard/stats",
-            innerText: "Stats",
+            path: "/dashboard/status",
+            innerText: "Status",
           }, {
-            path: "/dashboard/users",
-            innerText: "Users",
+            path: "/dashboard/usuarios",
+            innerText: "Usuarios",
           }]}
           currentPath={ctx.url.pathname}
         />
-        <Partial name="stats">
+        <Partial name="status">
           <div class="flex-1 relative">
             <Chart
               type="line"

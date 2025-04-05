@@ -4,9 +4,9 @@ import { DAY, HOUR, MINUTE, SECOND } from "$std/datetime/constants.ts";
 import { assertEquals, assertThrows } from "$std/assert/mod.ts";
 
 Deno.test("[display] pluralize()", () => {
-  assertEquals(pluralize(0, "item"), "0 items");
-  assertEquals(pluralize(1, "item"), "1 item");
-  assertEquals(pluralize(2, "item"), "2 items");
+  assertEquals(pluralize(0, "product"), "0 products");
+  assertEquals(pluralize(1, "product"), "1 product");
+  assertEquals(pluralize(2, "product"), "2 products");
 });
 
 Deno.test("[display] timeAgo()", () => {

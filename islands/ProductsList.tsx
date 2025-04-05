@@ -1,25 +1,25 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { Signal, useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-import { type Item } from "@/utils/db.ts";
+import { type Product } from "@/utils/db.ts";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import { fetchValues } from "@/utils/http.ts";
 import { decodeTime } from "$std/ulid/mod.ts";
 import { timeAgo } from "@/utils/display.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 
-async function fetchVotedItems() {
+async function fetchVotedProducts() {
   const url = "/api/me/votes";
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
-  return await resp.json() as Item[];
+  return await resp.json() as Product[];
 }
 
-function EmptyItemsList() {
+function EmptyProductsList() {
   return (
     <div class="flex flex-col justify-center items-center gap-2 pt-16">
       <IconInfo class="size-10 text-gray-400 dark:text-gray-600" />
-      <p>No items found</p>
+      <p>No products found</p>
       <a href="/submit" class="text-primary hover:underline">
         Submit your project &#8250;
       </a>
@@ -28,7 +28,7 @@ function EmptyItemsList() {
 }
 
 interface VoteButtonProps {
-  item: Item;
+  product: Product;
   scoreSig: Signal<number>;
   isVotedSig: Signal<boolean>;
 }
@@ -36,7 +36,7 @@ interface VoteButtonProps {
 function VoteButton(props: VoteButtonProps) {
   async function onClick(event: MouseEvent) {
     if (event.detail !== 1) return;
-    const resp = await fetch(`/api/vote?item_id=${props.item.id}`, {
+    const resp = await fetch(`/api/vote?item_id=${props.product.id}`, {
       method: "POST",
     });
     if (!resp.ok) throw new Error(await resp.text());
@@ -51,16 +51,16 @@ function VoteButton(props: VoteButtonProps) {
   );
 }
 
-interface ItemSummaryProps {
-  item: Item;
-  /** Whether the item has been voted-for by the signed-in user */
+interface ProductSummaryProps {
+  product: Product;
+  /** Whether the product has been voted-for by the signed-in user */
   isVoted: boolean;
   /** Whether the user is signed-in */
   isSignedIn: boolean;
 }
 
-function ItemSummary(props: ItemSummaryProps) {
-  const scoreSig = useSignal(props.item.score);
+function ProductSummary(props: ProductSummaryProps) {
+  const scoreSig = useSignal(props.product.score);
   const isVotedSig = useSignal(props.isVoted);
 
   return (
@@ -80,7 +80,7 @@ function ItemSummary(props: ItemSummaryProps) {
         )}
         {props.isSignedIn && !isVotedSig.value && (
           <VoteButton
-            item={props.item}
+            product={props.product}
             scoreSig={scoreSig}
             isVotedSig={isVotedSig}
           />
@@ -91,60 +91,60 @@ function ItemSummary(props: ItemSummaryProps) {
         <p>
           <a
             class="visited:text-[purple] visited:dark:text-[lightpink] hover:underline mr-4"
-            href={props.item.url}
+            href={props.product.url}
           >
-            {props.item.title}
+            {props.product.title}
           </a>
           <a
             class="hover:underline text-gray-500 after:content-['_↗']"
-            href={props.item.url}
+            href={props.product.url}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {new URL(props.item.url).host}
+            {new URL(props.product.url).host}
           </a>
         </p>
         <p class="text-gray-500">
           <GitHubAvatarImg
-            login={props.item.userLogin}
+            login={props.product.userLogin}
             size={24}
             class="mr-2"
           />
-          <a class="hover:underline" href={`/users/${props.item.userLogin}`}>
-            {props.item.userLogin}
+          <a class="hover:underline" href={`/users/${props.product.userLogin}`}>
+            {props.product.userLogin}
           </a>{" "}
-          {timeAgo(new Date(decodeTime(props.item.id)))}
+          {timeAgo(new Date(decodeTime(props.product.id)))}
         </p>
       </div>
     </div>
   );
 }
 
-export interface ItemsListProps {
+export interface ProductsListProps {
   /** Endpoint URL of the REST API to make the fetch request to */
   endpoint: string;
   /** Whether the user is signed-in */
   isSignedIn: boolean;
 }
 
-export default function ItemsList(props: ItemsListProps) {
-  const itemsSig = useSignal<Item[]>([]);
-  const votedItemsIdsSig = useSignal<string[]>([]);
+export default function ProductsList(props: ProductsListProps) {
+  const productsSig = useSignal<Product[]>([]);
+  const votedProductsIdsSig = useSignal<string[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal<boolean | undefined>(undefined);
-  const itemsAreVotedSig = useComputed(() =>
-    itemsSig.value.map((item) => votedItemsIdsSig.value.includes(item.id))
+  const productsAreVotedSig = useComputed(() =>
+      productsSig.value.map((product) => votedProductsIdsSig.value.includes(product.id))
   );
 
-  async function loadMoreItems() {
+  async function loadMoreProducts() {
     if (isLoadingSig.value) return;
     isLoadingSig.value = true;
     try {
-      const { values, cursor } = await fetchValues<Item>(
+      const { values, cursor } = await fetchValues<Product>(
         props.endpoint,
         cursorSig.value,
       );
-      itemsSig.value = [...itemsSig.value, ...values];
+      productsSig.value = [...productsSig.value, ...values];
       cursorSig.value = cursor;
     } catch (error) {
       console.error((error as Error).message);
@@ -155,15 +155,15 @@ export default function ItemsList(props: ItemsListProps) {
 
   useEffect(() => {
     if (!props.isSignedIn) {
-      loadMoreItems();
+      loadMoreProducts();
       return;
     }
 
-    fetchVotedItems()
-      .then((votedItems) =>
-        votedItemsIdsSig.value = votedItems.map(({ id }) => id)
+    fetchVotedProducts()
+      .then((votedProducts) =>
+        votedProductsIdsSig.value = votedProducts.map(({ id }) => id)
       )
-      .finally(() => loadMoreItems());
+      .finally(() => loadMoreProducts());
   }, []);
 
   if (isLoadingSig.value === undefined) {
@@ -172,20 +172,20 @@ export default function ItemsList(props: ItemsListProps) {
 
   return (
     <div>
-      {itemsSig.value.length
-        ? itemsSig.value.map((item, id) => {
+      {productsSig.value.length
+        ? productsSig.value.map((product, id) => {
           return (
-            <ItemSummary
-              key={item.id}
-              item={item}
-              isVoted={itemsAreVotedSig.value[id]}
+            <ProductSummary
+              key={product.id}
+              product={product}
+              isVoted={productsAreVotedSig.value[id]}
               isSignedIn={props.isSignedIn}
             />
           );
         })
-        : <EmptyItemsList />}
+        : <EmptyProductsList />}
       {cursorSig.value !== "" && (
-        <button onClick={loadMoreItems} class="link-styles" type="button">
+        <button onClick={loadMoreProducts} class="link-styles" type="button">
           {isLoadingSig.value ? "Loading..." : "Load more"}
         </button>
       )}

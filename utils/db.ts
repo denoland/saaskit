@@ -12,30 +12,31 @@ if (
 ) {
   path = Deno.env.get(DENO_KV_PATH_KEY);
 }
-export const kv = await Deno.openKv(path);
-
+export const kv = await Deno.openKv(
+    Deno.env.get("DENO_DEPLOYMENT_ID") ? undefined : "./dev-kv.sqlite3",
+);
 /**
  * Returns an array of values of a given {@linkcode Deno.KvListIterator} that's
  * been iterated over.
  *
  * @example
  * ```ts
- * import { collectValues, listItems, type Item } from "@/utils/db.ts";
+ * import { collectValues, listProducts, type product } from "@/utils/db.ts";
  *
- * const items = await collectValues<Item>(listItems());
- * items[0].id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
- * items[0].userLogin; // Returns "snoop"
- * items[0].title; // Returns "example-title"
- * items[0].url; // Returns "http://example.com"
- * items[0].score; // Returns 420
+ * const products = await collectValues<product>(listItems());
+ * products[0].id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
+ * products[0].userLogin; // Returns "snoop"
+ * products[0].title; // Returns "example-title"
+ * products[0].url; // Returns "http://example.com"
+ * products[0].score; // Returns 420
  * ```
  */
 export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
   return await Array.fromAsync(iter, ({ value }) => value);
 }
 
-// Item
-export interface Item {
+// Product
+export interface Product {
   // Uses ULID
   id: string;
   userLogin: string;
@@ -45,7 +46,7 @@ export interface Item {
 }
 
 /** For testing */
-export function randomItem(): Item {
+export function randomProduct(): Product {
   return {
     id: ulid(),
     userLogin: crypto.randomUUID(),
@@ -56,15 +57,15 @@ export function randomItem(): Item {
 }
 
 /**
- * Creates a new item in the database. Throws if the item already exists in
+ * Creates a new product in the database. Throws if the product already exists in
  * one of the indexes.
  *
  * @example
  * ```ts
- * import { createItem } from "@/utils/db.ts";
+ * import { createProduct } from "@/utils/db.ts";
  * import { ulid } from "$std/ulid/mod.ts";
  *
- * await createItem({
+ * await createProduct({
  *   id: ulid(),
  *   userLogin: "john_doe",
  *   title: "example-title",
@@ -73,43 +74,56 @@ export function randomItem(): Item {
  * });
  * ```
  */
-export async function createItem(item: Item) {
-  const itemsKey = ["items", item.id];
-  const itemsByUserKey = ["items_by_user", item.userLogin, item.id];
+export async function createProduct(product: Product) {
+  const productsKey = ["products", product.id];
+  const productsByUserKey = ["products_by_user", product.userLogin, product.id];
 
   const res = await kv.atomic()
-    .check({ key: itemsKey, versionstamp: null })
-    .check({ key: itemsByUserKey, versionstamp: null })
-    .set(itemsKey, item)
-    .set(itemsByUserKey, item)
+    .check({ key: productsKey, versionstamp: null })
+    .check({ key: productsByUserKey, versionstamp: null })
+    .set(productsKey, product)
+    .set(productsByUserKey, product)
     .commit();
 
-  if (!res.ok) throw new Error("Failed to create item");
+  if (!res.ok) {
+    console.error("❌ Failed to create product:", product.id);
+
+    const existing = await Promise.all([
+      kv.get(productsKey),
+      kv.get(productsByUserKey),
+    ]);
+    console.log("🔍 Existing productsKey?", existing[0].value);
+    console.log("🔍 Existing productsByUserKey?", existing[1].value);
+
+    throw new Error("Failed to create product");
+  }
+
+  console.log("✅ Product created:", product.id);
 }
 
 /**
- * Gets the item with the given ID from the database.
+ * Gets the product with the given ID from the database.
  *
  * @example
  * ```ts
  * import { getItem } from "@/utils/db.ts";
  *
- * const item = await getItem("01H9YD2RVCYTBVJEYEJEV5D1S1");
- * item?.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
- * item?.userLogin; // Returns "snoop"
- * item?.title; // Returns "example-title"
- * item?.url; // Returns "http://example.com"
- * item?.score; // Returns 420
+ * const product = await getItem("01H9YD2RVCYTBVJEYEJEV5D1S1");
+ * product?.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1";
+ * product?.userLogin; // Returns "snoop"
+ * product?.title; // Returns "example-title"
+ * product?.url; // Returns "http://example.com"
+ * product?.score; // Returns 420
  * ```
  */
-export async function getItem(id: string) {
-  const res = await kv.get<Item>(["items", id]);
+export async function getProduct(id: string) {
+  const res = await kv.get<Product>(["products", id]);
   return res.value;
 }
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the items in the database, in chronological order.
+ * the products in the database, in chronological order.
  *
  * @example
  * ```ts
@@ -123,13 +137,13 @@ export async function getItem(id: string) {
  * }
  * ```
  */
-export function listItems(options?: Deno.KvListOptions) {
-  return kv.list<Item>({ prefix: ["items"] }, options);
+export function listProducts(options?: Deno.KvListOptions) {
+  return kv.list<Product>({ prefix: ["products"] }, options);
 }
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the items by a given user in the database, in chronological order.
+ * the products by a given user in the database, in chronological order.
  *
  * @example
  * ```ts
@@ -143,22 +157,22 @@ export function listItems(options?: Deno.KvListOptions) {
  * }
  * ```
  */
-export function listItemsByUser(
+export function listProductsByUser(
   userLogin: string,
   options?: Deno.KvListOptions,
 ) {
-  return kv.list<Item>({ prefix: ["items_by_user", userLogin] }, options);
+  return kv.list<Product>({ prefix: ["products_by_user", userLogin] }, options);
 }
 
 // Vote
 export interface Vote {
-  itemId: string;
+  productId: string;
   userLogin: string;
 }
 
 /**
- * Creates a vote in the database. Throws if the given item or user doesn't
- * exist or the vote already exists. The item's score is incremented by 1.
+ * Creates a vote in the database. Throws if the given product or user doesn't
+ * exist or the vote already exists. The product's score is incremented by 1.
  *
  * @example
  * ```ts
@@ -171,37 +185,37 @@ export interface Vote {
  * ```
  */
 export async function createVote(vote: Vote) {
-  const itemKey = ["items", vote.itemId];
+  const productKey = ["products", vote.productId];
   const userKey = ["users", vote.userLogin];
-  const [itemRes, userRes] = await kv.getMany<[Item, User]>([itemKey, userKey]);
-  const item = itemRes.value;
+  const [productRes, userRes] = await kv.getMany<[Product, User]>([productKey, userKey]);
+  const product = productRes.value;
   const user = userRes.value;
-  if (item === null) throw new Deno.errors.NotFound("Item not found");
+  if (product === null) throw new Deno.errors.NotFound("Product not found");
   if (user === null) throw new Deno.errors.NotFound("User not found");
 
-  const itemVotedByUserKey = [
-    "items_voted_by_user",
+  const productVotedByUserKey = [
+    "products_voted_by_user",
     vote.userLogin,
-    vote.itemId,
+    vote.productId,
   ];
-  const userVotedForItemKey = [
+  const userVotedForProductKey = [
     "users_voted_for_item",
-    vote.itemId,
+    vote.productId,
     vote.userLogin,
   ];
-  const itemByUserKey = ["items_by_user", item.userLogin, item.id];
+  const productByUserKey = ["products_by_user", product.userLogin, product.id];
 
-  item.score++;
+  product.score++;
 
   const res = await kv.atomic()
-    .check(itemRes)
+    .check(productRes)
     .check(userRes)
-    .check({ key: itemVotedByUserKey, versionstamp: null })
-    .check({ key: userVotedForItemKey, versionstamp: null })
-    .set(itemKey, item)
-    .set(itemByUserKey, item)
-    .set(itemVotedByUserKey, item)
-    .set(userVotedForItemKey, user)
+    .check({ key: productVotedByUserKey, versionstamp: null })
+    .check({ key: userVotedForProductKey, versionstamp: null })
+    .set(productKey, product)
+    .set(productByUserKey, product)
+    .set(productVotedByUserKey, product)
+    .set(userVotedForProductKey, user)
     .commit();
 
   if (!res.ok) throw new Error("Failed to create vote");
@@ -209,13 +223,13 @@ export async function createVote(vote: Vote) {
 
 /**
  * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the items voted by a given user in the database, in chronological order.
+ * the products voted by a given user in the database, in chronological order.
  *
  * @example
  * ```ts
- * import { listItemsVotedByUser } from "@/utils/db.ts";
+ * import { listProductsVotedByUser } from "@/utils/db.ts";
  *
- * for await (const entry of listItemsVotedByUser("john")) {
+ * for await (const entry of listProductsVotedByUser("john")) {
  *   entry.value.id; // Returns "01H9YD2RVCYTBVJEYEJEV5D1S1"
  *   entry.value.userLogin; // Returns "pedro"
  *   entry.key; // Returns ["items_voted_by_user", "01H9YD2RVCYTBVJEYEJEV5D1S1", "pedro"]
@@ -223,8 +237,8 @@ export async function createVote(vote: Vote) {
  * }
  * ```
  */
-export function listItemsVotedByUser(userLogin: string) {
-  return kv.list<Item>({ prefix: ["items_voted_by_user", userLogin] });
+export function listProductsVotedByUser(userLogin: string) {
+  return kv.list<Product>({ prefix: ["products_voted_by_user", userLogin] });
 }
 
 // User
@@ -286,8 +300,18 @@ export async function createUser(user: User) {
   }
 
   const res = await atomicOp.commit();
-  if (!res.ok) throw new Error("Failed to create user");
-}
+
+  console.error("Atomic op created for user:", user.login);
+
+  if (!res.ok) {
+    try {
+      console.log("KV path:", Deno.realPathSync("dev-kv.sqlite3"));
+    } catch {
+      console.warn("KV file hasn't been created yet.");
+    }
+    console.error("Atomic op failed for user:", user.login);
+    throw new Error("Failed to create user");
+  }}
 
 /**
  * Creates a user in the database, overwriting any previous data.
@@ -450,14 +474,14 @@ export function listUsers(options?: Deno.KvListOptions) {
 }
 
 /**
- * Returns a boolean array indicating whether the given items have been voted
+ * Returns a boolean array indicating whether the given products have been voted
  * for by the given user in the database.
  *
  * @example
  * ```ts
  * import { getAreVotedByUser } from "@/utils/db.ts";
  *
- * const items = [
+ * const products = [
  *   {
  *     id: "01H9YD2RVCYTBVJEYEJEV5D1S1",
  *     userLogin: "jack",
@@ -473,11 +497,11 @@ export function listUsers(options?: Deno.KvListOptions) {
  *     score: 0,
  *   }
  * ];
- * await getAreVotedByUser(items, "jack"); // Returns [true, false]
+ * await getAreVotedByUser(products, "jack"); // Returns [true, false]
  * ```
  */
-export async function getAreVotedByUser(items: Item[], userLogin: string) {
-  const votedItems = await collectValues(listItemsVotedByUser(userLogin));
-  const votedItemsIds = votedItems.map((item) => item.id);
-  return items.map((item) => votedItemsIds.includes(item.id));
+export async function getAreVotedByUser(products: Product[], userLogin: string) {
+  const votedProducts = await collectValues(listProductsVotedByUser(userLogin));
+  const votedProductsIds = votedProducts.map((product) => product.id);
+  return products.map((product) => votedProductsIds.includes(product.id));
 }

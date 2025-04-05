@@ -1,9 +1,9 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { SITE_NAME } from "@/utils/constants.ts";
-import { isStripeEnabled } from "@/utils/stripe.ts";
+import {SITE_NAME} from "@/utils/constants.ts";
+import {isStripeEnabled} from "@/utils/stripe.ts";
 import IconX from "tabler_icons_tsx/x.tsx";
 import IconMenu from "tabler_icons_tsx/menu-2.tsx";
-import { User } from "@/utils/db.ts";
+import {User} from "@/utils/db.ts";
 
 export interface HeaderProps {
   /** Currently signed-in user */
@@ -17,7 +17,7 @@ export interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   return (
-    <header class="site-bar-styles flex-col sm:flex-row">
+    <header class="border-2 border-solid m-8 site-bar-styles flex flex-col items-center sm:flex-row sm:justify-between">
       <input
         type="checkbox"
         id="nav-toggle"
@@ -57,42 +57,48 @@ export default function Header(props: HeaderProps) {
           });
         `}
       </script>
-      <nav class="hidden flex-col gap-x-4 divide-y divide-solid sm:flex sm:items-center sm:flex-row sm:divide-y-0 peer-checked:flex">
-        <a
-          href="/dashboard"
-          class="link-styles data-[ancestor]:!text-black data-[ancestor]:dark:!text-white nav-item"
-        >
-          Dashboard
-        </a>
+      <nav className="hidden w-full flex-col items-center gap-y-2 divide-y divide-solid sm:flex sm:flex-row sm:justify-center sm:divide-y-0 sm:gap-x-4 peer-checked:flex">
+        <div className="">
+          <a
+            href="/dashboard"
+            class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
+          >
+            Dashboard
+          </a>
+        </div>
         {isStripeEnabled() &&
           (
-            <a
-              href="/pricing"
-              class="link-styles data-[current]:!text-black data-[current]:dark:!text-white nav-item"
-            >
-              Pricing
-            </a>
+            <div className="">
+              <a
+                href="/pricing"
+                class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
+              >
+                Marcas
+              </a>
+            </div>
           )}
         {props.sessionUser
           ? (
-            <a
-              href="/account"
-              class="link-styles data-[current]:!text-black data-[current]:dark:!text-white nav-item"
-            >
-              Account
-            </a>
+            <div className="">
+              <a
+                href="/account"
+                class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
+              >
+                Produtos
+              </a>
+            </div>
           )
           : (
             <a href="/signin" class="link-styles nav-item">
-              Sign in
+              Entrar
             </a>
           )}
-        <div class="rounded-lg bg-gradient-to-tr from-secondary to-primary p-px">
+        <div className="">
           <a
             href="/submit"
             class="text-center text-white rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white"
           >
-            Submit
+            Marcas
           </a>
         </div>
       </nav>

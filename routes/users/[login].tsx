@@ -4,7 +4,7 @@ import { getUser } from "@/utils/db.ts";
 import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
-import ItemsList from "@/islands/ItemsList.tsx";
+import ProductsList from "../../islands/ProductsList.tsx";
 import { defineRoute } from "$fresh/server.ts";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
@@ -43,7 +43,7 @@ export default defineRoute<State>(
     if (user === null) return await ctx.renderNotFound();
 
     const isSignedIn = ctx.state.sessionUser !== undefined;
-    const endpoint = `/api/users/${login}/items`;
+    const endpoint = `/api/usuarios/${login}/produtos`;
 
     return (
       <>
@@ -67,7 +67,7 @@ export default defineRoute<State>(
           <div class="flex justify-center p-4">
             <UserProfile {...user} />
           </div>
-          <ItemsList
+          <ProductsList
             endpoint={endpoint}
             isSignedIn={isSignedIn}
           />

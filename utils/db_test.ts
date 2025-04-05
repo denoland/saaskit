@@ -3,53 +3,53 @@ import { assertEquals, assertRejects } from "$std/assert/mod.ts";
 import { ulid } from "$std/ulid/mod.ts";
 import {
   collectValues,
-  createItem,
+  createProduct,
   createUser,
   createVote,
   getAreVotedByUser,
-  getItem,
+  getProduct,
   getUser,
   getUserBySession,
   getUserByStripeCustomer,
-  type Item,
-  listItems,
-  listItemsByUser,
-  listItemsVotedByUser,
-  randomItem,
+  type Product,
+  listProducts,
+  listProductsByUser,
+  listProductsVotedByUser,
+  randomProduct,
   randomUser,
   updateUser,
   updateUserSession,
   type User,
 } from "./db.ts";
 
-Deno.test("[db] items", async () => {
+Deno.test("[db] products", async () => {
   const user = randomUser();
-  const item1: Item = {
-    ...randomItem(),
+  const product1: Product = {
+    ...randomProduct(),
     id: ulid(),
     userLogin: user.login,
   };
-  const item2: Item = {
-    ...randomItem(),
+  const product2: Product = {
+    ...randomProduct(),
     id: ulid(Date.now() + 1_000),
     userLogin: user.login,
   };
 
-  assertEquals(await getItem(item1.id), null);
-  assertEquals(await getItem(item2.id), null);
-  assertEquals(await collectValues(listItems()), []);
-  assertEquals(await collectValues(listItemsByUser(user.login)), []);
+  assertEquals(await getProduct(product1.id), null);
+  assertEquals(await getProduct(product2.id), null);
+  assertEquals(await collectValues(listProducts()), []);
+  assertEquals(await collectValues(listProductsByUser(user.login)), []);
 
-  await createItem(item1);
-  await createItem(item2);
-  await assertRejects(async () => await createItem(item1));
+  await createProduct(product1);
+  await createProduct(product2);
+  await assertRejects(async () => await createProduct(product1));
 
-  assertEquals(await getItem(item1.id), item1);
-  assertEquals(await getItem(item2.id), item2);
-  assertEquals(await collectValues(listItems()), [item1, item2]);
-  assertEquals(await collectValues(listItemsByUser(user.login)), [
-    item1,
-    item2,
+  assertEquals(await getProduct(product1.id), product1);
+  assertEquals(await getProduct(product2.id), product2);
+  assertEquals(await collectValues(listProducts()), [product1, product2]);
+  assertEquals(await collectValues(listProductsByUser(user.login)), [
+    product1,
+    product2,
   ]);
 });
 
@@ -94,22 +94,22 @@ Deno.test("[db] user", async () => {
 });
 
 Deno.test("[db] votes", async () => {
-  const item = randomItem();
+  const product = randomProduct();
   const user = randomUser();
   const vote = {
-    itemId: item.id,
+    productId: product.id,
     userLogin: user.login,
     createdAt: new Date(),
   };
 
-  assertEquals(await collectValues(listItemsVotedByUser(user.login)), []);
+  assertEquals(await collectValues(listProductsVotedByUser(user.login)), []);
 
   await assertRejects(
     async () => await createVote(vote),
     Deno.errors.NotFound,
-    "Item not found",
+    "product not found",
   );
-  await createItem(item);
+  await createProduct(product);
   await assertRejects(
     async () => await createVote(vote),
     Deno.errors.NotFound,
@@ -117,31 +117,31 @@ Deno.test("[db] votes", async () => {
   );
   await createUser(user);
   await createVote(vote);
-  item.score++;
+  product.score++;
 
-  assertEquals(await collectValues(listItemsVotedByUser(user.login)), [item]);
+  assertEquals(await collectValues(listProductsVotedByUser(user.login)), [product]);
   await assertRejects(async () => await createVote(vote));
 });
 
 Deno.test("[db] getAreVotedByUser()", async () => {
-  const item = randomItem();
+  const product = randomProduct();
   const user = randomUser();
   const vote = {
-    itemId: item.id,
+    productId: product.id,
     userLogin: user.login,
     createdAt: new Date(),
   };
 
-  assertEquals(await getItem(item.id), null);
+  assertEquals(await getProduct(product.id), null);
   assertEquals(await getUser(user.login), null);
-  assertEquals(await getAreVotedByUser([item], user.login), [false]);
+  assertEquals(await getAreVotedByUser([product], user.login), [false]);
 
-  await createItem(item);
+  await createProduct(product);
   await createUser(user);
   await createVote(vote);
-  item.score++;
+  product.score++;
 
-  assertEquals(await getItem(item.id), item);
+  assertEquals(await getProduct(product.id), product);
   assertEquals(await getUser(user.login), user);
-  assertEquals(await getAreVotedByUser([item], user.login), [true]);
+  assertEquals(await getAreVotedByUser([product], user.login), [true]);
 });

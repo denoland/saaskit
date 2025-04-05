@@ -16,7 +16,7 @@ function UserTableRow(props: User) {
         <GitHubAvatarImg login={props.login} size={32} />
         <a
           class="hover:underline ml-4 align-middle"
-          href={"/users/" + props.login}
+          href={"/usuarios/" + props.login}
         >
           {props.login}
         </a>
