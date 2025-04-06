@@ -9,8 +9,8 @@ export function brandToCardData(brand: Brand): CardData {
         title: brand.title,
         subtitle: brand.bio,
         imageUrl: brand.logoUrl,
-        linkUrl: brand.website,
-        linkLabel: "Visit Website",
+        linkUrl: `/marcas/${brand.id}`, // internal route to single product
+        linkLabel: "Ver Marca",
         metaInfo: `Brand ID: ${brand.id}`,
     };
 }
@@ -20,7 +20,7 @@ export function productToCardData(product: Product): CardData {
         title: product.title,
         imageUrl: product.image,
         subtitle: `Score: ${product.score}`,
-        linkUrl: product.url,
-        linkLabel: "View Product",
+        linkUrl: `/produtos/${product.id}`, // internal route to single product
+        linkLabel: "Ver Produto",
     };
 }

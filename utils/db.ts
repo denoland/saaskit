@@ -42,6 +42,7 @@ export async function collectValues<T>(iter: Deno.KvListIterator<T>) {
 export interface Product {
   // Uses ULID
   id: string;
+  brandId: string;
   userLogin: string;
   title: string;
   url: string;
@@ -67,6 +68,7 @@ export interface Brand {
 export function randomProduct(): Product {
   return {
     id: ulid(),
+    brandId: ulid(),
     userLogin: chance.twitter().replace("@", ""),
     title: chance.sentence({ words: 3 }),
     url: chance.url(),
@@ -216,8 +218,13 @@ export async function getBrand(id: string) {
  * }
  * ```
  */
-export function listBrands(options?: Deno.KvListOptions) {
-  return kv.list<Brand>({ prefix: ["brands"] }, options);
+export async function listBrands(options?: Deno.KvListOptions): Promise<Brand[]> {
+  const iter = kv.list<Brand>({ prefix: ["brands"] }, options);
+  const brands: Brand[] = [];
+  for await (const entry of iter) {
+    brands.push(entry.value);
+  }
+  return brands;
 }
 
 /**

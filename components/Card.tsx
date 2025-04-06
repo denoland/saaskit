@@ -15,8 +15,6 @@ interface CardProps {
     children?: ComponentChildren;
 }
 
-
-
 export default function Card(props: CardProps) {
     const { title, imageUrl, subtitle, linkUrl, linkLabel } = props.data;
 

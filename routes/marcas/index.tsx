@@ -1,29 +1,55 @@
 import type { State } from "@/plugins/session.ts";
 import Head from "@/components/Head.tsx";
 import BrandLayout from "@/islands/BrandLayout.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { Handlers, PageProps, defineRoute } from "$fresh/server.ts";
+import {Brand, listBrands, Product, listProducts} from "../../utils/db.ts";
 
-export default defineRoute<State>((_req, ctx) => {
-    const isSignedIn = ctx.state.sessionUser !== undefined;
-    const endpoint = "/api/brands";
+export const handler: Handlers<{ brands: Brand[]; products: Product[] }, State> = {
+    async GET(_req, ctx) {
+        const brands = await listBrands();
+        const products = await listProducts();
+
+        if (!brands) {
+            return new Response("404 - Ops! Hehehehe. Você não era para estar aqui.", { status: 404 });
+        }
+
+        return ctx.render({ brands, products });
+    },
+};
+
+
+
+export default function BrandPage(props: PageProps<{ brands: Brand[]; products: Product[] }, State>) {
+    const isSignedIn = props.state.sessionUser !== undefined;
+    const endpoint = "/api/marcas";
+
 
     return (
         <>
-            <Head href={ctx.url.href}>
+        <main class="p-4">
+            <Head href={props.url.href}>
                 <link
                     as="fetch"
                     crossOrigin="anonymous"
                     href={endpoint}
                     rel="preload"
                 />
+                {isSignedIn && (
+                    <link
+                        as="fetch"
+                        crossOrigin="anonymous"
+                        href="/api/me/votes"
+                        rel="preload"
+                    />
+                )}
             </Head>
-            <main>
-                <h1 class="text-2xl font-bold mb-4">All Brands</h1>
+                <h1 className="text-2xl font-bold">Todos os Criadores</h1>
                 <BrandLayout
-                    endpoint={endpoint}
-                    layout="carousel"
+                    endpoint="/brands" // <-- explicitly passing endpoint
+                    type="grid"
+                    initialBrands={props.data.brands}
+                    initialProducts={props.data.products}
                 />
             </main>
         </>
-    );
-});
+)};

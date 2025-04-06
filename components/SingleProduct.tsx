@@ -1,4 +1,3 @@
-// components/SingleProduct.tsx
 import { useSignal, useComputed } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import type { Product } from "@/utils/db.ts";

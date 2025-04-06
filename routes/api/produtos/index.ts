@@ -1,18 +1,11 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 
-import { collectValues, listProducts } from "@/utils/db.ts";
-import { getCursor } from "@/utils/http.ts";
+import { listBrands } from "@/utils/db.ts";
 import type { Handlers } from "$fresh/server.ts";
 
 export const handler: Handlers = {
-  async GET(req) {
-    const url = new URL(req.url);
-    const iter = listProducts({
-      cursor: getCursor(url),
-      limit: 10,
-      reverse: true,
-    });
-    const values = await collectValues(iter);
-    return Response.json({ values, cursor: iter.cursor });
+  async GET(_req) {
+    const values = await listBrands();
+    return Response.json({ values });
   },
 };

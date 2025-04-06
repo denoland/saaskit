@@ -222,8 +222,13 @@ export default function ProductLayout(props: ProductsLayoutProps) {
           class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8 scroll-smooth"
         >
           {productsSig.value.map((product, idx) => {
+
             const scoreSig = useSignal(product.score);
             const isVotedSig = useSignal(productsAreVotedSig.value[idx]);
+
+            console.log("🧪 product.id:", product.id);
+            console.log("🧪 product.brandId:", product.brandId);
+            console.log("🧪 full product:", product);
 
             const cardData = productToCardData(product);
 

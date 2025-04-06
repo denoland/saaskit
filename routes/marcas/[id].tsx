@@ -2,32 +2,34 @@
 
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { BrandHeader } from "@/components/BrandHeader.tsx";
-import ProductLayout from "@/islands/ProductLayout.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import {Brand, getBrand} from "../../utils/db.ts";
+import type {State} from "../../plugins/session.ts";
+import SingleBrand from "../../components/SingleBrand.tsx";
 
+export const handler: Handlers<Brand | null, State> = {
+    async GET(_req, ctx) {
+        const id = ctx.params.id;
+        const brand = await getBrand(id);
 
-export const handler: Handlers = {
-    async GET(req, ctx) {
-        const { id } = ctx.params;
-        return ctx.render({ brandId: id });
+        if (!brand) {
+            return new Response("404 - Ops! Hehehehe. Voce nao era para estar aqui.", { status: 404 });
+        }
+
+        return ctx.render(brand);
     },
 };
 
-interface BrandPageProps {
-    brandId: string;
-}
-
-export default defineRoute<BrandPageProps>((_req, ctx) => {
-    const { brandId } = ctx.params;
+export default function BrandPage(props: PageProps<Brand, State>) {
+    const isSignedIn = props.state.sessionUser !== undefined;
 
     return (
         <main className="p-4 space-y-8">
-            <BrandHeader brandId={brandId}/>
+            <BrandHeader brand={props.data}/>
 
-            <h2 className="text-xl font-semibold">
-                Products for brand {brandId}
-            </h2>
-
+            <main className="p-4">
+                <SingleBrand
+                    brand={props.data}
+                    isSignedIn={isSignedIn}/>
+            </main>
         </main>
-    );
-})
+    )}

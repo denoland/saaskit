@@ -3,8 +3,8 @@ import { useEffect, useRef } from "preact/hooks";
 import IconInfo from "tabler_icons_tsx/info-circle.tsx";
 import { fetchValues } from "@/utils/http.ts";
 import Card from "@/components/Card.tsx";
-import { brandToCardData } from "@/utils/mappers.ts";
-import type { Brand } from "@/utils/db.ts";
+import {brandToCardData, productToCardData} from "@/utils/mappers.ts";
+import type {Brand, Product} from "@/utils/db.ts";
 
 // Just a small empty state placeholder:
 function EmptyBrandsList() {
@@ -21,15 +21,28 @@ function EmptyBrandsList() {
 
 export interface BrandLayoutProps {
     endpoint: string;
-    layout: "carousel" | "grid";
+    type: "carousel" | "grid";
+    initialBrands: Brand[];
+    initialProducts: Product[];
 }
 
 export default function BrandLayout(props: BrandLayoutProps) {
-    const brandsSig = useSignal<Brand[]>([]);
+    const brandsSig = useSignal<Brand[]>(props.initialBrands ?? []);
+    const productsSig = useSignal<Product[]>(props.initialProducts ?? []);
     const cursorSig = useSignal("");
     const isLoadingSig = useSignal<boolean | undefined>(undefined);
 
     const carouselRef = useRef<HTMLDivElement>(null);
+
+    const productsByBrand = useComputed(() => {
+        const map = new Map<string, Product[]>();
+        for (const product of productsSig.value) {
+            if (!product.brandId) continue;
+            if (!map.has(product.brandId)) map.set(product.brandId, []);
+            map.get(product.brandId)!.push(product);
+        }
+        return map;
+    });
 
     async function loadMoreBrands() {
         if (isLoadingSig.value) return;
@@ -71,7 +84,7 @@ export default function BrandLayout(props: BrandLayoutProps) {
     }
 
     // RENDER
-    return props.layout === "carousel"
+    return props.type === "carousel"
         ? (
             <div class="relative">
                 {/* Left/Right scroll buttons */}
@@ -119,13 +132,29 @@ export default function BrandLayout(props: BrandLayoutProps) {
         )
         : (
             /* GRID MODE */
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
+            <div className="space-y-8 px-6 pb-8">
                 {brandsSig.value.map((brand) => {
                     const cardData = brandToCardData(brand);
+                    const products = productsByBrand.value.get(brand.id) ?? [];
 
                     return (
-                        <div key={brand.id} class="h-full max-h-[400px] min-h-[300px] flex flex-col">
-                            <Card data={cardData} />
+                        <div key={brand.id} className="space-y-4">
+                            <Card data={cardData}/>
+                            {products.length > 0 && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    {products.map((product) => {
+                                        const card = productToCardData(product);
+                                        return (
+                                            <div
+                                                key={product.id}
+                                                className="h-full max-h-[400px] min-h-[300px] flex flex-col"
+                                            >
+                                                <Card data={card}/>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     );
                 })}

@@ -22,36 +22,41 @@ import {
   type User,
 } from "./db.ts";
 
-Deno.test("[db] produtos", async () => {
-  const user = randomUser();
-  const product1: Product = {
-    ...randomProduct(),
-    id: ulid(),
-    userLogin: user.login,
-  };
-  const product2: Product = {
-    ...randomProduct(),
-    id: ulid(Date.now() + 1_000),
-    userLogin: user.login,
-  };
+  Deno.test("[db] produtos", async () => {
+    const user = randomUser();
+    const now = Date.now();
+    const product1: Product = {
+      ...randomProduct(),
+      id: ulid(now),
+      userLogin: user.login,
+      createdAt: now,
+    };
 
-  assertEquals(await getProduct(product1.id), null);
-  assertEquals(await getProduct(product2.id), null);
-  assertEquals(await collectValues(listProducts()), []);
-  assertEquals(await collectValues(listProductsByBrand(user.login)), []);
+    const product2: Product = {
+      ...randomProduct(),
+      id: ulid(now + 1000),
+      userLogin: user.login,
+      createdAt: now + 1000,
+    };
 
-  await createProduct(product1);
-  await createProduct(product2);
-  await assertRejects(async () => await createProduct(product1));
 
-  assertEquals(await getProduct(product1.id), product1);
-  assertEquals(await getProduct(product2.id), product2);
-  assertEquals(await collectValues(listProducts()), [product1, product2]);
-  assertEquals(await collectValues(listProductsByBrand(user.login)), [
-    product1,
-    product2,
-  ]);
-});
+    assertEquals(await getProduct(product1.id), null);
+    assertEquals(await getProduct(product2.id), null);
+    assertEquals(await listProducts(), [product1, product2]);
+    assertEquals(await collectValues(listProductsByBrand(user.login)), []);
+
+    await createProduct(product1);
+    await createProduct(product2);
+    await assertRejects(async () => await createProduct(product1));
+
+    assertEquals(await getProduct(product1.id), product1);
+    assertEquals(await getProduct(product2.id), product2);
+    assertEquals(await listProducts(), [product1, product2]);
+    assertEquals(await collectValues(listProductsByBrand(user.login)), [
+      product1,
+      product2,
+    ]);
+  });
 
 Deno.test("[db] user", async () => {
   const user = randomUser();

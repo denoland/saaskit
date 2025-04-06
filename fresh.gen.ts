@@ -24,7 +24,7 @@ import * as $dashboard_usuarios from "./routes/dashboard/usuarios.tsx";
 import * as $debug_delete from "./routes/debug/delete.ts";
 import * as $debug_marcas from "./routes/debug/marcas.ts";
 import * as $debug_produtos from "./routes/debug/produtos.ts";
-import * as $debug_user from "./routes/debug/user.ts";
+import * as $debug_usuarios from "./routes/debug/usuarios.ts";
 import * as $index from "./routes/index.tsx";
 import * as $marcas_id_ from "./routes/marcas/[id].tsx";
 import * as $marcas_index from "./routes/marcas/index.tsx";
@@ -64,7 +64,7 @@ const manifest = {
     "./routes/debug/delete.ts": $debug_delete,
     "./routes/debug/marcas.ts": $debug_marcas,
     "./routes/debug/produtos.ts": $debug_produtos,
-    "./routes/debug/user.ts": $debug_user,
+    "./routes/debug/usuarios.ts": $debug_usuarios,
     "./routes/index.tsx": $index,
     "./routes/marcas/[id].tsx": $marcas_id_,
     "./routes/marcas/index.tsx": $marcas_index,
