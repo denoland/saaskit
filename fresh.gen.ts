@@ -26,14 +26,17 @@ import * as $debug_marcas from "./routes/debug/marcas.ts";
 import * as $debug_produtos from "./routes/debug/produtos.ts";
 import * as $debug_user from "./routes/debug/user.ts";
 import * as $index from "./routes/index.tsx";
+import * as $marcas_id_ from "./routes/marcas/[id].tsx";
+import * as $marcas_index from "./routes/marcas/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
+import * as $produtos_id_ from "./routes/produtos/[id].tsx";
 import * as $produtos_index from "./routes/produtos/index.tsx";
 import * as $submit from "./routes/submit.tsx";
 import * as $usuarios_login_ from "./routes/usuarios/[login].tsx";
 import * as $welcome from "./routes/welcome.tsx";
-import * as $BrandsList from "./islands/BrandsList.tsx";
+import * as $BrandLayout from "./islands/BrandLayout.tsx";
 import * as $Chart from "./islands/Chart.tsx";
-import * as $ProductsList from "./islands/ProductsList.tsx";
+import * as $ProductLayout from "./islands/ProductLayout.tsx";
 import * as $UsersTable from "./islands/UsersTable.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -63,16 +66,19 @@ const manifest = {
     "./routes/debug/produtos.ts": $debug_produtos,
     "./routes/debug/user.ts": $debug_user,
     "./routes/index.tsx": $index,
+    "./routes/marcas/[id].tsx": $marcas_id_,
+    "./routes/marcas/index.tsx": $marcas_index,
     "./routes/pricing.tsx": $pricing,
+    "./routes/produtos/[id].tsx": $produtos_id_,
     "./routes/produtos/index.tsx": $produtos_index,
     "./routes/submit.tsx": $submit,
     "./routes/usuarios/[login].tsx": $usuarios_login_,
     "./routes/welcome.tsx": $welcome,
   },
   islands: {
-    "./islands/BrandsList.tsx": $BrandsList,
+    "./islands/BrandLayout.tsx": $BrandLayout,
     "./islands/Chart.tsx": $Chart,
-    "./islands/ProductsList.tsx": $ProductsList,
+    "./islands/ProductLayout.tsx": $ProductLayout,
     "./islands/UsersTable.tsx": $UsersTable,
   },
   baseUrl: import.meta.url,

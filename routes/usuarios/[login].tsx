@@ -1,12 +1,12 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { State } from "@/plugins/session.ts";
-import { getUser } from "@/utils/db.ts";
+import type {State} from "@/plugins/session.ts";
+import {getUser} from "@/utils/db.ts";
 import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
-import ProductsList from "../../islands/ProductsList.tsx";
-import { defineRoute } from "$fresh/server.ts";
-import { PremiumBadge } from "@/components/PremiumBadge.tsx";
+import ProductLayout from "../../islands/ProductLayout.tsx";
+import {defineRoute} from "$fresh/server.ts";
+import {PremiumBadge} from "@/components/PremiumBadge.tsx";
 
 interface UserProfileProps {
   login: string;
@@ -67,10 +67,9 @@ export default defineRoute<State>(
           <div class="flex justify-center p-4">
             <UserProfile {...user} />
           </div>
-          <ProductsList
-            endpoint={endpoint}
-            isSignedIn={isSignedIn}
-          />
+          <ProductLayout
+              endpoint={endpoint}
+              type="carousel" />
         </main>
       </>
     );

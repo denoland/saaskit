@@ -7,24 +7,14 @@ import {fetchValues} from "@/utils/http.ts";
 import {decodeTime} from "$std/ulid/mod.ts";
 import {timeAgo} from "@/utils/display.ts";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
+import {productToCardData} from "@/utils/mappers.ts";
+import Card from "../components/Card.tsx";
 
 async function fetchVotedProducts() {
   const url = "/api/me/votes";
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
   return await resp.json() as Product[];
-}
-
-function EmptyProductsList() {
-  return (
-    <div class="flex flex-col justify-center items-center gap-2 pt-16">
-      <IconInfo class="size-10 text-gray-400 dark:text-gray-600" />
-      <p>No products found</p>
-      <a href="/submit" class="text-primary hover:underline">
-        Submit your project &#8250;
-      </a>
-    </div>
-  );
 }
 
 interface VoteButtonProps {
@@ -125,34 +115,36 @@ function ProductSummary(props: ProductSummaryProps) {
   );
 }
 
-export interface ProductsListProps {
-  /** Endpoint URL of the REST API to make the fetch request to */
+export interface ProductsLayoutProps {
+  brandId?: string;
   endpoint: string;
   /** Whether the user is signed-in */
-  isSignedIn: boolean;
-  layout: "carousel" | "grid";
+  type: "carousel" | "grid";
 }
 
-export default function ProductsList(props: ProductsListProps) {
+export default function ProductLayout(props: ProductsLayoutProps) {
   const productsSig = useSignal<Product[]>([]);
   const votedProductsIdsSig = useSignal<string[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal<boolean | undefined>(undefined);
+
   const productsAreVotedSig = useComputed(() =>
-    productsSig.value.map((product) =>
-      votedProductsIdsSig.value.includes(product.id)
-    )
+    productsSig.value.map((p) => votedProductsIdsSig.value.includes(p.id))
   );
 
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const endpoint = props.brandId
+      ? `/api/brands/${props.brandId}/products`
+      : (props.endpoint ?? "/api/products");
 
   async function loadMoreProducts() {
     if (isLoadingSig.value) return;
     isLoadingSig.value = true;
     try {
       const { values, cursor } = await fetchValues<Product>(
-        props.endpoint,
-        cursorSig.value,
+          endpoint,
+          cursorSig.value,
       );
       productsSig.value = [...productsSig.value, ...values];
       cursorSig.value = cursor;
@@ -163,16 +155,13 @@ export default function ProductsList(props: ProductsListProps) {
     }
   }
 
-  useEffect(() => {
-    if (!props.isSignedIn) {
-      loadMoreProducts();
-      return;
-    }
 
+  useEffect(() => {
+    // load user votes
     fetchVotedProducts()
-      .then((votedProducts) =>
-        votedProductsIdsSig.value = votedProducts.map(({ id }) => id)
-      )
+      .then((voted) => {
+        votedProductsIdsSig.value = voted.map((v) => v.id);
+      })
       .finally(() => loadMoreProducts());
   }, []);
 
@@ -183,84 +172,100 @@ export default function ProductsList(props: ProductsListProps) {
   function scrollCarousel(direction: "left" | "right") {
     const el = carouselRef.current;
     if (!el) return;
-    const scrollAmount = el.clientWidth * 0.9; // scroll by 90% of container width
+    const scrollAmount = el.clientWidth * 0.9;
     el.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
   }
 
-  return (
-    <>
-      {productsSig.value.length > 0
-        ? (
-          props.layout === "carousel"
-            ? (
-              <div class="relative">
-                {/* Buttons */}
-                <button
-                  type="button"
-                  onClick={() => scrollCarousel("left")}
-                  class="absolute top-1/2 left-4 -translate-y-1/2 z-50
-         w-12 h-12 flex items-center justify-center
-         text-3xl text-black dark:text-white
-         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
-         transition"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scrollCarousel("right")}
-                  class="absolute top-1/2 right-4 -translate-y-1/2 z-50
-         w-12 h-12 flex items-center justify-center
-         text-3xl text-black dark:text-white
-         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
-         transition"
-                >
-                  →
-                </button>
+  if (productsSig.value.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center gap-2 pt-16">
+        <IconInfo class="size-10 text-gray-400 dark:text-gray-600" />
+        <p>No products found</p>
+        <a href="/submit" className="text-primary hover:underline">
+          Submit your project &#8250;
+        </a>
+      </div>
+    );
+  }
 
-                {/* Carousel container */}
-                <div
-                  ref={carouselRef}
-                  class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8 scroll-smooth"
-                >
-                  {productsSig.value.map((product, id) => (
-                    <div
-                      key={product.id}
-                      class="min-w-[90vw] sm:min-w-[700px] snap-center"
-                    >
-                      <ProductSummary
-                        product={product}
-                        isVoted={productsAreVotedSig.value[id]}
-                        isSignedIn={props.isSignedIn}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-            : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
-                {productsSig.value.map((product, id) => (
-                  <div
-                    key={product.id}
-                    className="h-full max-h-[400px] min-h-[300px] flex flex-col"
-                  >
-                    <div className="flex-1 flex flex-col overflow-hidden rounded-xl border shadow bg-white dark:bg-zinc-900">
-                      <ProductSummary
-                        product={product}
-                        isVoted={productsAreVotedSig.value[id]}
-                        isSignedIn={props.isSignedIn}
-                      />
-                    </div>
+  // RENDER
+  return props.type === "carousel"
+    ? (
+      <div class="relative">
+        <button
+          type="button"
+          onClick={() => scrollCarousel("left")}
+          className="absolute top-1/2 left-4 -translate-y-1/2 z-50
+         w-12 h-12 flex items-center justify-center
+         text-3xl text-black dark:text-white
+         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
+         transition"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollCarousel("right")}
+          className="absolute top-1/2 right-4 -translate-y-1/2 z-50
+         w-12 h-12 flex items-center justify-center
+         text-3xl text-black dark:text-white
+         bg-transparent hover:bg-black/10 dark:hover:bg-white/10
+         transition"
+        >
+          →
+        </button>
+        <div
+          ref={carouselRef}
+          class="overflow-x-auto snap-x snap-mandatory flex gap-8 px-8 pb-8 scroll-smooth"
+        >
+          {productsSig.value.map((product, idx) => {
+            const scoreSig = useSignal(product.score);
+            const isVotedSig = useSignal(productsAreVotedSig.value[idx]);
+
+            const cardData = productToCardData(product);
+
+            return (
+              <div
+                key={product.id}
+                class="min-w-[90vw] sm:min-w-[700px] snap-center"
+              >
+                <Card data={cardData}>
+                  {/* Insert your upvote UI or custom logic as children */}
+                  <div class="flex items-center space-x-2 text-sm">
+                    <p>{scoreSig}</p>
                   </div>
-                ))}
+                </Card>
               </div>
-            )
-        )
-        : <EmptyProductsList />}
-    </>
-  );
+            );
+          })}
+        </div>
+      </div>
+    )
+    : (
+      /* GRID MODE */
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 pb-8">
+        {productsSig.value.map((product, idx) => {
+          const scoreSig = useSignal(product.score);
+          const isVotedSig = useSignal(productsAreVotedSig.value[idx]);
+
+          const cardData = productToCardData(product);
+
+          return (
+            <div
+              key={product.id}
+              class="h-full max-h-[400px] min-h-[300px] flex flex-col"
+            >
+              <Card data={cardData}>
+                <div class="flex items-center space-x-2 text-sm">
+                  <p>{scoreSig}</p>
+                </div>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    );
 }

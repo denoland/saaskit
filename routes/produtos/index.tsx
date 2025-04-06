@@ -1,7 +1,7 @@
-// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
+// Copyright ...
 import type { State } from "@/plugins/session.ts";
 import Head from "@/components/Head.tsx";
-import ProductsList from "../../islands/ProductsList.tsx";
+import ProductLayout from "@/islands/ProductLayout.tsx";
 import { defineRoute } from "$fresh/server.ts";
 
 export default defineRoute<State>((_req, ctx) => {
@@ -26,11 +26,11 @@ export default defineRoute<State>((_req, ctx) => {
                     />
                 )}
             </Head>
-            <main class="">
-                <ProductsList
-                    endpoint={endpoint}
-                    isSignedIn={isSignedIn}
-                    layout="grid"
+            <main className="p-4 space-y-8">
+                <h1 className="text-2xl font-bold">All Products</h1>
+                <ProductLayout
+                    endpoint="/api/products" // <-- explicitly passing endpoint
+                    type="grid"
                 />
             </main>
         </>
