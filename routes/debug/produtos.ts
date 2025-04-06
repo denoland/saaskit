@@ -7,7 +7,7 @@ export const handler: Handlers = {
         );
 
         const products = [];
-        for await (const entry of kv.list({ prefix: ["brands"] })) {
+        for await (const entry of kv.list({ prefix: ["products"] })) {
             products.push(entry);
         }
 

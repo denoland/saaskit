@@ -280,8 +280,13 @@ export async function getProduct(id: string) {
  * }
  * ```
  */
-export function listProducts(options?: Deno.KvListOptions) {
-  return kv.list<Product>({ prefix: ["products"] }, options);
+export async function listProducts(options?: Deno.KvListOptions): Promise<Product[]> {
+  const iter = kv.list<Product>({ prefix: ["products"] }, options);
+  const products: Product[] = [];
+  for await (const entry of iter) {
+    products.push(entry.value);
+  }
+  return products;
 }
 
 /**

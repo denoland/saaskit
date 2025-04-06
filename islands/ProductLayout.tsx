@@ -118,12 +118,12 @@ function ProductSummary(props: ProductSummaryProps) {
 export interface ProductsLayoutProps {
   brandId?: string;
   endpoint: string;
-  /** Whether the user is signed-in */
+  initialProducts: Product[];
   type: "carousel" | "grid";
 }
 
 export default function ProductLayout(props: ProductsLayoutProps) {
-  const productsSig = useSignal<Product[]>([]);
+  const productsSig = useSignal<Product[]>(props.initialProducts ?? []);
   const votedProductsIdsSig = useSignal<string[]>([]);
   const cursorSig = useSignal("");
   const isLoadingSig = useSignal<boolean | undefined>(undefined);

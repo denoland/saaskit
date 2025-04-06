@@ -9,39 +9,14 @@ import Card from "@/components/Card.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 
 interface SingleProductProps {
-    productId: string;
+    product: Product;
     isSignedIn: boolean;
 }
 
 export default function SingleProduct(props: SingleProductProps) {
-    const productSig = useSignal<Product | null>(null);
-    const scoreSig = useSignal(0);
+    const scoreSig = useSignal(props.product.score);
     const isVotedSig = useSignal(false);
-
-    useEffect(() => {
-        async function loadProduct() {
-            const res = await fetch(`/api/products/${props.productId}`);
-            if (!res.ok) {
-                console.error("Failed to load product");
-                return;
-            }
-            const data = await res.json();
-            productSig.value = data;
-            scoreSig.value = data.score ?? 0;
-
-            // optionally: check if it's voted
-            const voted = await fetch("/api/me/votes").then((r) => r.json());
-            isVotedSig.value = voted.some((p: Product) => p.id === props.productId);
-        }
-
-        loadProduct();
-    }, [props.productId]);
-
-    if (!productSig.value) {
-        return <p class="text-center p-8">Loading product...</p>;
-    }
-
-    const cardData = productToCardData(productSig.value);
+    const cardData = productToCardData(props.product);
 
     return (
         <section class="px-6 py-12 max-w-3xl mx-auto">
@@ -49,17 +24,17 @@ export default function SingleProduct(props: SingleProductProps) {
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <GitHubAvatarImg
-                            login={productSig.value.userLogin}
+                            login={props.product.userLogin}
                             size={24}
                             class="inline-block rounded-full"
                         />
                         <a
                             class="hover:underline"
-                            href={`/users/${productSig.value.userLogin}`}
+                            href={`/users/${props.product.userLogin}`}
                         >
-                            {productSig.value.userLogin}
+                            {props.product.userLogin}
                         </a>
-                        • {timeAgo(new Date(decodeTime(productSig.value.id)))}
+                        • {timeAgo(new Date(decodeTime(props.product.id)))}
                     </div>
 
                     <div class="flex items-center space-x-2 text-sm text-primary">
@@ -68,7 +43,10 @@ export default function SingleProduct(props: SingleProductProps) {
                                 class="hover:text-primary"
                                 type="button"
                                 onClick={async () => {
-                                    const res = await fetch(`/api/vote?item_id=${productSig.value?.id}`, { method: "POST" });
+                                    const res = await fetch(
+                                        `/api/vote?item_id=${props.product.id}`,
+                                        { method: "POST" },
+                                    );
                                     if (res.ok) {
                                         scoreSig.value++;
                                         isVotedSig.value = true;
