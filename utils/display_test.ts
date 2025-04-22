@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { formatCurrency, timeAgo } from "./display.ts";
 import { DAY, HOUR, MINUTE, SECOND } from "$std/datetime/constants.ts";
-import { assertEquals } from "$std/assert/mod.ts";
+import { assertEquals, assertThrows } from "$std/assert/mod.ts";
 
 Deno.test("[display] timeAgo()", () => {
   assertEquals(timeAgo(new Date(Date.now())), "just now");
@@ -18,6 +18,11 @@ Deno.test("[display] timeAgo()", () => {
   assertEquals(timeAgo(new Date(Date.now() - DAY)), "1 day ago");
   assertEquals(timeAgo(new Date(Date.now() - DAY - HOUR * 12)), "1 day ago");
   assertEquals(timeAgo(new Date(Date.now() - DAY * 5)), "5 days ago");
+  assertThrows(
+    () => timeAgo(new Date(Date.now() + 1)),
+    Error,
+    "Timestamp must be in the past",
+  );
 });
 
 Deno.test("[display] formatCurrency()", () => {

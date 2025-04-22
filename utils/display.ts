@@ -24,7 +24,9 @@ const units = [
  * ```
  */
 export function timeAgo(date: Date): string {
-  const duration = difference(date, new Date(), { units });
+  const now = new Date();
+  if (date > now) throw new Error("Timestamp must be in the past");
+  const duration = difference(date, now, { units });
   if (duration.seconds === 0) return "just now";
   const largestUnit = units.find((unit) => duration[unit]! > 0) || "seconds";
   // @ts-ignore - TS doesn't know about this API yet
