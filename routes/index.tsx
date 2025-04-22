@@ -1,8 +1,8 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { State } from "@/plugins/session.ts";
+import type { State } from "@/middlewares/session.ts";
 import Head from "@/components/Head.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 
 export default defineRoute<State>((_req, ctx) => {
   const isSignedIn = ctx.state.sessionUser !== undefined;

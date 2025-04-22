@@ -8,6 +8,7 @@ const EXTENSIONS = [".ts", ".tsx"];
 const EXCLUDED_DIRS = [
   "data",
   "static",
+  "node_modules",
 ];
 
 const ROOT = new URL("../", import.meta.url);

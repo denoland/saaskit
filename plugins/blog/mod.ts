@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { Plugin } from "$fresh/server.ts";
+import type { Plugin } from "fresh";
 import BlogIndex from "./routes/blog/index.tsx";
 import BlogSlug from "./routes/blog/[slug].tsx";
 import Feed from "./routes/feed.ts";

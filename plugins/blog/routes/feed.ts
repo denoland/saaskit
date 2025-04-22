@@ -2,7 +2,7 @@
 import { Feed } from "npm:feed@4.2.2";
 import { getPosts } from "../utils/posts.ts";
 import { SITE_NAME } from "@/utils/constants.ts";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 
 const copyright = `Copyright ${new Date().getFullYear()} ${SITE_NAME}`;
 

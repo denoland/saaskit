@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { Handlers } from "$fresh/server.ts";
+import type { Handlers } from "fresh";
 import { collectValues, getUser, listItemsByUser } from "@/utils/db.ts";
 import { getCursor } from "@/utils/http.ts";
 

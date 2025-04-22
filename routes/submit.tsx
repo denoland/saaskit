@@ -2,7 +2,7 @@
 import Head from "@/components/Head.tsx";
 import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
 import IconCircleX from "@preact-icons/tb/TbCircleX";
-import { defineRoute, Handlers } from "$fresh/server.ts";
+import { defineRoute, Handlers } from "fresh";
 import { createItem } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
 import {

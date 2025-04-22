@@ -1,7 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 
-import { createHandler } from "$fresh/server.ts";
-import manifest from "@/fresh.gen.ts";
+import { app } from "./main.ts";
 import {
   collectValues,
   createItem,
@@ -25,8 +24,9 @@ import { assertStringIncludes } from "@std/assert/string-includes";
 import { isRedirectStatus, STATUS_CODE } from "@std/http/status";
 import { resolvesNext, returnsNext, stub } from "@std/testing/mock";
 import Stripe from "stripe";
-import options from "./fresh.config.ts";
 import { _internals } from "./plugins/kv_oauth.ts";
+
+const handler = await app.handler();
 
 /**
  * These tests are end-to-end tests, which follow this rule-set:
@@ -43,8 +43,6 @@ import { _internals } from "./plugins/kv_oauth.ts";
 /**
  * @see {@link https://fresh.deno.dev/docs/examples/writing-tests|Writing tests} example on how to write tests for Fresh projects.
  */
-const handler = await createHandler(manifest, options);
-
 function assertHtml(resp: Response) {
   assertInstanceOf(resp.body, ReadableStream);
   assertEquals(resp.headers.get("content-type"), "text/html; charset=utf-8");
@@ -218,7 +216,7 @@ Deno.test("[e2e] GET /pricing", async () => {
     "STRIPE_SECRET_KEY": null,
     "STRIPE_PREMIUM_PLAN_PRICE_ID": null,
   });
-  const handler = await createHandler(manifest, options);
+  const handler = await app.handler();
   const resp = await handler(
     new Request("http://localhost/pricing"),
   );

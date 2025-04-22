@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { PageProps } from "$fresh/server.ts";
+import { PageProps } from "fresh";
 
 export default function Error500Page(props: PageProps) {
   return (

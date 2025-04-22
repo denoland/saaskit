@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { Plugin } from "$fresh/server.ts";
+import type { Plugin } from "fresh";
 import type { State } from "@/plugins/session.ts";
 import { BadRequestError, redirect, UnauthorizedError } from "@/utils/http.ts";
 import { STATUS_CODE, STATUS_TEXT } from "@std/http/status";

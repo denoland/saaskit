@@ -2,7 +2,7 @@
 
 import { collectValues, listItems } from "@/utils/db.ts";
 import { getCursor } from "@/utils/http.ts";
-import type { Handlers } from "$fresh/server.ts";
+import type { Handlers } from "fresh";
 
 export const handler: Handlers = {
   async GET(req) {

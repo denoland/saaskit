@@ -67,17 +67,3 @@ export async function fetchValues<T>(endpoint: string, cursor: string) {
   if (!resp.ok) throw new Error(`Request failed: GET ${url}`);
   return await resp.json() as { values: T[]; cursor: string };
 }
-
-export class UnauthorizedError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "UnauthorizedError";
-  }
-}
-
-export class BadRequestError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "BadRequestError";
-  }
-}

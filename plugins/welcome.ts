@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { Plugin } from "$fresh/server.ts";
+import type { Plugin } from "fresh";
 import { isGitHubSetup } from "@/utils/github.ts";
 import { redirect } from "@/utils/http.ts";
 

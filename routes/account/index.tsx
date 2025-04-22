@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 import type { SignedInState } from "@/plugins/session.ts";
 import { isStripeEnabled } from "@/utils/stripe.ts";
 import Head from "@/components/Head.tsx";

@@ -2,7 +2,7 @@
 import Chart from "@/islands/Chart.tsx";
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 import { Partial } from "$fresh/runtime.ts";
 
 function randomNumbers(length: number) {

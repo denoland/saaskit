@@ -5,7 +5,7 @@ import { formatCurrency } from "@/utils/display.ts";
 import Stripe from "stripe";
 import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
 import Head from "@/components/Head.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 const CARD_STYLES =

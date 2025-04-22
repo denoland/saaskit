@@ -2,7 +2,7 @@
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
 import UsersTable from "@/islands/UsersTable.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 import { Partial } from "$fresh/runtime.ts";
 
 export default defineRoute((_req, ctx) => {

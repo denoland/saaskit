@@ -5,7 +5,7 @@ import IconBrandGithub from "@preact-icons/tb/TbBrandGithub";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
-import { defineRoute } from "$fresh/server.ts";
+import { defineRoute } from "fresh";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
 interface UserProfileProps {
