@@ -2,7 +2,6 @@
 import { formatCurrency, pluralize, timeAgo } from "./display.ts";
 import { DAY, HOUR, MINUTE, SECOND } from "@std/datetime/constants";
 import { assertEquals } from "@std/assert/equals";
-import { assertThrows } from "@std/assert/throws";
 
 Deno.test("[display] pluralize()", () => {
   assertEquals(pluralize(0, "item"), "0 items");
@@ -11,25 +10,17 @@ Deno.test("[display] pluralize()", () => {
 });
 
 Deno.test("[display] timeAgo()", () => {
-  assertEquals(timeAgo(new Date(Date.now())), "just now");
-  assertEquals(timeAgo(new Date(Date.now() - SECOND * 30)), "30 seconds ago");
-  assertEquals(timeAgo(new Date(Date.now() - MINUTE)), "1 minute ago");
-  assertEquals(timeAgo(new Date(Date.now() - MINUTE * 2)), "2 minutes ago");
-  assertEquals(timeAgo(new Date(Date.now() - MINUTE * 59)), "59 minutes ago");
-  assertEquals(timeAgo(new Date(Date.now() - HOUR)), "1 hour ago");
-  assertEquals(
-    timeAgo(new Date(Date.now() - HOUR - MINUTE * 35)),
-    "1 hour ago",
-  );
-  assertEquals(timeAgo(new Date(Date.now() - HOUR * 2)), "2 hours ago");
-  assertEquals(timeAgo(new Date(Date.now() - DAY)), "1 day ago");
-  assertEquals(timeAgo(new Date(Date.now() - DAY - HOUR * 12)), "1 day ago");
-  assertEquals(timeAgo(new Date(Date.now() - DAY * 5)), "5 days ago");
-  assertThrows(
-    () => timeAgo(new Date(Date.now() + 1)),
-    Error,
-    "Timestamp must be in the past",
-  );
+  assertEquals(timeAgo(Date.now()), "0 seconds ago");
+  assertEquals(timeAgo(Date.now() - SECOND * 30), "30 seconds ago");
+  assertEquals(timeAgo(Date.now() - MINUTE), "1 minute ago");
+  assertEquals(timeAgo(Date.now() - MINUTE * 2), "2 minutes ago");
+  assertEquals(timeAgo(Date.now() - MINUTE * 59), "59 minutes ago");
+  assertEquals(timeAgo(Date.now() - HOUR), "1 hour ago");
+  assertEquals(timeAgo(Date.now() - HOUR - MINUTE * 35), "1 hour ago");
+  assertEquals(timeAgo(Date.now() - HOUR * 2), "2 hours ago");
+  assertEquals(timeAgo(Date.now() - DAY), "1 day ago");
+  assertEquals(timeAgo(Date.now() - DAY - HOUR * 12), "1 day ago");
+  assertEquals(timeAgo(Date.now() - DAY * 5), "5 days ago");
 });
 
 Deno.test("[display] formatCurrency()", () => {
