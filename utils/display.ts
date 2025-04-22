@@ -23,8 +23,8 @@ const units = [
  * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours ago"
  * ```
  */
-export function timeAgo(timestamp: number): string {
-  const duration = difference(new Date(timestamp), new Date(), { units });
+export function timeAgo(date: Date): string {
+  const duration = difference(date, new Date(), { units });
   if (duration.seconds === 0) return "just now";
   const largestUnit = units.find((unit) => duration[unit]! > 0) || "seconds";
   // @ts-ignore - TS doesn't know about this API yet
