@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import type { State } from "@/plugins/session.ts";
 import { getUser } from "@/utils/db.ts";
-import IconBrandGithub from "@preact-icons/tb/TbBrandGithub";
+import IconBrandGithub from "tabler_icons_tsx/brand-github.tsx";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";

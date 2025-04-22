@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { defineRoute } from "$fresh/server.ts";
-import { CSS, render } from "@deno/gfm";
+import { CSS, render } from "jsr:@deno/gfm";
 import { getPost } from "../../utils/posts.ts";
 import Head from "@/components/Head.tsx";
 import Share from "../../components/Share.tsx";

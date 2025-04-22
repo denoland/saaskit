@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { formatCurrency, timeAgo } from "./display.ts";
-import { DAY, HOUR, MINUTE, SECOND } from "@std/datetime/constants";
-import { assertEquals } from "@std/assert/equals";
+import { DAY, HOUR, MINUTE, SECOND } from "$std/datetime/constants.ts";
+import { assertEquals } from "$std/assert/mod.ts";
 
 Deno.test("[display] timeAgo()", () => {
   assertEquals(timeAgo(new Date(Date.now())), "just now");
