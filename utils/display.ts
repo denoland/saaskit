@@ -1,21 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
+import { difference, type Unit } from "@std/datetime/difference";
 
-/**
- * Returns a pluralized string for the given amount and unit.
- *
- * @example
- * ```ts
- * import { pluralize } from "@/utils/display.ts";
- *
- * pluralize(0, "meow"); // Returns "0 meows"
- * pluralize(1, "meow"); // Returns "1 meow"
- * ```
- */
-export function pluralize(amount: number, unit: string) {
-  return amount === 1 ? `${amount} ${unit}` : `${amount} ${unit}s`;
-}
-
-const UNITS = [
+const units = [
   "years",
   "months",
   "weeks",
@@ -23,8 +9,7 @@ const UNITS = [
   "hours",
   "minutes",
   "seconds",
-] as const;
-const SMALLEST_UNIT = "seconds" as const;
+] as Unit[];
 
 /**
  * Returns how long ago a given date is from now.
@@ -39,10 +24,9 @@ const SMALLEST_UNIT = "seconds" as const;
  * ```
  */
 export function timeAgo(timestamp: number): string {
-  const time = Temporal.Instant.fromEpochMilliseconds(timestamp);
-  const duration = Temporal.Now.instant()
-    .since(time, { smallestUnit: SMALLEST_UNIT });
-  const largestUnit = UNITS.find((unit) => duration[unit] > 0) || SMALLEST_UNIT;
+  const duration = difference(new Date(timestamp), new Date(), { units });
+  if (duration.seconds === 0) return "just now";
+  const largestUnit = units.find((unit) => duration[unit]! > 0) || "seconds";
   // @ts-ignore - TS doesn't know about this API yet
   return new Intl.DurationFormat("en", { style: "long" })
     .format({ [largestUnit]: duration[largestUnit] }) + " ago";
