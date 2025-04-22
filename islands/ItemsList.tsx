@@ -113,7 +113,7 @@ function ItemSummary(props: ItemSummaryProps) {
           <a class="hover:underline" href={`/users/${props.item.userLogin}`}>
             {props.item.userLogin}
           </a>{" "}
-          {timeAgo(decodeTime(props.item.id))}
+          {timeAgo(new Date(decodeTime(props.item.id)))}
         </p>
       </div>
     </div>

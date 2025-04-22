@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { difference } from "$std/datetime/difference.ts";
+import { difference, type Unit } from "$std/datetime/difference.ts";
 
 const units = [
   "years",
