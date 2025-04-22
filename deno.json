@@ -26,7 +26,7 @@
     "@preact/signals": "npm:@preact/signals@1.2.1",
     "@preact/signals-core": "npm:@preact/signals-core@1.5.0",
     "@std/assert": "jsr:@std/assert@^1.0",
-    "@std/datetime": "jsr:@std/datetime@^0.225.4",
+    "@std/datetime": "jsr:@std/datetime@^0.225",
     "@std/front-matter": "jsr:@std/front-matter@^1.0",
     "@std/fs": "jsr:@std/fs@^1.0",
     "@std/http": "jsr:@std/http@^1.0",
@@ -44,6 +44,5 @@
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js"
   },
   "exclude": ["coverage/", "_fresh/", "**/_fresh/*"],
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } },
-  "unstable": ["temporal"]
+  "lint": { "rules": { "tags": ["fresh", "recommended"] } }
 }
