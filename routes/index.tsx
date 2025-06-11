@@ -4,7 +4,7 @@ import Head from "@/components/Head.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
 import { defineRoute } from "fresh";
 
-export default defineRoute<State>((_req, ctx) => {
+export default defineRoute<State>((ctx) => {
   const isSignedIn = ctx.state.sessionUser !== undefined;
   const endpoint = "/api/items";
 

@@ -2,10 +2,10 @@
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
 import UsersTable from "@/islands/UsersTable.tsx";
-import { defineRoute } from "fresh";
-import { Partial } from "$fresh/runtime.ts";
+import { Partial } from "fresh/runtime";
+import { define } from "@/utils/define.ts";
 
-export default defineRoute((_req, ctx) => {
+export default define.page((ctx) => {
   const endpoint = "/api/users";
 
   return (

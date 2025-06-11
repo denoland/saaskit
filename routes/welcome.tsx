@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { defineRoute } from "$fresh/src/server/defines.ts";
 import Head from "@/components/Head.tsx";
 import { isGitHubSetup } from "@/utils/github.ts";
+import { define } from "@/utils/define.ts";
 
 function SetupInstruction() {
   return (
@@ -45,7 +45,7 @@ function SetupInstruction() {
   );
 }
 
-export default defineRoute((_req, ctx) => {
+export default define.page((ctx) => {
   return (
     <>
       <Head title="Welcome" href={ctx.url.href} />

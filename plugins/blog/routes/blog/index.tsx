@@ -28,7 +28,7 @@ function PostCard(props: Post) {
   );
 }
 
-export default defineRoute(async (_req, ctx) => {
+export default defineRoute(async (ctx) => {
   const posts = await getPosts();
 
   return (

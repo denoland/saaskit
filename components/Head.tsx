@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { Head as _Head } from "$fresh/runtime.ts";
+import { Head as _Head } from "fresh/runtime";
 import Meta, { type MetaProps } from "./Meta.tsx";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/utils/constants.ts";
 import { ComponentChildren } from "preact";

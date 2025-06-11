@@ -1,9 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { redirect } from "@/utils/http.ts";
-import { Handlers } from "fresh";
+import { define } from "@/utils/define.ts";
 
-export const handler: Handlers = {
-  GET() {
-    return redirect("/dashboard/stats");
-  },
-};
+export const handler = define.handlers((ctx) =>
+  ctx.redirect("/dashboard/stats")
+);

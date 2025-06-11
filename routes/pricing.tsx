@@ -1,12 +1,12 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { State } from "@/plugins/session.ts";
 import { assertIsPrice, isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import { formatCurrency } from "@/utils/display.ts";
 import Stripe from "stripe";
 import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
 import Head from "@/components/Head.tsx";
-import { defineRoute } from "fresh";
+import { HttpError } from "fresh";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
+import { define } from "@/utils/define.ts";
 
 const CARD_STYLES =
   "shadow-md flex flex-col flex-1 space-y-8 p-8 ring-1 ring-gray-300 ring-opacity-50 rounded-xl dark:bg-gray-700 bg-gradient-to-r";
@@ -160,8 +160,8 @@ function EnterprisePricingCard() {
   );
 }
 
-export default defineRoute<State>(async (_req, ctx) => {
-  if (!isStripeEnabled()) return await ctx.renderNotFound();
+export default define.page(async (ctx) => {
+  if (!isStripeEnabled()) throw new HttpError(404);
 
   const { data } = await stripe.products.list({
     expand: ["data.default_price"],

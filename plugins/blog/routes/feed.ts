@@ -7,7 +7,7 @@ import { defineRoute } from "fresh";
 const copyright = `Copyright ${new Date().getFullYear()} ${SITE_NAME}`;
 
 // Use https://validator.w3.org/feed/ to validate RSS feed syntax.
-export default defineRoute(async (_req, ctx) => {
+export default defineRoute(async (ctx) => {
   const { origin } = ctx.url;
   const feed = new Feed({
     title: "Deno",

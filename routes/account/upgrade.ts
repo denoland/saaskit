@@ -1,15 +1,14 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { defineRoute } from "fresh";
-import type { SignedInState } from "@/plugins/session.ts";
-import { redirect } from "@/utils/http.ts";
+import { FreshContext, HttpError } from "fresh";
+import type { SignedInState } from "@/middlewares/session.ts";
 import {
   getStripePremiumPlanPriceId,
   isStripeEnabled,
   stripe,
 } from "@/utils/stripe.ts";
 
-export default defineRoute<SignedInState>(async (_req, ctx) => {
-  if (!isStripeEnabled()) return ctx.renderNotFound();
+export default async (ctx: FreshContext<SignedInState>): Promise<Response> => {
+  if (!isStripeEnabled()) throw new HttpError(404);
   const stripePremiumPlanPriceId = getStripePremiumPlanPriceId();
   if (stripePremiumPlanPriceId === undefined) {
     throw new Error(
@@ -28,7 +27,7 @@ export default defineRoute<SignedInState>(async (_req, ctx) => {
     ],
     mode: "subscription",
   });
-  if (url === null) return ctx.renderNotFound();
+  if (url === null) throw new HttpError(404);
 
-  return redirect(url);
-});
+  return ctx.redirect(url);
+};

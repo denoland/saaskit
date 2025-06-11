@@ -1,11 +1,13 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { type Handlers, HttpError } from "fresh";
+import { HttpError } from "fresh";
 import { STATUS_CODE } from "@std/http/status";
-import type { SignedInState } from "@/plugins/session.ts";
+import type { SignedInState } from "@/middlewares/session.ts";
 import { createVote } from "@/utils/db.ts";
+import { define } from "@/utils/define.ts";
 
-export const handler: Handlers<undefined, SignedInState> = {
-  async POST(req, ctx) {
+export const handler = define.handlers<unknown, SignedInState>({
+  async POST(ctx) {
+    const req = ctx.req;
     const itemId = new URL(req.url).searchParams.get("item_id");
     if (itemId === null) {
       throw new HttpError(400, "`item_id` URL parameter missing");
@@ -18,4 +20,4 @@ export const handler: Handlers<undefined, SignedInState> = {
 
     return new Response(null, { status: STATUS_CODE.Created });
   },
-};
+});

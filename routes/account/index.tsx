@@ -6,7 +6,7 @@ import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
 
-export default defineRoute<SignedInState>((_req, ctx) => {
+export default defineRoute<SignedInState>((ctx) => {
   const { sessionUser } = ctx.state;
   const action = sessionUser.isSubscribed ? "Manage" : "Upgrade";
 

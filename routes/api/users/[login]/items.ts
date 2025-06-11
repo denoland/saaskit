@@ -4,7 +4,8 @@ import { collectValues, getUser, listItemsByUser } from "@/utils/db.ts";
 import { getCursor } from "@/utils/http.ts";
 
 export const handler: Handlers = {
-  async GET(req, ctx) {
+  async GET(ctx) {
+        const req = ctx.req;
     const user = await getUser(ctx.params.login);
     if (user === null) throw new Deno.errors.NotFound("User not found");
 

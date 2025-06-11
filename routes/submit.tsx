@@ -2,22 +2,20 @@
 import Head from "@/components/Head.tsx";
 import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
 import IconCircleX from "@preact-icons/tb/TbCircleX";
-import { defineRoute, Handlers } from "fresh";
 import { createItem } from "@/utils/db.ts";
 import { redirect } from "@/utils/http.ts";
-import {
-  assertSignedIn,
-  type SignedInState,
-  State,
-} from "@/plugins/session.ts";
+import { assertSignedIn, type SignedInState } from "@/middlewares/session.ts";
 import { ulid } from "@std/ulid/ulid";
 import IconInfo from "@preact-icons/tb/TbInfoCircle";
+import { define } from "../utils/define.ts";
 
 const SUBMIT_STYLES =
   "w-full text-white text-center rounded-[7px] transition duration-300 px-4 py-2 block hover:bg-white hover:text-black hover:dark:bg-gray-900 hover:dark:!text-white";
 
-export const handler: Handlers<undefined, SignedInState> = {
-  async POST(req, ctx) {
+export const handler = define.handlers<SignedInState>({
+  async POST(ctx) {
+    const req = ctx.req;
+
     assertSignedIn(ctx);
 
     const form = await req.formData();
@@ -42,9 +40,9 @@ export const handler: Handlers<undefined, SignedInState> = {
     });
     return redirect("/");
   },
-};
+});
 
-export default defineRoute<State>((_req, ctx) => {
+export default define.page((ctx) => {
   return (
     <>
       <Head title="Submit" href={ctx.url.href} />

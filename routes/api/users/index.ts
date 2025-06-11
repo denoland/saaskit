@@ -4,7 +4,8 @@ import { collectValues, listUsers } from "@/utils/db.ts";
 import { getCursor } from "@/utils/http.ts";
 
 export const handler: Handlers = {
-  async GET(req) {
+  async GET(ctx) {
+    const req = ctx.req;
     const url = new URL(req.url);
     const iter = listUsers({
       cursor: getCursor(url),

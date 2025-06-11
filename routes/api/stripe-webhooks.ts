@@ -15,7 +15,9 @@ export const handler: Handlers = {
    *
    * @see {@link https://github.com/stripe-samples/stripe-node-deno-samples/blob/2d571b20cd88f1c1f02185483729a37210484c68/webhook-signing/main.js}
    */
-  async POST(req) {
+  async POST(ctx) {
+    const req = ctx.req;
+
     if (!isStripeEnabled()) throw new Deno.errors.NotFound("Not Found");
 
     /** @see {@link https://stripe.com/docs/webhooks#verify-events} */

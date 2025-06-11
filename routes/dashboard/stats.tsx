@@ -2,14 +2,14 @@
 import Chart from "@/islands/Chart.tsx";
 import Head from "@/components/Head.tsx";
 import TabsBar from "@/components/TabsBar.tsx";
-import { defineRoute } from "fresh";
-import { Partial } from "$fresh/runtime.ts";
+import { Partial } from "fresh/runtime";
+import { define } from "@/utils/define.ts";
 
 function randomNumbers(length: number) {
   return Array.from({ length }, () => Math.floor(Math.random() * 1000));
 }
 
-export default defineRoute((_req, ctx) => {
+export default define.page((ctx) => {
   const labels = [
     "Monday",
     "Tuesday",

@@ -1,12 +1,12 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import type { State } from "@/plugins/session.ts";
 import { getUser } from "@/utils/db.ts";
 import IconBrandGithub from "@preact-icons/tb/TbBrandGithub";
 import Head from "@/components/Head.tsx";
 import GitHubAvatarImg from "@/components/GitHubAvatarImg.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
-import { defineRoute } from "fresh";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
+import { define } from "@/utils/define.ts";
+import { HttpError } from "fresh";
 
 interface UserProfileProps {
   login: string;
@@ -36,11 +36,11 @@ function UserProfile(props: UserProfileProps) {
   );
 }
 
-export default defineRoute<State>(
-  async (_req, ctx) => {
+export default define.page(
+  async (ctx) => {
     const { login } = ctx.params;
     const user = await getUser(login);
-    if (user === null) return await ctx.renderNotFound();
+    if (user === null) throw new HttpError(404, "User not found");
 
     const isSignedIn = ctx.state.sessionUser !== undefined;
     const endpoint = `/api/users/${login}/items`;

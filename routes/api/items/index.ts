@@ -5,7 +5,8 @@ import { getCursor } from "@/utils/http.ts";
 import type { Handlers } from "fresh";
 
 export const handler: Handlers = {
-  async GET(req) {
+  async GET(ctx) {
+    const req = ctx.req;
     const url = new URL(req.url);
     const iter = listItems({
       cursor: getCursor(url),
