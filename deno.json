@@ -36,5 +36,5 @@
     "fresh_charts/": "https://deno.land/x/fresh_charts@0.3.1/"
   },
   "exclude": ["coverage/", "_fresh/", "**/_fresh/*"],
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } }
+  "lint": { "rules": { "tags": ["fresh", "recommended", "jsx", "react"] } }
 }
