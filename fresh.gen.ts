@@ -27,7 +27,7 @@ import * as $welcome from "./routes/welcome.tsx";
 import * as $Chart from "./islands/Chart.tsx";
 import * as $ItemsList from "./islands/ItemsList.tsx";
 import * as $UsersTable from "./islands/UsersTable.tsx";
-import { type Manifest } from "$fresh/server.ts";
+import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
