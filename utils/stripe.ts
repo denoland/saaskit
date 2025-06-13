@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import Stripe from "stripe";
-import { AssertionError } from "$std/assert/assertion_error.ts";
+import { AssertionError } from "@std/assert/assertion-error";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 
