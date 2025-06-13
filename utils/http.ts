@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { RedirectStatus, STATUS_CODE } from "$std/http/status.ts";
+import { RedirectStatus, STATUS_CODE } from "@std/http/status";
 
 /**
  * Returns a response that redirects the client to the given location (URL).
