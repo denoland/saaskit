@@ -1,5 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
-import { difference, type Unit } from "$std/datetime/difference.ts";
+import { difference, type Unit } from "@std/datetime/difference";
 
 const units = [
   "years",
@@ -17,7 +17,7 @@ const units = [
  * @example
  * ```ts
  * import { timeAgo } from "@/utils/display.ts";
- * import { SECOND, MINUTE, HOUR } from "$std/datetime/constants.ts";
+ * import { SECOND, MINUTE, HOUR } from "@std/datetime/constants";
  *
  * timeAgo(new Date()); // Returns "just now"
  * timeAgo(new Date(Date.now() - 3 * HOUR)); // Returns "3 hours ago"

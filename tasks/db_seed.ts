@@ -1,7 +1,7 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 // Description: Seeds the kv db with Hacker News stories
 import { createItem, createUser } from "@/utils/db.ts";
-import { ulid } from "$std/ulid/mod.ts";
+import { ulid } from "@std/ulid/ulid";
 
 // Reference: https://github.com/HackerNews/API
 const API_BASE_URL = `https://hacker-news.firebaseio.com/v0`;
