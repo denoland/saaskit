@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { type Handlers } from "$fresh/server.ts";
-import { STATUS_CODE } from "$std/http/status.ts";
+import { STATUS_CODE } from "@std/http/status";
 import { isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import Stripe from "stripe";
 import { getUserByStripeCustomer, updateUser } from "@/utils/db.ts";
