@@ -3,8 +3,14 @@ import type { State } from "@/plugins/session.ts";
 import Head from "@/components/Head.tsx";
 import ItemsList from "@/islands/ItemsList.tsx";
 import { defineRoute } from "$fresh/server.ts";
+import { isGitHubSetup } from "@/utils/github.ts";
+import { redirect } from "@/utils/http.ts";
 
 export default defineRoute<State>((_req, ctx) => {
+  if (!isGitHubSetup() && ctx.url.pathname !== "/welcome") {
+    return redirect("/welcome");
+  }
+
   const isSignedIn = ctx.state.sessionUser !== undefined;
   const endpoint = "/api/items";
 
