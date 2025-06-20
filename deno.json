@@ -41,5 +41,5 @@
     "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/",
     "fresh_charts/": "https://deno.land/x/fresh_charts@0.3.1/"
   },
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } }
+  "lint": { "rules": { "tags": ["fresh", "recommended", "jsx", "react"] } }
 }
