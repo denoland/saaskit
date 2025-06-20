@@ -2,20 +2,19 @@
   "lock": false,
   "tasks": {
     "init:stripe": "deno run --allow-read --allow-env --allow-net --env tasks/init_stripe.ts",
-    "db:dump": "deno run --allow-read --allow-env --unstable-kv tasks/db_dump.ts",
-    "db:restore": "deno run --allow-read --allow-env --unstable-kv tasks/db_restore.ts",
-    "db:seed": "deno run --allow-read --allow-env --allow-net --unstable-kv tasks/db_seed.ts",
-    "db:migrate": "deno run --allow-read --allow-env --allow-net --unstable-kv tasks/db_migrate.ts",
-    "db:reset": "deno run --allow-read --allow-env --unstable-kv tasks/db_reset.ts",
-    "start": "deno run --unstable-kv -A --watch=static/,routes/ --env dev.ts",
-    "test": "DENO_KV_PATH=:memory: deno test -A --parallel --unstable-kv --coverage",
+    "db:dump": "deno run --allow-read --allow-env tasks/db_dump.ts",
+    "db:restore": "deno run --allow-read --allow-env tasks/db_restore.ts",
+    "db:seed": "deno run --allow-read --allow-env --allow-net tasks/db_seed.ts",
+    "db:migrate": "deno run --allow-read --allow-env --allow-net tasks/db_migrate.ts",
+    "db:reset": "deno run --allow-read --allow-env tasks/db_reset.ts",
+    "start": "deno run -A --watch=static/,routes/ --env dev.ts",
+    "test": "DENO_KV_PATH=:memory: deno test -A --parallel --coverage",
     "check:license": "deno run --allow-read --allow-write tasks/check_license.ts",
     "check:types": "deno check main.ts && deno check dev.ts && deno check tasks/*.ts",
     "ok": "deno fmt --check && deno lint && deno task check:license --check && deno task check:types && deno task test",
-    "cov:gen": "deno coverage coverage --lcov --exclude='.tsx' --output=cov.lcov",
     "update": "deno run -A -r https://fresh.deno.dev/update .",
-    "build": "deno run -A --unstable-kv dev.ts build",
-    "preview": "deno run -A --unstable-kv main.ts"
+    "build": "deno run -A dev.ts build",
+    "preview": "deno run -A main.ts"
   },
   "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
   "imports": {
@@ -23,18 +22,28 @@
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
+    "$fresh/": "https://raw.githubusercontent.com/denoland/fresh/60220dd33b5b0f6b5c72927c933dbc32a3c4734e/",
+    "@std/assert": "jsr:@std/assert@^1.0.13",
+    "@std/datetime": "jsr:@std/datetime@^0.225.5",
+    "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
+    "@std/http": "jsr:@std/http@^1.0.18",
+    "@std/path": "jsr:@std/path@^1.1.0",
+    "@std/testing": "jsr:@std/testing@^1.0.14",
+    "@std/ulid": "jsr:@std/ulid@^1.0.0",
     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.2",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "$std/": "https://deno.land/std@0.208.0/",
     "stripe": "npm:/stripe@13.5.0",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.9.1/",
     "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/",
     "fresh_charts/": "https://deno.land/x/fresh_charts@0.3.1/"
   },
-  "exclude": ["coverage/", "_fresh/", "**/_fresh/*"],
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } }
+  "lint": { "rules": { "tags": ["fresh", "recommended", "jsx", "react"] } },
+  "unstable": [
+    "kv"
+  ]
 }
