@@ -1,6 +1,6 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import { defineRoute } from "$fresh/server.ts";
-import { getPosts, type Post } from "../../utils/posts.ts";
+import { getPosts, type Post } from "@/utils/posts.ts";
 import Head from "@/components/Head.tsx";
 
 function PostCard(props: Post) {
