@@ -1,3 +1,4 @@
+// Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
 import type { FreshContext } from "$fresh/server.ts";
 
 export default async (_req: Request, ctx: FreshContext): Promise<Response> => {
