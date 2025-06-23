@@ -16,9 +16,12 @@ import * as $api_users_login_index from "./routes/api/users/[login]/index.ts";
 import * as $api_users_login_items from "./routes/api/users/[login]/items.ts";
 import * as $api_users_index from "./routes/api/users/index.ts";
 import * as $api_vote from "./routes/api/vote.ts";
+import * as $blog_slug_ from "./routes/blog/[slug].tsx";
+import * as $blog_index from "./routes/blog/index.tsx";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $dashboard_stats from "./routes/dashboard/stats.tsx";
 import * as $dashboard_users from "./routes/dashboard/users.tsx";
+import * as $feed from "./routes/feed.ts";
 import * as $index from "./routes/index.tsx";
 import * as $pricing from "./routes/pricing.tsx";
 import * as $submit from "./routes/submit.tsx";
@@ -45,9 +48,12 @@ const manifest = {
     "./routes/api/users/[login]/items.ts": $api_users_login_items,
     "./routes/api/users/index.ts": $api_users_index,
     "./routes/api/vote.ts": $api_vote,
+    "./routes/blog/[slug].tsx": $blog_slug_,
+    "./routes/blog/index.tsx": $blog_index,
     "./routes/dashboard/index.tsx": $dashboard_index,
     "./routes/dashboard/stats.tsx": $dashboard_stats,
     "./routes/dashboard/users.tsx": $dashboard_users,
+    "./routes/feed.ts": $feed,
     "./routes/index.tsx": $index,
     "./routes/pricing.tsx": $pricing,
     "./routes/submit.tsx": $submit,

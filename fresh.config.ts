@@ -6,7 +6,6 @@ import errorHandling from "./plugins/error_handling.ts";
 import securityHeaders from "./plugins/security_headers.ts";
 import type { FreshConfig } from "$fresh/server.ts";
 import { ga4Plugin } from "https://deno.land/x/fresh_ga4@0.0.4/mod.ts";
-import { blog } from "./plugins/blog/mod.ts";
 
 export default {
   plugins: [
@@ -16,6 +15,5 @@ export default {
     tailwind(),
     errorHandling,
     securityHeaders,
-    blog(),
   ],
 } satisfies FreshConfig;
