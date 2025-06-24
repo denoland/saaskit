@@ -138,7 +138,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
       sessionId,
     };
     const id = crypto.randomUUID();
-    const handleCallbackStub = stub(
+    using _handleCallbackStub = stub(
       _internals,
       "handleCallback",
       returnsNext([Promise.resolve(handleCallbackResp)]),
@@ -148,7 +148,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
       email: crypto.randomUUID(),
     };
     const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
-    const fetchStub = stub(
+    using _fetchStub = stub(
       globalThis,
       "fetch",
       returnsNext([
@@ -158,8 +158,6 @@ Deno.test("[e2e] GET /callback", async (test) => {
     );
     const req = new Request("http://localhost/callback");
     await handler(req);
-    handleCallbackStub.restore();
-    fetchStub.restore();
 
     const user = await getUser(githubRespBody.login);
     assert(user !== null);
@@ -176,7 +174,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
       sessionId: crypto.randomUUID(),
     };
     const id = crypto.randomUUID();
-    const handleCallbackStub = stub(
+    using _handleCallbackStub = stub(
       _internals,
       "handleCallback",
       returnsNext([Promise.resolve(handleCallbackResp)]),
@@ -186,7 +184,7 @@ Deno.test("[e2e] GET /callback", async (test) => {
       email: crypto.randomUUID(),
     };
     const stripeRespBody: Partial<Stripe.Response<Stripe.Customer>> = { id };
-    const fetchStub = stub(
+    using _fetchStub = stub(
       globalThis,
       "fetch",
       returnsNext([
@@ -196,8 +194,6 @@ Deno.test("[e2e] GET /callback", async (test) => {
     );
     const req = new Request("http://localhost/callback");
     await handler(req);
-    handleCallbackStub.restore();
-    fetchStub.restore();
 
     const user = await getUser(githubRespBody.login);
     assert(user !== null);
@@ -653,7 +649,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
   });
 
   await test.step("serves not found response if the user is not found for subscription creation", async () => {
-    const constructEventAsyncStub = stub(
+    using _constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
       returnsNext([
@@ -668,8 +664,6 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    constructEventAsyncStub.restore();
-
     assertEquals(resp.status, STATUS_CODE.NotFound);
     assertText(resp);
     assertEquals(await resp.text(), "User not found");
@@ -679,7 +673,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const user = randomUser();
     await createUser(user);
 
-    const constructEventAsyncStub = stub(
+    using _constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
       returnsNext([
@@ -697,14 +691,12 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    constructEventAsyncStub.restore();
-
     assertEquals(resp.status, STATUS_CODE.Created);
     assertEquals(await getUser(user.login), { ...user, isSubscribed: true });
   });
 
   await test.step("serves not found response if the user is not found for subscription deletion", async () => {
-    const constructEventAsyncStub = stub(
+    using _constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
       returnsNext([
@@ -719,8 +711,6 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    constructEventAsyncStub.restore();
-
     assertEquals(resp.status, STATUS_CODE.NotFound);
     assertText(resp);
     assertEquals(await resp.text(), "User not found");
@@ -730,7 +720,7 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
     const user: User = { ...randomUser(), isSubscribed: true };
     await createUser(user);
 
-    const constructEventAsyncStub = stub(
+    using _constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
       returnsNext([
@@ -748,14 +738,12 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
       }),
     );
 
-    constructEventAsyncStub.restore();
-
     assertEquals(await getUser(user.login), { ...user, isSubscribed: false });
     assertEquals(resp.status, STATUS_CODE.Accepted);
   });
 
   await test.step("serves bad request response if the event type is not supported", async () => {
-    const constructEventAsyncStub = stub(
+    using _constructEventAsyncStub = stub(
       stripe.webhooks,
       "constructEventAsync",
       returnsNext([
@@ -769,8 +757,6 @@ Deno.test("[e2e] POST /api/stripe-webhooks", async (test) => {
         headers: { "Stripe-Signature": crypto.randomUUID() },
       }),
     );
-
-    constructEventAsyncStub.restore();
 
     assertEquals(resp.status, STATUS_CODE.BadRequest);
     assertText(resp);
@@ -849,7 +835,7 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
     const session = { url: "https://stubbing-returned-url" } as Stripe.Response<
       Stripe.BillingPortal.Session
     >;
-    const sessionsCreateStub = stub(
+    using _sessionsCreateStub = stub(
       stripe.billingPortal.sessions,
       "create",
       resolvesNext([session]),
@@ -860,8 +846,6 @@ Deno.test("[e2e] GET /account/manage", async (test) => {
         headers: { cookie: "site-session=" + user.sessionId },
       }),
     );
-
-    sessionsCreateStub.restore();
 
     assertRedirect(resp, session.url);
   });
@@ -882,7 +866,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
 
   await test.step("serves internal server error response if the `STRIPE_PREMIUM_PLAN_PRICE_ID` environment variable is not set", async () => {
     // Suppress the error message thrown by the handler
-    const stubbedError = stub(console, "error");
+    using _stubbedError = stub(console, "error");
 
     setupEnv(
       { "STRIPE_PREMIUM_PLAN_PRICE_ID": null },
@@ -896,8 +880,6 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
 
     assertEquals(resp.status, STATUS_CODE.InternalServerError);
     assertHtml(resp);
-
-    stubbedError.restore();
   });
 
   await test.step("serves not found response if Stripe is disabled", async () => {
@@ -921,7 +903,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     const session = { url: null } as Stripe.Response<
       Stripe.Checkout.Session
     >;
-    const sessionsCreateStub = stub(
+    using _sessionsCreateStub = stub(
       stripe.checkout.sessions,
       "create",
       resolvesNext([session]),
@@ -932,8 +914,6 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
         headers: { cookie: "site-session=" + user.sessionId },
       }),
     );
-
-    sessionsCreateStub.restore();
 
     assertEquals(resp.status, STATUS_CODE.NotFound);
     assertHtml(resp);
@@ -948,7 +928,7 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
     const session = { url: "https://stubbing-returned-url" } as Stripe.Response<
       Stripe.Checkout.Session
     >;
-    const sessionsCreateStub = stub(
+    using _sessionsCreateStub = stub(
       stripe.checkout.sessions,
       "create",
       resolvesNext([session]),
@@ -959,8 +939,6 @@ Deno.test("[e2e] GET /account/upgrade", async (test) => {
         headers: { cookie: "site-session=" + user.sessionId },
       }),
     );
-
-    sessionsCreateStub.restore();
 
     assertRedirect(resp, session.url!);
   });
