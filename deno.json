@@ -20,6 +20,7 @@
   "imports": {
     "@/": "./",
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "@preact-icons/tb": "jsr:@preact-icons/tb@^1.0.14",
     "preact": "npm:preact@10.22.1",
     "@std/assert": "jsr:@std/assert@^1.0.13",
     "@std/datetime": "jsr:@std/datetime@^0.225.5",
@@ -36,7 +37,6 @@
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
     "stripe": "npm:/stripe@13.5.0",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.9.1/",
-    "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/",
     "fresh_charts/": "https://deno.land/x/fresh_charts@0.3.1/"
   },
   "lint": { "rules": { "tags": ["fresh", "recommended", "jsx", "react"] } },
