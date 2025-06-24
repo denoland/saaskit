@@ -41,7 +41,7 @@ Deno.test("[http] fetchValues()", async () => {
   };
   const resp2Cursor = crypto.randomUUID();
   const resp2 = Promise.resolve(Response.json(resp2Body));
-  const fetchStub = stub(
+  using _fetchStub = stub(
     globalThis,
     "fetch",
     returnsNext([resp1, resp2]),
@@ -56,6 +56,4 @@ Deno.test("[http] fetchValues()", async () => {
     await fetchValues<Item>(endpoint + "/api/items", resp2Cursor),
     resp2Body,
   );
-
-  fetchStub.restore();
 });

@@ -9,7 +9,7 @@ import { BadRequestError } from "@/utils/http.ts";
 Deno.test("[plugins] getGitHubUser()", async (test) => {
   await test.step("rejects on error message", async () => {
     const message = crypto.randomUUID();
-    const fetchStub = stub(
+    using _fetchStub = stub(
       globalThis,
       "fetch",
       returnsNext([
@@ -23,17 +23,15 @@ Deno.test("[plugins] getGitHubUser()", async (test) => {
       BadRequestError,
       message,
     );
-    fetchStub.restore();
   });
 
   await test.step("resolves to a GitHub user object", async () => {
     const body = { login: crypto.randomUUID(), email: crypto.randomUUID() };
-    const fetchStub = stub(
+    using _fetchStub = stub(
       globalThis,
       "fetch",
       returnsNext([Promise.resolve(Response.json(body))]),
     );
     assertEquals(await getGitHubUser(crypto.randomUUID()), body);
-    fetchStub.restore();
   });
 });
