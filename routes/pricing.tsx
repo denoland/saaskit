@@ -3,7 +3,7 @@ import type { State } from "@/plugins/session.ts";
 import { assertIsPrice, isStripeEnabled, stripe } from "@/utils/stripe.ts";
 import { formatCurrency } from "@/utils/display.ts";
 import Stripe from "stripe";
-import IconCheckCircle from "tabler_icons_tsx/circle-check.tsx";
+import IconCheckCircle from "@preact-icons/tb/TbCircleCheck";
 import Head from "@/components/Head.tsx";
 import { defineRoute } from "$fresh/server.ts";
 import { PremiumBadge } from "@/components/PremiumBadge.tsx";
