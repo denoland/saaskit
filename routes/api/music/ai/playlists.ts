@@ -36,7 +36,7 @@ export async function handleGET(ctx: RouteContext) {
       return toJson(response, 401);
     }
 
-    const userLogin = (ctx.state.user as any).login;
+    const userLogin = ctx.state.user as User.login;
     const playlists = await getAIPlaylistsByUser(userLogin);
 
     const response = successResponse({
@@ -74,7 +74,7 @@ export async function handleGETById(req: Request, ctx: RouteContext) {
     // Check access permissions
     if (
       !playlist.isPublic &&
-      (!ctx.state.user || playlist.userLogin !== (ctx.state.user as any).login)
+      (!ctx.state.user || playlist.userLogin !== ctx.state.user as User.login)
     ) {
       const response = errorResponse("FORBIDDEN", "Access denied");
       return toJson(response, 403);
@@ -118,7 +118,7 @@ export async function handlePOST(req: Request, ctx: RouteContext) {
       name: playlistData.name,
       description: playlistData.description,
       prompt: description,
-      userLogin: (ctx.state.user as any).login,
+      userLogin: ctx.state.user as User.login,
       tracks: playlistData.tracks,
       themes: playlistData.themes,
       mood: playlistData.tracks[0]?.mood || "",
@@ -159,7 +159,7 @@ export async function handlePOST(req: Request, ctx: RouteContext) {
 
       // Update playlist with video IDs
       // In production, this would be an atomic update
-      await deleteAIPlaylist(playlist.id, (ctx.state.user as any).login);
+      await deleteAIPlaylist(playlist.id, ctx.state.user as User.login);
       const updatedPlaylist = await createAIPlaylist({
         ...playlist,
         tracks: updatedTracks,
@@ -222,7 +222,7 @@ export async function handleMoodPlaylist(req: Request, ctx: RouteContext) {
         activity ? ` while ${activity}` : ""
       }${timeOfDay ? ` during ${timeOfDay}` : ""}`,
       prompt,
-      userLogin: (ctx.state.user as any).login,
+      userLogin: ctx.state.user as User.login,
       tracks: playlistData.tracks.map((t) => ({
         title: t.title,
         artist: t.artist,
@@ -270,7 +270,7 @@ export async function handleContinuePlaylist(req: Request, ctx: RouteContext) {
     }
 
     // Check permissions
-    if (playlist.userLogin !== (ctx.state.user as any).login) {
+    if (playlist.userLogin !== ctx.state.user as User.login) {
       const response = errorResponse("FORBIDDEN", "Access denied");
       return toJson(response, 403);
     }
@@ -295,7 +295,7 @@ export async function handleContinuePlaylist(req: Request, ctx: RouteContext) {
     ];
 
     // In production, this would be an atomic update
-    await deleteAIPlaylist(playlist.id, (ctx.state.user as any).login);
+    await deleteAIPlaylist(playlist.id, ctx.state.user as User.login);
     const updatedPlaylist = await createAIPlaylist({
       ...playlist,
       tracks: updatedTracks,
