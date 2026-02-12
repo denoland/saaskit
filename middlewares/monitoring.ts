@@ -6,6 +6,7 @@
 
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { generateRequestId, logger } from "@/utils/logger.ts";
+import type { State } from "@/plugins/session.ts";
 
 export function monitoringMiddleware(): (
   req: Request,
@@ -20,7 +21,7 @@ export function monitoringMiddleware(): (
 
     // Extract context info
     const url = new URL(req.url);
-    const userId = (ctx.state as any)?.user?.login;
+    const userId = (ctx.state as State)?.user?.login;
     const ip = req.headers.get("CF-Connecting-IP") ||
       req.headers.get("X-Forwarded-For") ||
       req.headers.get("X-Real-IP") ||

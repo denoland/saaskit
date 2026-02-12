@@ -16,6 +16,7 @@ import {
   toJson,
 } from "@/utils/api_response.ts";
 import type { Handlers } from "$fresh/server.ts";
+import type { User } from "@/utils/db.ts";
 
 /**
  * GET /api/music/user/playlists
@@ -35,7 +36,7 @@ export const handler: Handlers = {
         return toJson(response, 401);
       }
 
-      const userLogin = (ctx.state.user as any).login;
+      const userLogin = (ctx.state.user as User).login;
       const playlists = await getPlaylistsByUser(userLogin);
 
       const response = paginatedResponse(
@@ -76,7 +77,7 @@ export const handler: Handlers = {
       const playlist = await createPlaylist({
         name,
         description: description || "",
-        userLogin: (ctx.state.user as any).login,
+        userLogin: (ctx.state.user as User).login,
         trackIds: [],
         isPublic: isPublic || false,
       });

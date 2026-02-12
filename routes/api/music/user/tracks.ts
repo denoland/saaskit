@@ -13,6 +13,7 @@ import {
   toJson,
 } from "@/utils/api_response.ts";
 import type { Handlers } from "$fresh/server.ts";
+import type { User } from "@/utils/db.ts";
 
 /**
  * GET /api/music/user/tracks

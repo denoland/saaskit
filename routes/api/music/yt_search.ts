@@ -9,6 +9,7 @@ import {
 } from "@/utils/api_response.ts";
 import { logSearch } from "@/utils/music_models.ts";
 import type { Handlers } from "$fresh/server.ts";
+import type { User } from "@/utils/db.ts";
 
 const youtubeSearch = new YouTubeSearch();
 
@@ -23,7 +24,7 @@ export const handler: Handlers = {
       const url = new URL(req.url);
       const query = url.searchParams.get("q");
       const continuationToken = url.searchParams.get("continuationToken");
-      const userLogin = (ctx.state.user as any)?.login || "anonymous";
+      const userLogin = (ctx.state.user as User)?.login || "anonymous";
 
       if (!query && !continuationToken) {
         const response = errorResponse(

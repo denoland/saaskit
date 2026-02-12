@@ -24,8 +24,6 @@ import * as $api_music_index_index from "./routes/api/music/index/index.ts";
 import * as $api_music_lyrics from "./routes/api/music/lyrics.ts";
 import * as $api_music_playlists_playlistId_ from "./routes/api/music/playlists/[playlistId].ts";
 import * as $api_music_playlists_public_playlistId_ from "./routes/api/music/playlists/public/[playlistId].ts";
-import * as $api_music_proxy_status from "./routes/api/music/proxy/status.ts";
-import * as $api_music_proxy_test from "./routes/api/music/proxy/test.ts";
 import * as $api_music_radio from "./routes/api/music/radio.ts";
 import * as $api_music_search from "./routes/api/music/search.ts";
 import * as $api_music_search_suggestions from "./routes/api/music/search/suggestions.ts";
@@ -91,8 +89,6 @@ const manifest = {
       $api_music_playlists_playlistId_,
     "./routes/api/music/playlists/public/[playlistId].ts":
       $api_music_playlists_public_playlistId_,
-    "./routes/api/music/proxy/status.ts": $api_music_proxy_status,
-    "./routes/api/music/proxy/test.ts": $api_music_proxy_test,
     "./routes/api/music/radio.ts": $api_music_radio,
     "./routes/api/music/search.ts": $api_music_search,
     "./routes/api/music/search/suggestions.ts": $api_music_search_suggestions,

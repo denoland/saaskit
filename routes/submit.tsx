@@ -13,15 +13,8 @@ import {
 } from "@/plugins/session.ts";
 import { ulid } from "@std/ulid/ulid";
 import IconInfo from "@preact-icons/tb/TbInfoCircle";
-import { SITE_NAME, SITE_TAGLINE } from "@/utils/constants.ts";
-import {
-  AudioReactiveCard,
-  BrandSlogan,
-  GlitchText,
-  Logo,
-  LogoVariations,
-  TurntableAnimation,
-} from "@/components/branding/index.ts";
+import { SITE_NAME } from "@/utils/constants.ts";
+import { BrandSlogan } from "@/components/branding/index.ts";
 
 export const handler: Handlers<undefined, SignedInState> = {
   async POST(req, ctx) {

@@ -1,4 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
+// Music API - Deno Deploy Build (ProxyHub disabled)
 import tailwind from "$fresh/plugins/tailwind.ts";
 // import kvOAuthPlugin from "./plugins/kv_oauth.ts";
 // import sessionPlugin from "./plugins/session.ts";
