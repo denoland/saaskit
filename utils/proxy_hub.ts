@@ -658,7 +658,7 @@ export class ProxyHub {
 export const proxyHub = new ProxyHub();
 
 // Convenience function for simple GET requests
-export async function fetchWithProxy(
+export function fetchWithProxy(
   url: string,
   options?: Partial<ProxyRequest>,
 ): Promise<ProxyResponse> {

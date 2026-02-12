@@ -24,11 +24,10 @@ const MAX_SEARCH_RESULTS = 50;
 /**
  * Generate embedding for a given text using Groq API
  */
-export async function generateEmbedding(text: string): Promise<number[]> {
+export function generateEmbedding(text: string): number[] {
   // For now, generate a simple hash-based embedding
   // In production, use an actual embedding service
-  const hash = simpleHash(text);
-  return hash;
+  return simpleHash(text);
 }
 
 /**

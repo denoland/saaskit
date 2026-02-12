@@ -12,12 +12,6 @@ import * as $api_health from "./routes/api/health.ts";
 import * as $api_items_id_ from "./routes/api/items/[id].ts";
 import * as $api_items_index from "./routes/api/items/index.ts";
 import * as $api_me_votes from "./routes/api/me/votes.ts";
-import * as $api_music_ai_analysis from "./routes/api/music/ai/analysis.ts";
-import * as $api_music_ai_context from "./routes/api/music/ai/context.ts";
-import * as $api_music_ai_index from "./routes/api/music/ai/index.ts";
-import * as $api_music_ai_playlists from "./routes/api/music/ai/playlists.ts";
-import * as $api_music_ai_recommendations from "./routes/api/music/ai/recommendations.ts";
-import * as $api_music_ai_search from "./routes/api/music/ai/search.ts";
 import * as $api_music_albums_browseId_ from "./routes/api/music/albums/[browseId].ts";
 import * as $api_music_albums_complete from "./routes/api/music/albums/complete.ts";
 import * as $api_music_artists_complete from "./routes/api/music/artists/complete.ts";
@@ -83,12 +77,6 @@ const manifest = {
     "./routes/api/items/[id].ts": $api_items_id_,
     "./routes/api/items/index.ts": $api_items_index,
     "./routes/api/me/votes.ts": $api_me_votes,
-    "./routes/api/music/ai/analysis.ts": $api_music_ai_analysis,
-    "./routes/api/music/ai/context.ts": $api_music_ai_context,
-    "./routes/api/music/ai/index.ts": $api_music_ai_index,
-    "./routes/api/music/ai/playlists.ts": $api_music_ai_playlists,
-    "./routes/api/music/ai/recommendations.ts": $api_music_ai_recommendations,
-    "./routes/api/music/ai/search.ts": $api_music_ai_search,
     "./routes/api/music/albums/[browseId].ts": $api_music_albums_browseId_,
     "./routes/api/music/albums/complete.ts": $api_music_albums_complete,
     "./routes/api/music/artists/complete.ts": $api_music_artists_complete,

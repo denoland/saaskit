@@ -25,7 +25,7 @@ export const handler: Handlers = {
 
     // Determine overall status
     const hasUnhealthyService = Object.values(health.services).some(
-      (service: any) => service.status !== "healthy",
+      (service: { status: string }) => service.status !== "healthy",
     );
 
     if (hasUnhealthyService) {
@@ -78,17 +78,17 @@ async function checkAIProvidersHealth(): Promise<
     const allConfigured = Object.values(providers).every((status) =>
       status === "configured"
     );
-    return {
+    return Promise.resolve({
       status: allConfigured ? "healthy" : "degraded",
       providers,
-    };
+    });
   } catch (error) {
-    return { status: "unhealthy", error: (error as Error).message };
+    return Promise.resolve({ status: "unhealthy", error: (error as Error).message });
   }
 }
 
 async function checkExternalAPIsHealth(): Promise<
-  { status: string; checks?: Record<string, any>; error?: string }
+  { status: string; checks?: Record<string, unknown>; error?: string }
 > {
   const checks = {
     youtube_api: "unknown",
@@ -107,11 +107,11 @@ async function checkExternalAPIsHealth(): Promise<
     const allConfigured = Object.values(checks).every((status) =>
       status === "configured"
     );
-    return {
+    return Promise.resolve({
       status: allConfigured ? "healthy" : "degraded",
       checks,
-    };
+    });
   } catch (error) {
-    return { status: "unhealthy", error: (error as Error).message };
+    return Promise.resolve({ status: "unhealthy", error: (error as Error).message });
   }
 }
