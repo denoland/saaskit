@@ -8,21 +8,13 @@ import { defineRoute } from "$fresh/server.ts";
 import { ComponentChildren } from "preact";
 import Head from "@/components/Head.tsx";
 import {
-  AudioReactiveCard,
   Banner,
-  BrandButton,
-  BrandSlogan,
   CircularEqualizer,
-  GlitchText,
-  Logo,
-  LogoHolographic,
   LogoVariations,
   RadarLogo,
   ScanningLogo,
   SloganCard,
   SoundWaveLogo,
-  TurntableAnimation,
-  VUMeter,
 } from "@/components/branding/index.ts";
 import { SITE_NAME } from "@/utils/constants.ts";
 

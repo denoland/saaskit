@@ -83,7 +83,10 @@ async function checkAIProvidersHealth(): Promise<
       providers,
     });
   } catch (error) {
-    return Promise.resolve({ status: "unhealthy", error: (error as Error).message });
+    return Promise.resolve({
+      status: "unhealthy",
+      error: (error as Error).message,
+    });
   }
 }
 
@@ -112,6 +115,9 @@ async function checkExternalAPIsHealth(): Promise<
       checks,
     });
   } catch (error) {
-    return Promise.resolve({ status: "unhealthy", error: (error as Error).message });
+    return Promise.resolve({
+      status: "unhealthy",
+      error: (error as Error).message,
+    });
   }
 }

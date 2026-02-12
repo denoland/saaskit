@@ -19,7 +19,9 @@ const sizes = {
   lg: { icon: "w-16 h-16", text: "text-2xl" },
 };
 
-export function Logo({ size = "md", href = "/", showText = true, className = "" }: LogoProps) {
+export function Logo(
+  { size = "md", href = "/", showText = true, className = "" }: LogoProps,
+) {
   const sizeClasses = sizes[size];
 
   return (

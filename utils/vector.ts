@@ -248,24 +248,24 @@ export async function vectorSearch(
       case "cosine":
         score = cosineSimilarity(queryEmbedding, trackEmbedding.embedding);
         break;
-    case "euclidean": {
-      // Convert distance to similarity (1 / (1 + distance))
-      const dist = euclideanDistance(
-        queryEmbedding,
-        trackEmbedding.embedding,
-      );
-      score = 1 / (1 + dist);
-      break;
-    }
-    case "manhattan": {
-      // Convert distance to similarity
-      const manDist = manhattanDistance(
-        queryEmbedding,
-        trackEmbedding.embedding,
-      );
-      score = 1 / (1 + manDist);
-      break;
-    }
+      case "euclidean": {
+        // Convert distance to similarity (1 / (1 + distance))
+        const dist = euclideanDistance(
+          queryEmbedding,
+          trackEmbedding.embedding,
+        );
+        score = 1 / (1 + dist);
+        break;
+      }
+      case "manhattan": {
+        // Convert distance to similarity
+        const manDist = manhattanDistance(
+          queryEmbedding,
+          trackEmbedding.embedding,
+        );
+        score = 1 / (1 + manDist);
+        break;
+      }
       default:
         score = cosineSimilarity(queryEmbedding, trackEmbedding.embedding);
     }
@@ -330,22 +330,22 @@ export async function findSimilarTracks(
           otherEmbedding.embedding,
         );
         break;
-    case "euclidean": {
-      const dist = euclideanDistance(
-        trackEmbedding.embedding,
-        otherEmbedding.embedding,
-      );
-      score = 1 / (1 + dist);
-      break;
-    }
-    case "manhattan": {
-      const manDist = manhattanDistance(
-        trackEmbedding.embedding,
-        otherEmbedding.embedding,
-      );
-      score = 1 / (1 + manDist);
-      break;
-    }
+      case "euclidean": {
+        const dist = euclideanDistance(
+          trackEmbedding.embedding,
+          otherEmbedding.embedding,
+        );
+        score = 1 / (1 + dist);
+        break;
+      }
+      case "manhattan": {
+        const manDist = manhattanDistance(
+          trackEmbedding.embedding,
+          otherEmbedding.embedding,
+        );
+        score = 1 / (1 + manDist);
+        break;
+      }
       default:
         score = cosineSimilarity(
           trackEmbedding.embedding,
