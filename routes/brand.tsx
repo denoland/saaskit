@@ -5,6 +5,7 @@
  */
 
 import { defineRoute } from "$fresh/server.ts";
+import { ComponentChildren } from "preact";
 import Head from "@/components/Head.tsx";
 import {
   AudioReactiveCard,
@@ -35,7 +36,7 @@ const ErrorFallback = ({ componentName }: { componentName: string }) => (
 // Safe component wrapper with error handling
 const SafeComponent = (
   { children, fallbackName }: {
-    children: React.ReactNode;
+    children: ComponentChildren;
     fallbackName: string;
   },
 ) => {

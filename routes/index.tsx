@@ -16,6 +16,7 @@ import {
   BrandSlogan,
   GlitchText,
   Logo,
+  LogoHolographic,
   NarrativeStep,
   TurntableAnimation,
   VUMeter,
@@ -64,7 +65,7 @@ export default defineRoute<State>((_req, ctx) => {
               <p class="text-body-lg text-foreground-muted max-w-2xl mx-auto mb-8">
                 {SITE_DESCRIPTION}
               </p>
-              <BrandSlogan variant="primary" class="inline-block" />
+              <BrandSlogan variant="primary" className="inline-block" />
             </div>
 
             {/* CTA Buttons */}

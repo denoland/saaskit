@@ -2,7 +2,7 @@
 import { PageProps } from "$fresh/server.ts";
 import { SITE_NAME } from "@/utils/constants.ts";
 import IconRadar from "@preact-icons/tb/TbRadar";
-import { BrandSlogan } from "@/components/branding/index.ts";
+import { BrandSlogan, Logo } from "@/components/branding/index.ts";
 
 export default function Error500Page(props: PageProps) {
   return (
@@ -28,7 +28,7 @@ export default function Error500Page(props: PageProps) {
           {(props.error as Error).message}
         </p>
         <BrandSlogan variant="primary" />
-        <Logo size="lg" class="mb-8" />
+        <Logo size="lg" className="mb-8" />
         <a
           href="/"
           class="inline-flex items-center py-3 px-6 bg-gradient-logo text-black font-heading font-bold rounded-xl hover:scale-105 hover:shadow-glow transition-all"

@@ -53,9 +53,7 @@ export class OpenAIClient {
     this.model = model;
     this.embeddingModel = embeddingModel;
 
-    if (!this.apiKey) {
-      throw new Error("OPENAI_API_KEY environment variable is required");
-    }
+    // Note: OpenAI is not available in free deployment
   }
 
   async chat(messages: OpenAIMessage[], options: {
@@ -63,6 +61,9 @@ export class OpenAIClient {
     max_tokens?: number;
     stream?: boolean;
   } = {}): Promise<OpenAIResponse> {
+    if (!this.apiKey) {
+      throw new Error("OpenAI API key not configured");
+    }
     const response = await fetch(`${OPENAI_BASE_URL}/chat/completions`, {
       method: "POST",
       headers: {
@@ -87,6 +88,9 @@ export class OpenAIClient {
   }
 
   async createEmbeddings(texts: string[]): Promise<EmbeddingResponse> {
+    if (!this.apiKey) {
+      throw new Error("OpenAI API key not configured");
+    }
     const response = await fetch(`${OPENAI_BASE_URL}/embeddings`, {
       method: "POST",
       headers: {

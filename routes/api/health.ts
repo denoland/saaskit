@@ -1,4 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
+/// <reference lib="deno.unstable" />
 /**
  * Health Check Endpoint
  * Provides system health status for monitoring and load balancers
@@ -14,7 +15,7 @@ export const handler: Handlers = {
       status: "healthy",
       timestamp: new Date().toISOString(),
       version: "2.0.0",
-      uptime: Math.floor(Deno.uptime()),
+      uptime: Math.floor(performance.now() / 1000),
       services: {
         database: await checkDatabaseHealth(),
         ai_providers: await checkAIProvidersHealth(),
@@ -31,12 +32,14 @@ export const handler: Handlers = {
       health.status = "degraded";
     }
 
-    return successResponse(health);
+    return new Response(JSON.stringify(successResponse(health)), {
+      headers: { "Content-Type": "application/json" },
+    });
   },
 };
 
 async function checkDatabaseHealth(): Promise<
-  { status: string; latency?: number }
+  { status: string; latency?: number; error?: string }
 > {
   try {
     const start = Date.now();
@@ -46,12 +49,12 @@ async function checkDatabaseHealth(): Promise<
 
     return { status: "healthy", latency };
   } catch (error) {
-    return { status: "unhealthy", error: error.message };
+    return { status: "unhealthy", error: (error as Error).message };
   }
 }
 
 async function checkAIProvidersHealth(): Promise<
-  { status: string; providers?: Record<string, string> }
+  { status: string; providers?: Record<string, string>; error?: string }
 > {
   const providers = {
     cerebras: "unknown",
@@ -80,12 +83,12 @@ async function checkAIProvidersHealth(): Promise<
       providers,
     };
   } catch (error) {
-    return { status: "unhealthy", error: error.message };
+    return { status: "unhealthy", error: (error as Error).message };
   }
 }
 
 async function checkExternalAPIsHealth(): Promise<
-  { status: string; checks?: Record<string, any> }
+  { status: string; checks?: Record<string, any>; error?: string }
 > {
   const checks = {
     youtube_api: "unknown",
@@ -109,6 +112,6 @@ async function checkExternalAPIsHealth(): Promise<
       checks,
     };
   } catch (error) {
-    return { status: "unhealthy", error: error.message };
+    return { status: "unhealthy", error: (error as Error).message };
   }
 }

@@ -9,7 +9,9 @@
 // Core brand components
 export { BrandProvider } from "../BrandProvider.tsx";
 export { Logo } from "./Logo.tsx";
+export type { LogoProps } from "./Logo.tsx";
 export { BrandSlogan } from "./BrandSlogan.tsx";
+export type { SloganProps } from "./BrandSlogan.tsx";
 export { BrandButton } from "./BrandButton.tsx";
 
 // Logo variations

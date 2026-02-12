@@ -6,14 +6,14 @@
 
 import { ComponentChildren } from "preact";
 
-interface SloganProps {
+export interface SloganProps {
   variant?: "primary" | "technical" | "product" | "visionary" | "community";
-  class?: string;
+  className?: string;
 }
 
 export function BrandSlogan({
   variant = "primary",
-  class: className = "",
+  className = "",
 }: SloganProps) {
   const slogans = {
     primary: {

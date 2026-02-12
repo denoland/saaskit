@@ -42,5 +42,9 @@
   "lint": { "rules": { "tags": ["fresh", "recommended", "jsx", "react"] } },
   "unstable": [
     "kv"
-  ]
+  ],
+  "deploy": {
+    "org": "robertmcasper",
+    "app": "sweet-badger-18"
+  }
 }

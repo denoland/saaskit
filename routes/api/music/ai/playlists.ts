@@ -21,6 +21,7 @@ import {
   toJson,
 } from "@/utils/api_response.ts";
 import type { Handlers, RouteContext } from "$fresh/server.ts";
+import type { User } from "@/utils/db.ts";
 
 const ytmusic = new YTMusic();
 
@@ -151,7 +152,7 @@ export async function handlePOST(req: Request, ctx: RouteContext) {
           const result = searchResults.find((r) =>
             r.track.title === track.title && r.track.artist === track.artist
           );
-          return { ...track, videoId: result?.videoId };
+          return { ...track, videoId: result?.videoId as string | undefined };
         }
         return track;
       });

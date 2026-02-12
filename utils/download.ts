@@ -5,7 +5,7 @@
  * Handles audio file downloads, conversion, and progress tracking
  */
 
-import { ulid } from "jsr:@std/ulid";
+import { ulid } from "jsr:@std/ulid@^1.0.0";
 import { kv } from "@/utils/db.ts";
 import { fetchFromInvidious, fetchFromPiped } from "@/utils/music_client.ts";
 
@@ -155,7 +155,7 @@ export async function updateDownloadJob(
 /**
  * Complete download job
  */
-export async function completeDownloadJob(
+export function completeDownloadJob(
   jobId: string,
   filePath: string,
   fileSize: number,
@@ -174,7 +174,7 @@ export async function completeDownloadJob(
 /**
  * Fail download job
  */
-export async function failDownloadJob(
+export function failDownloadJob(
   jobId: string,
   error: string,
 ): Promise<DownloadJob | null> {
@@ -283,10 +283,11 @@ export function selectBestStream(
     case "high":
       return audioStreams[0];
     case "medium":
-    default:
+    default: {
       // Select middle stream
       const mid = Math.floor(audioStreams.length / 2);
       return audioStreams[mid] || audioStreams[0];
+    }
   }
 }
 

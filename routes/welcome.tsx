@@ -142,7 +142,7 @@ export default defineRoute((_req, ctx) => {
                 brand is now configured and ready to detect music trends.
               </p>
               <div class="mt-6">
-                <BrandButton href="/" variant="primary" class="text-lg">
+                <BrandButton href="/" variant="primary" className="text-lg">
                   Go to Dashboard →
                 </BrandButton>
               </div>
@@ -203,7 +203,7 @@ export default defineRoute((_req, ctx) => {
               <BrandButton
                 href="/brand"
                 variant="secondary"
-                class="text-lg px-8 py-4"
+                className="text-lg px-8 py-4"
               >
                 View Brand Assets →
               </BrandButton>

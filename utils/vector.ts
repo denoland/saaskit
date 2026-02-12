@@ -11,10 +11,11 @@ import {
   saveTrackEmbedding,
   type TrackEmbedding,
 } from "@/utils/music_models.ts";
-import { groqClient } from "@/utils/groq_client.ts";
+// groqClient imported for future use
+import { groqClient as _groqClient } from "@/utils/groq_client.ts";
 
 // ============ CONFIGURATION ============
-const EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5";
+const _EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5";
 const EMBEDDING_DIMENSIONS = 768;
 const MAX_SEARCH_RESULTS = 50;
 
@@ -26,7 +27,7 @@ const MAX_SEARCH_RESULTS = 50;
 export async function generateEmbedding(text: string): Promise<number[]> {
   // For now, generate a simple hash-based embedding
   // In production, use an actual embedding service
-  const hash = await simpleHash(text);
+  const hash = simpleHash(text);
   return hash;
 }
 
@@ -34,7 +35,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  * Simple hash-based embedding generation
  * TODO: Replace with actual embedding API (OpenAI, Cohere, etc.)
  */
-async function simpleHash(text: string): Promise<number[]> {
+function simpleHash(text: string): number[] {
   const normalized = text.toLowerCase().trim();
   const embedding = new Array(EMBEDDING_DIMENSIONS).fill(0);
 
@@ -248,22 +249,24 @@ export async function vectorSearch(
       case "cosine":
         score = cosineSimilarity(queryEmbedding, trackEmbedding.embedding);
         break;
-      case "euclidean":
-        // Convert distance to similarity (1 / (1 + distance))
-        const dist = euclideanDistance(
-          queryEmbedding,
-          trackEmbedding.embedding,
-        );
-        score = 1 / (1 + dist);
-        break;
-      case "manhattan":
-        // Convert distance to similarity
-        const manDist = manhattanDistance(
-          queryEmbedding,
-          trackEmbedding.embedding,
-        );
-        score = 1 / (1 + manDist);
-        break;
+    case "euclidean": {
+      // Convert distance to similarity (1 / (1 + distance))
+      const dist = euclideanDistance(
+        queryEmbedding,
+        trackEmbedding.embedding,
+      );
+      score = 1 / (1 + dist);
+      break;
+    }
+    case "manhattan": {
+      // Convert distance to similarity
+      const manDist = manhattanDistance(
+        queryEmbedding,
+        trackEmbedding.embedding,
+      );
+      score = 1 / (1 + manDist);
+      break;
+    }
       default:
         score = cosineSimilarity(queryEmbedding, trackEmbedding.embedding);
     }
@@ -328,20 +331,22 @@ export async function findSimilarTracks(
           otherEmbedding.embedding,
         );
         break;
-      case "euclidean":
-        const dist = euclideanDistance(
-          trackEmbedding.embedding,
-          otherEmbedding.embedding,
-        );
-        score = 1 / (1 + dist);
-        break;
-      case "manhattan":
-        const manDist = manhattanDistance(
-          trackEmbedding.embedding,
-          otherEmbedding.embedding,
-        );
-        score = 1 / (1 + manDist);
-        break;
+    case "euclidean": {
+      const dist = euclideanDistance(
+        trackEmbedding.embedding,
+        otherEmbedding.embedding,
+      );
+      score = 1 / (1 + dist);
+      break;
+    }
+    case "manhattan": {
+      const manDist = manhattanDistance(
+        trackEmbedding.embedding,
+        otherEmbedding.embedding,
+      );
+      score = 1 / (1 + manDist);
+      break;
+    }
       default:
         score = cosineSimilarity(
           trackEmbedding.embedding,

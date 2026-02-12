@@ -35,7 +35,7 @@ export async function handleMoodPlaylist(req: Request, ctx: RouteContext) {
     const activity = url.searchParams.get("activity");
     const timeOfDay = url.searchParams.get("timeOfDay");
     const limit = parseInt(url.searchParams.get("limit") || "15");
-    const userLogin = ctx.state.user?.login || "anonymous";
+    const userLogin = ctx.state.sessionUser?.login || "anonymous";
 
     if (!mood) {
       const response = errorResponse(
@@ -165,7 +165,7 @@ export async function handleTimeAwarePlaylist(
     // Get user taste profile if available
     const activity = "";
     if (ctx.state.user) {
-      const tasteProfile = await getUserTasteProfile(ctx.state.user.login);
+      const tasteProfile = await getUserTasteProfile(ctx.state.sessionUser!.login);
       if (tasteProfile) {
         // Adjust mood based on user preferences
         const preferredMoods = tasteProfile.moods.slice(0, 3).map((m) =>

@@ -10,6 +10,7 @@ export interface LogoProps {
   size?: "sm" | "md" | "lg";
   href?: string;
   showText?: boolean;
+  className?: string;
 }
 
 const sizes = {
@@ -18,11 +19,11 @@ const sizes = {
   lg: { icon: "w-16 h-16", text: "text-2xl" },
 };
 
-export function Logo({ size = "md", href = "/", showText = true }: LogoProps) {
+export function Logo({ size = "md", href = "/", showText = true, className = "" }: LogoProps) {
   const sizeClasses = sizes[size];
 
   return (
-    <a href={href} class="flex items-center gap-3 group">
+    <a href={href} class={`flex items-center gap-3 group ${className}`}>
       <div
         class={`${sizeClasses.icon} rounded-xl bg-gradient-logo flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform duration-fast`}
       >

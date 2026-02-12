@@ -188,7 +188,7 @@ export const handler: Handlers = {
  * Natural language search for music
  * Query params: q (required)
  */
-export async function handleNaturalLanguageSearch(
+async function handleNaturalLanguageSearch(
   req: Request,
   ctx: RouteContext,
 ) {

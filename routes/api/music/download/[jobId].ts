@@ -89,7 +89,7 @@ export const handler: Handlers = {
 
       // If force, delete; otherwise, just cancel
       if (force) {
-        await deleteDownloadJob(jobId, userId);
+        await deleteDownloadJob(jobId, userId ?? undefined);
         const response = successResponse({
           jobId,
           deleted: true,

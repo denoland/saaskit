@@ -158,7 +158,10 @@ export async function handleLyricsAnalysis(req: Request) {
  * GET /api/music/ai/analysis/listening
  * Get AI-powered analysis of user's listening patterns
  */
-export async function handleListeningAnalysis(_req: Request, ctx: RouteContext) {
+export async function handleListeningAnalysis(
+  _req: Request,
+  ctx: RouteContext,
+) {
   try {
     if (!ctx.state.user) {
       const response = errorResponse("UNAUTHORIZED", "Authentication required");

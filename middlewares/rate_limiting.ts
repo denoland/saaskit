@@ -1,4 +1,5 @@
 // Copyright 2023-2025 the Deno authors. All rights reserved. MIT license.
+/// <reference lib="deno.unstable" />
 /**
  * Rate Limiting Middleware
  * Implements sliding window rate limiting with Redis/Deno KV backend
