@@ -15,7 +15,7 @@ import type { Handlers, RouteContext } from "$fresh/server.ts";
 import { handler as recommendationsHandler } from "./recommendations.ts";
 import { handler as playlistsHandler } from "./playlists.ts";
 import { handler as analysisHandler } from "./analysis.ts";
-import { handler as searchHandler } from "./search.ts";
+// import { handler as searchHandler } from "./search.ts"; // Temporarily disabled
 import { handler as contextHandler } from "./context.ts";
 
 // Re-export all handlers for direct imports
@@ -24,7 +24,7 @@ export {
   contextHandler as context,
   playlistsHandler as playlists,
   recommendationsHandler as recommendations,
-  searchHandler as search
+  // searchHandler as search // Temporarily disabled
 };
 
 /**
@@ -83,9 +83,9 @@ export const handler: Handlers = {
         return await analysisHandler.GET(req, ctx);
       }
 
-      if (path.startsWith("search")) {
-        return await searchHandler.GET(req, ctx);
-      }
+      // if (path.startsWith("search")) {
+      //   return await searchHandler.GET(req, ctx);
+      // }
 
       if (path.startsWith("context")) {
         return await contextHandler.GET(req, ctx);
